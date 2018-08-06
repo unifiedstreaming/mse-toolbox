@@ -3,6 +3,7 @@ package ;
 #if js
 
 import js.Browser;
+import haxe.Constraints.Function;
 
 class JsUtils {
     static var cssElements:Map<js.html.Element, Array<js.html.StyleElement>> = new Map();
@@ -65,29 +66,6 @@ class JsUtils {
 		}
 	}
 	
-	/**
-	 * Check whether the given methods exist in the source and if so create a function call so they can be called later.
-	 * 
-	 * @param	source - The source to look for the methods in.
-	 * @param	methods - The methods to look for.
-	 * @return - The function call that can be used to call the bound method.
-	 */
-	public static function BindMethods(source:Dynamic, methods:Array<String>) : FunctionCall
-	{
-		// Go through all the given methods.
-		for (method in methods)
-		{
-			// Use reflect to see whether we have the method.
-			var hasMethod : Bool = untyped __js__("typeof(source[method]) != 'undefined'");
-			
-			// Set the method.
-			if (hasMethod)
-				return new FunctionCall(source, Reflect.field(source, method));
-		}
-		
-		return null;
-	}
-
 	/**
 	* set css styles to element.style, js style attribute names, supports multiple with ","
 	* ```

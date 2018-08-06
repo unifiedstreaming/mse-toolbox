@@ -87,8 +87,8 @@ class UIManager {
             case MAINWINDOW | null:
             case STANDARD(t, p, s) | CLOSEABLE(t, p, s): title = t; if(p != null) pos = p; if(s != null) size = s;
         }
-        
-        var im = Macros.importFilesAsB64String(["unified-streaming-logo.png"], false);
+         
+        var im = Macros.importFilesAsB64String(["res/unified-streaming-logo.png"], false);
         var image = Browser.document.createImageElement();
         image.src = 'data:image/png;base64,${im[0].data}';
         JsUtils.setCSSStyles(image.style, [ "height" => '${TOPBAR_HEIGHT}px', "float" => "right" ]);

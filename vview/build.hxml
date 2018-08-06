@@ -1,4 +1,5 @@
 -cp src
+-cp ../macro
 -js bin/vview.js
 -main Main
--resource ./template/stats.html@stats
+-resource ./res/template/stats.html@stats

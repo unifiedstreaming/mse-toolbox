@@ -1,0 +1,4 @@
+-cp src
+-js bin/vview.js
+-main Main
+-resource ./template/stats.html@stats

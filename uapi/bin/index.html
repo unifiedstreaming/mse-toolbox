@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>Uapi</title>
+    <meta name="description" content="" />
+    <script src="uapi.js"></script>
+    <script type="text/javascript">
+        //note: these urls should be http and https capable
+        var mediaUrls = {
+            vod: [  'tears of steel (widevine)\0//demo.unified-streaming.com/video/tears-of-steel/tears-of-steel-dash-widevine.ism/.mpd',
+            'tears of steel\0//demo.unified-streaming.com/video/tears-of-steel/tears-of-steel.ism/.mpd',
+            'the A-Team\0//demo.unified-streaming.com/video/ateam/ateam.ism/.mpd',
+            'Round 6\0//demo.unified-streaming.com/video/round6/round6.ism/.mpd',
+            'Machete\0//demo.unified-streaming.com/video/machete/machete.ism/.mpd',
+            'The Smurfs\0//demo.unified-streaming.com/video/smurfs/smurfs.ism',
+            'Madden 11 Debut Trailer\0//demo.unified-streaming.com/video/madden11/madden11.ism/.mpd',
+            'Predators\0//demo.unified-streaming.com/video/predators/predators.ism/.mpd',
+            'Sandwich\0//demo.unified-streaming.com/video/sandwich/sandwich.ism/.mpd',
+            'Mart Visser Summer 2011\0//demo.unified-streaming.com/video/mart_visser_zomer_2011/mart_visser_zomer_2011.ism/.mpd'            
+            ],
+            live: [ 'smptebitc\0//live.unified-streaming.com/smptebitc/smptebitc.isml/.mpd',
+            'Repo Men (24/7 Live)\0//live.unified-streaming.com/loop/loop.isml/.mpd'],
+            examples: [ 'metadata-remixed.mp4\0//test.unified-streaming.com/metadata/metadata-remixed.mp4/.mpd', 
+                        'audio_only\0http://rdmedia.bbc.co.uk/dash/ondemand/testcard/1/client_manifest-audio.mpd', 
+                        'Alternate audio tracks\0//demo.unified-streaming.com/video/elephantsdream/elephantsdream.ism/.mpd', 
+                        'multi_audio\0//demo.unified-streaming.com/video/multi_audio/multi_audio.ism/.mpd',
+                        'trickmode\0//dash.akamaized.net/dash264/TestCases/9b/qualcomm/2/MultiRate.mpd',
+                        'presentation_time_offset_2014\0//demo.unified-streaming.com/bbc/presentation_time_offset_2014/presentation_time_offset_2014.isml/.mpd']
+        }
+    </script>
+    <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous"-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="bootstrap-3.3.7.min.css">
+    <style>
+        /*
+        @media screen and (max-width: 768px) {
+            #menu-toggle:not(:checked) + .navbar-nav {
+                display: none;
+            }
+        }        
+        */
+        html, body {
+            top: 0px; bottom: 0px; width: 100%; height: 100%; margin: 0px;
+            background-color: whitesmoke;
+        }
+        hr{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .w-25 {
+            width: 25%;
+        }
+        .w-75 {
+            width: 75%;
+        }
+        .w-100 {
+            width: 100%;
+        }
+        .navbar{
+            margin-bottom: 0px;
+        }
+        .navbar-toggle {
+            display: none;
+        }
+        .collapsed .panel-body {
+            height: 0;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        .settings_element:target {
+            border: 1.5px dotted red;
+        }
+        #bullet{
+            margin-left: 5px;
+        }
+        .collapsed #bullet::after {
+            content: '▼';
+        }
+        #bullet::after {
+            content: '▲';
+        }
+
+        .bs-callout {
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #eee;
+            border-left-width: 5px;
+            border-radius: 3px
+        }
+
+        .bs-callout h4 {
+            margin-top: 0;
+            margin-bottom: 5px
+        }
+
+        .bs-callout p:last-child {
+            margin-bottom: 0
+        }
+
+        .bs-callout code {
+            border-radius: 3px
+        }
+
+        .bs-callout+.bs-callout {
+            margin-top: -5px
+        }
+
+        .bs-callout-danger {
+            border-left-color: #ce4844
+        }
+
+        .bs-callout-danger h4 {
+            color: #ce4844
+        }
+
+        .bs-callout-warning {
+            border-left-color: #aa6708
+        }
+
+        .bs-callout-warning h4 {
+            color: #aa6708
+        }
+
+        .bs-callout-info {
+            border-left-color: #d9edf7
+        }
+
+        .bs-callout-info h4 {
+            color: #31708f
+        }
+        .jumbotron ol {
+            font-size: 15px;
+            font-weight: 200;
+        }
+        .jumbotron p {
+            margin-bottom: 0px;
+        }
+
+        #ufp-settings label {
+            margin: 0;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            float: left;
+        }
+        #ufp-settings-heading {
+            text-transform: capitalize;
+        }
+        #ufp-settings p {
+            margin-bottom: 1px;
+            margin-top: 1px;
+            padding-bottom: 1px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar-static-top navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="http://www.unified-streaming.com">Unified Streaming</a>
+                <img src="data:image/png;base64,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" style="height: 40px; position:absolute; top: 5px; right: 10px;">
+                
+                <label for="menu-toggle" class="navbar-toggle collapsed">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </label>
+            </div>
+            <input type="checkbox" id="menu-toggle" class="hidden"/>
+            <!--ul class="nav navbar-nav navbar-right">
+                <li><a class="nav-item">About</a></li>
+                <li><a class="nav-item">Archives</a></li>
+                <li><a class="nav-item">Tags</a></li>
+                <ul-->
+            </div>
+        </nav>
+        <div class="jumbotron">
+            <div class="container">
+                <h1>MSE-Toolbox</h1>
+                <p>uapi.js testpage</p>
+                <ol>
+                    <li>Select manifest</li>
+                    <li>Select player</li>
+                    <li>Select version</li>
+                    <li>Set custom player options</li>
+                    <li>Play!</li>
+                </ol>
+            </div>
+        </div>
+        <div class="container-fluid">
+                <form id="ufp-form">
+                    <div id="panel_asset" class="panel panel-info">
+                            <div class="panel-heading">Asset<span class="big pull-right" id="bullet"></a></div>
+                            
+                            <div class="panel-body" >
+                                <div class="bs-callout bs-callout-info" id="callout-dropdown-positioning">
+                                <h4>Demo assets</h4>
+                                <p>
+                                        <label>Group:</label>
+                                        <select class="w-100 input-sm" id="selector_type">
+                                            
+                                        </select>
+                                    </p>
+                                    <p>
+                                        <label>Asset:</label>
+                                        <select class="w-100 input-sm" id="selector_media">
+                                            
+                                        </select>
+                                    </p>
+                                </div>
+                                
+                                <p>
+                                    <label>Custom Manifest:</label>
+                                    <input placeholder="http://example.com/manifest.m3u8" class="w-100 input-sm" id="custom_manifest"></input>
+                                </p>
+                                <p>
+                                    <label>Player:</label>
+                                    <select class="w-100 input-sm" id="selector_player">
+                                        
+                                    </select>
+                                </p>
+                                <p>
+                                    <label>Version:</label>
+                                    <select class="w-100 input-sm" id="selector_player_version">
+                                        
+                                    </select>
+                                </p>
+                                <div class="checkbox">
+                                    <label>
+                                        <input checked type="checkbox" id="enable_autoplay"/> Autoplay
+                                    </label><br>
+                                    <label>
+                                        <input type="checkbox" id="open_blank"/> Open in new window
+                                    </label>
+                                </div>
+                                <input class="btn-primary pull-right input-sm" type="submit" value="Play">
+                            </div>
+                    </div>
+                    
+                    <div class="panel panel-info collapsed">
+                            <div class="panel-heading"><span id="ufp-settings-heading"></span> settings<span class="big pull-right" id="bullet"></span><a id="ufp-clear" class="big pull-right" href="#">(clear)</a></div>
+                            
+                            <div class="panel-body" id="ufp-settings">
+                            </div>
+                            <div class="panel-body" >
+                                <input class="btn-primary pull-right input-sm" type="submit" value="Play">
+                            </div>
+                    </div>
+                    <div id="panel_player" class="panel panel-info collapsed hidden">
+                        <div class="panel-heading">Player<span class="big pull-right" id="bullet"></span><a id="ufp-clear" class="big pull-right" href="#">(clear)</a></div>
+                        
+                        <div class="panel-body" id="player">
+                        </div>
+                        <div class="panel-body" >
+                            Embed script:
+                                <pre id="player_script"></pre>
+                        </div>
+                    </div>
+                </form>
+        </div>
+        <footer class="small navbar-default navbar-static-bottom">
+            <div class="container-fluid">
+            <span class="pull-right" id="version"></span>
+            </div>
+        </footer>
+            <script type="text/javascript">
+            !function(){
+                var hash = uapi.KeyValueStringParserJs(null, false);
+                if('custom_manifest' in hash)
+                    document.getElementById('custom_manifest').value = hash['custom_manifest'];
+
+                var cachestr = window.localStorage.getItem('setting-cache');
+                cache = null;
+                if(cachestr !== null)
+                    cache = JSON.parse(cachestr);
+
+                if(window.location.hash != "" || cache != null){
+                    document.getElementById("ufp-settings").parentElement.classList.remove("collapsed");
+                }
+                function updateSettings(player){
+                    var settings = uapi.getPlayers()[player];
+                    settings_elements = [];
+                    document.getElementById("ufp-settings-heading").innerText = player;
+                    var node = document.getElementById('ufp-settings');
+                    while(node.hasChildNodes()){
+                        node.removeChild(node.lastChild);
+                    }
+                    
+                    
+                    for(k in settings){
+                        var p = document.createElement('p');
+                        var label = document.createElement('label');
+                        label.innerText = k;
+                        label.classList.add("w-25");
+
+                        label.classList.add("input-sm");
+                        var input = document.createElement('input');
+                        input.classList.add("w-75");
+                        input.classList.add("input-sm");
+                        input.addEventListener('input', function(e){
+                            var input = e.target;
+                            if(cache == null){
+                                cache = {};
+                            }
+                            cache[input['data-ufp-setting']] = input.value;
+                            window.localStorage.setItem('setting-cache', JSON.stringify(cache));
+                        });
+                        input['data-ufp-setting'] = k;
+                        if(cache !== null && cache[k])
+                            input.value = cache[k];
+                        settings_elements.push(input);
+                        p.title = k + "; " + settings[k].default_;
+                        p.className = "settings_element";
+                        input.placeholder = settings[k].help + "; " + settings[k].default_;
+                        p.id = k;
+                        p.appendChild(label);
+                        p.appendChild(input);
+                        node.appendChild(p);
+                    }
+                    document.getElementById("ufp-clear").onclick = function(e){
+                        window.localStorage.removeItem('setting-cache'); window.location.reload();
+                        return false;
+                    }
+                    while(s_version.hasChildNodes())
+                        s_version.removeChild(s_version.lastChild);
+                        
+                    for(p in uapi.getPlayerVersions(player)){
+                        var o = document.createElement('option');
+                        o.value = p;
+                        o.innerText = p;
+                        s_version.appendChild(o);
+                        if('version' in hash && p == hash['version'])
+                            o.selected = true;
+                    }
+
+                }
+                
+                document.getElementById('version').innerText = "uapi.js " + uapi.Version();
+                
+                var s_type = document.getElementById('selector_type');
+                var s_media = document.getElementById('selector_media');
+                var s_player = document.getElementById('selector_player');
+                var s_version = document.getElementById('selector_player_version');
+                s_media.addEventListener("change", function(e){
+                    document.getElementById('custom_manifest').value = "";
+                });
+                var go = document.getElementById('ufp-form').onsubmit = function(){
+                    var qs = [];
+                    var options = {};
+                    var player_options = options[s_player.value] = {};
+                    for(var i = 0; i < settings_elements.length; i++){
+                        var el = settings_elements[i];
+                        if(el.value.length > 0){
+                            player_options[el['data-ufp-setting']] = el.value;
+                        }
+                    }
+                    var manifest = document.getElementById('custom_manifest').value;
+                    if(manifest == ""){
+                        manifest = mediaUrls[s_type.value][s_media.value].split('\0')[1];
+                        if(manifest.indexOf("//") == 0)
+                            manifest = location.protocol + manifest;
+                    }
+
+                    if(!document.getElementById('enable_autoplay').checked)
+                        options.autoplay = false;
+                    
+                    //update settings in hash
+                    location.hash = "!/custom_manifest=" + encodeURIComponent(manifest) +"/player=" + encodeURIComponent(s_player.value) + "/version=" + encodeURIComponent(s_version.value);
+                    
+                    if(document.getElementById('open_blank').checked){
+                        if(Object.keys(player_options).length > 0 || Object.keys(options).length > 1)
+                            qs.push("o="+btoa(JSON.stringify(options)));
+                        qs.push(`file=${manifest}`);
+                        qs.push(`player=${s_player.value}`);
+                        window.location = `player.html?${qs.join("&")}`;
+                    }else{
+                    
+                        panel_player.classList.remove("collapsed");
+                        panel_player.classList.remove("hidden");
+                        panel_asset.classList.add("collapsed");
+                        while(player.hasChildNodes()){
+                            player.removeChild(player.lastChild);
+                        }
+                        uapi.writePlayer(player, manifest, 
+                            `${s_player.value}:${s_version.value}`, options).then(function(frame){
+                                console.dir(frame);             
+                        });
+                        player_script.innerText = `<scr`+`ipt src="uapi.js"></scr`+`ipt>
+<scr`+`ipt>
+uapi.writePlayer(DOMElement, "${manifest}", "${s_player.value}:${s_version.value}", 
+    ${JSON.stringify(options)}).then(function(frame){
+        //handle custom logic
+});
+</scr`+`ipt>`
+                    }
+                    return false;
+                }
+
+                window.addEventListener("keypress", function(ev){
+                    if(ev.keyCode == 13) go();
+                });
+                
+                for(k in mediaUrls){
+                    var o = document.createElement('option');
+                    o.value = k;
+                    o.innerText = k;
+                    s_type.appendChild(o);
+                };
+                for(p in uapi.getPlayers()){
+                    var o = document.createElement('option');
+                    o.value = p;
+                    o.innerText = p;
+                    s_player.appendChild(o);
+                    if('player' in hash && p == hash['player'])
+                        o.selected = true;
+                        
+                }
+                s_player.addEventListener('change', function(e){
+                    updateSettings(s_player.value);
+                });
+                updateSettings(s_player.value);
+
+                s_type.addEventListener('change', function(e){
+                    fill_media(s_type.value);
+                });
+                
+                var fill_media = function(type){
+                    if(!type) type = s_type.value;
+                    
+                    
+                    while (s_media.hasChildNodes()) {
+                        s_media.removeChild(s_media.lastChild);
+                    }
+                    for(var i = 0; i < mediaUrls[type].length; i++){
+                        var o = document.createElement('option');
+                        o.value = i;
+                        o.innerText = mediaUrls[type][i];
+                        s_media.appendChild(o);
+                    }
+                    s_media.selectedIndex = 0;
+                }
+                fill_media();
+                
+                var infoelements = document.getElementsByClassName("panel-heading");
+                for(var i = 0; i < infoelements.length; i++){
+                    var header = infoelements[i];
+                    header.style.cursor = "pointer";
+                    header.onclick = function(e){
+                        var el = e.target.parentElement;
+                        var prel = el.classList.length;
+                        el.classList.remove("collapsed");
+                        if(el.classList.length == prel)
+                            el.classList.add("collapsed");
+                    }
+                }
+
+            }();   
+            </script>
+        </body>
+        </html>
+        

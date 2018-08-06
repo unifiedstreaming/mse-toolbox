@@ -1,0 +1,5 @@
+-D standalone
+-main Mp4lib
+-cp ./src
+-cp ../macro
+-js bin/mp4lib.js

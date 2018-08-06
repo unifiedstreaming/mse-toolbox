@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <style>
+            #player {
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="uapi.js"></script>
+        <div id="player"></div>
+        <script>
+        var options = uapi.KeyValueStringParserJs()["o"];
+        if(options)
+        {
+            options = JSON.parse(atob(options));
+        }
+        var _default = "https://demo.unified-streaming.com/video/tears-of-steel/tears-of-steel-ttml.ism/.mpd";
+        //var _default = "https://demo.unified-streaming.com/video/tears-of-steel/tears-of-steel-ttml.ism/.m3u8"
+        uapi.writePlayer(player, uapi.KeyValueStringParserJs()["file"] ? uapi.KeyValueStringParserJs()["file"] : _default, 
+        uapi.KeyValueStringParserJs()["player"] ? uapi.KeyValueStringParserJs()["player"] : uapi.getPlayers()[0], options).then(function(frame){
+            console.dir(frame);
+        });
+        </script>
+    </body>
+</html>

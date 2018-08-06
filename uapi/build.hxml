@@ -1,0 +1,21 @@
+-cp src
+-cp ../macro
+-js bin/uapi.js
+-main Main
+-lib argan
+-resource res/templates/player_page_template.html@template
+-resource res/templates/controls_template.html@controls_template
+
+-resource res/players/dashjs.json@dashjs-src
+--macro Macros.getPlayerCode("res/players/DashJs.hx@dashjs", true)
+
+-resource res/players/shaka.json@shaka-src
+--macro Macros.getPlayerCode("res/players/Shaka.hx@shaka", true)
+
+-resource res/players/hlsjs.json@hlsjs-src
+--macro Macros.getPlayerCode("res/players/HlsJs.hx@hlsjs", true)
+
+-dce full
+#--times
+#-D documentwrite
+#-debug

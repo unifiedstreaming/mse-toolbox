@@ -33,6 +33,20 @@ class Hooks {
         }
         return retval;
     }
+
+    public static function hookMethods(object:Dynamic, methods:Array<String>):DeferredPipe{
+        var pipe:String->Array<Dynamic>->Dynamic = null;
+        var retval:DeferredPipe = { pipe: function(func) {
+                pipe = func;
+            }
+        };
+        for(m in methods)
+            hookMethod(object, m).pipe(function(arguments){
+                Reflect.callMethod(js.Lib.nativeThis, pipe, [m, arguments]);
+            });
+
+        return retval;
+    }
     
     /**
      * replaces Reflect.makeVarArgs as that loses scope reference

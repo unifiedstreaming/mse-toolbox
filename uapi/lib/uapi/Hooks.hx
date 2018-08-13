@@ -1,4 +1,4 @@
-package;
+package uapi;
 import haxe.Constraints.Function;
 typedef DeferredPipe = { 
     ?pipe:Function //loosely defined, we accept both Dynamic and Void as return values.
@@ -57,5 +57,35 @@ class Hooks {
 			var a = untyped Array.prototype.slice.call(__js__("arguments"));
 			return Reflect.callMethod(js.Lib.nativeThis, f, [a]);
 		};
+	}
+
+    public static function HashPipe(immediate:Bool = false):DeferredPipe{
+		var pipe:{ args:Map<String, String>, values:Array<String>}->Dynamic = null;
+        var retval:DeferredPipe = { pipe: function(func) {
+                pipe = func;
+            }
+        };
+        var hashChange = function(?e:js.html.Event = null){
+            var hash = js.Browser.window.location.hash;
+            var simple_arguments = [];
+            if(pipe != null)
+                pipe({
+                    args: Utils.KeyValueStringParser(hash.split("/").filter(function(s){
+                        if(s.indexOf("=") > -1)
+                            return true;
+                        else if(s.indexOf("#") == -1)
+                            simple_arguments.push(s);
+                        return false;
+                    })),
+                    values: simple_arguments
+                });
+		};
+		//js.Browser.window.addEventListener("popstate");
+		js.Browser.window.addEventListener("hashchange", hashChange);
+
+        if(immediate)
+            js.Browser.window.setTimeout(hashChange, 0);
+
+		return retval;
 	}
 }

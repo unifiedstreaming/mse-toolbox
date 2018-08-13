@@ -370,58 +370,37 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 	iframe.src = tmp + "\");";
 	return retval;
 };
+Main.HashPipeJs = function(immediate) {
+	if(immediate == null) {
+		immediate = false;
+	}
+	var pipe = null;
+	var retval = { pipe : function(func) {
+		pipe = func;
+	}};
+	uapi_Hooks.HashPipe(immediate).pipe(function(data) {
+		var tmp = Main.mapToDynamic(data.args);
+		pipe({ args : tmp, values : data.values});
+	});
+	return retval;
+};
 Main.KeyValueStringParserJs = function(location,QueryString) {
 	if(QueryString == null) {
 		QueryString = true;
 	}
-	var retval = { };
-	var ks = Main.KeyValueStringParser(location,QueryString);
-	var k = ks.keys();
-	while(k.hasNext()) {
-		var k1 = k.next();
-		retval[k1] = __map_reserved[k1] != null ? ks.getReserved(k1) : ks.h[k1];
-	}
-	return retval;
-};
-Main.KeyValueStringParser = function(location,QueryString) {
-	if(QueryString == null) {
-		QueryString = true;
-	}
-	if(location == null) {
-		if(QueryString) {
-			location = window.location.search;
-		} else {
-			location = window.location.hash;
-		}
-	}
-	var h = location.split(QueryString ? "&" : "/");
-	var l = h.length;
-	var retval = new haxe_ds_StringMap();
-	var t;
-	while(l-- > 0) {
-		var split = h[l].indexOf("=");
-		t = [];
-		if(split != -1) {
-			t[0] = HxOverrides.substr(h[l],0,split);
-			t[1] = HxOverrides.substr(h[l],split + 1,null);
-		} else {
-			t[0] = h[l];
-		}
-		if(l == 0) {
-			while(QueryString == true ? t[0].charAt(0) == "?" : t[0].charAt(0) == "#" || t[0].charAt(0) == "!") t[0] = HxOverrides.substr(t[0],1,null);
-		}
-		var value = t.length > 1 ? decodeURIComponent(t[1].split("+").join(" ")) : null;
-		var key = t[0];
-		if(__map_reserved[key] != null) {
-			retval.setReserved(key,value);
-		} else {
-			retval.h[key] = value;
-		}
-	}
-	return retval;
+	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "v1.0-58-g8ab760f";
+	return "1.0-2-g5b001f0";
+};
+Main.mapToDynamic = function(map) {
+	var retval = { };
+	var k = map.keys();
+	while(k.hasNext()) {
+		var k1 = k.next();
+		retval[k1] = map.get(k1);
+	}
+	return retval;
 };
 Math.__name__ = true;
 var Reflect = function() { };
@@ -548,6 +527,9 @@ Type.createEnum = function(e,constr,params) {
 var haxe_IMap = function() { };
 $hxClasses["haxe.IMap"] = haxe_IMap;
 haxe_IMap.__name__ = true;
+haxe_IMap.prototype = {
+	__class__: haxe_IMap
+};
 var haxe_Resource = function() { };
 $hxClasses["haxe.Resource"] = haxe_Resource;
 haxe_Resource.__name__ = true;
@@ -1574,7 +1556,17 @@ $hxClasses["haxe.ds.IntMap"] = haxe_ds_IntMap;
 haxe_ds_IntMap.__name__ = true;
 haxe_ds_IntMap.__interfaces__ = [haxe_IMap];
 haxe_ds_IntMap.prototype = {
-	__class__: haxe_ds_IntMap
+	get: function(key) {
+		return this.h[key];
+	}
+	,keys: function() {
+		var a = [];
+		for( var key in this.h ) if(this.h.hasOwnProperty(key)) {
+			a.push(key | 0);
+		}
+		return HxOverrides.iter(a);
+	}
+	,__class__: haxe_ds_IntMap
 };
 var haxe_ds_ObjectMap = function() {
 	this.h = { __keys__ : { }};
@@ -1588,6 +1580,18 @@ haxe_ds_ObjectMap.prototype = {
 		this.h[id] = value;
 		this.h.__keys__[id] = key;
 	}
+	,get: function(key) {
+		return this.h[key.__id__];
+	}
+	,keys: function() {
+		var a = [];
+		for( var key in this.h.__keys__ ) {
+		if(this.h.hasOwnProperty(key)) {
+			a.push(this.h.__keys__[key]);
+		}
+		}
+		return HxOverrides.iter(a);
+	}
 	,__class__: haxe_ds_ObjectMap
 };
 var haxe_ds_StringMap = function() {
@@ -1597,7 +1601,13 @@ $hxClasses["haxe.ds.StringMap"] = haxe_ds_StringMap;
 haxe_ds_StringMap.__name__ = true;
 haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
 haxe_ds_StringMap.prototype = {
-	setReserved: function(key,value) {
+	get: function(key) {
+		if(__map_reserved[key] != null) {
+			return this.getReserved(key);
+		}
+		return this.h[key];
+	}
+	,setReserved: function(key,value) {
 		if(this.rh == null) {
 			this.rh = { };
 		}
@@ -1964,6 +1974,78 @@ js_html_compat_Uint8Array._subarray = function(start,end) {
 	var a = js_html_compat_Uint8Array._new(this.slice(start,end));
 	a.byteOffset = start;
 	return a;
+};
+var uapi_Hooks = function() { };
+$hxClasses["uapi.Hooks"] = uapi_Hooks;
+uapi_Hooks.__name__ = true;
+uapi_Hooks.HashPipe = function(immediate) {
+	if(immediate == null) {
+		immediate = false;
+	}
+	var pipe = null;
+	var retval = { pipe : function(func) {
+		pipe = func;
+	}};
+	var hashChange = function(e) {
+		var hash = window.location.hash;
+		var simple_arguments = [];
+		if(pipe != null) {
+			var hashChange1 = uapi_Utils.KeyValueStringParser(null,null,hash.split("/").filter(function(s) {
+				if(s.indexOf("=") > -1) {
+					return true;
+				} else if(s.indexOf("#") == -1) {
+					simple_arguments.push(s);
+				}
+				return false;
+			}));
+			pipe({ args : hashChange1, values : simple_arguments});
+		}
+	};
+	window.addEventListener("hashchange",hashChange);
+	if(immediate) {
+		window.setTimeout(hashChange,0);
+	}
+	return retval;
+};
+var uapi_Utils = function() { };
+$hxClasses["uapi.Utils"] = uapi_Utils;
+uapi_Utils.__name__ = true;
+uapi_Utils.KeyValueStringParser = function(location,QueryString,inArray) {
+	if(QueryString == null) {
+		QueryString = true;
+	}
+	if(location == null) {
+		if(QueryString) {
+			location = window.location.search;
+		} else {
+			location = window.location.hash;
+		}
+	}
+	var h = inArray != null ? inArray : location.split(QueryString ? "&" : "/");
+	var l = h.length;
+	var retval = new haxe_ds_StringMap();
+	var t;
+	while(l-- > 0) {
+		var split = h[l].indexOf("=");
+		t = [];
+		if(split != -1) {
+			t[0] = HxOverrides.substr(h[l],0,split);
+			t[1] = HxOverrides.substr(h[l],split + 1,null);
+		} else {
+			t[0] = h[l];
+		}
+		if(l == 0) {
+			while(QueryString == true ? t[0].charAt(0) == "?" : t[0].charAt(0) == "#" || t[0].charAt(0) == "!") t[0] = HxOverrides.substr(t[0],1,null);
+		}
+		var value = t.length > 1 ? decodeURIComponent(t[1].split("+").join(" ")) : null;
+		var key = t[0];
+		if(__map_reserved[key] != null) {
+			retval.setReserved(key,value);
+		} else {
+			retval.h[key] = value;
+		}
+	}
+	return retval;
 };
 function $iterator(o) { if( o instanceof Array ) return function() { return HxOverrides.iter(o); }; return typeof(o.iterator) == 'function' ? $bind(o,o.iterator) : o.iterator; }
 var $_, $fid = 0;

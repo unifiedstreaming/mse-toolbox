@@ -5,6 +5,7 @@ import haxe.io.UInt8Array;
 import js.html.XMLHttpRequest;
 import js.html.XMLHttpRequestResponseType;
 import Mp4lib;
+import uapi.Hooks;
 import haxe.io.Path;
 class Main {
 

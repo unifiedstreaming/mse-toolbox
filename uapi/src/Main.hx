@@ -4,7 +4,8 @@ import js.html.RequestCredentials;
 import js.html.ReferrerPolicy;
 import js.html.RequestMode;
 import js.html.Response;
-
+import uapi.Hooks;
+import uapi.Utils;
 @:expose("uapi")
 class Main {
     public function new() {        
@@ -223,48 +224,35 @@ class Main {
 
 		return retval;
 	}
+
+
+	@:keep	
+	public static function HashPipeJs(?immediate:Bool = false):DeferredPipe{
+		var pipe:{ args:Dynamic, values:Array<String>}->Dynamic = null;
+        var retval:DeferredPipe = { pipe: function(func) {
+                pipe = func;
+            }
+        };
+		Hooks.HashPipe(immediate).pipe(function(data:{ args:Map<String, String>, values:Array<String>}){
+			pipe({ args:mapToDynamic(data.args), values:data.values });
+		});
+		return retval;
+	}
 	
 	@:keep	
-	public static function KeyValueStringParserJs(location:String = null, QueryString:Bool = true){
-		var retval = {};
-		var ks = KeyValueStringParser(location, QueryString);
-		for(k in ks.keys()){
-			Reflect.setField(retval, k, ks.get(k));
-		}
-		return retval;
-	}
+	public static function KeyValueStringParserJs(location:String = null, QueryString:Bool = true)
+		return mapToDynamic(Utils.KeyValueStringParser(location, QueryString));
 
-	public static function KeyValueStringParser(location:String = null, QueryString:Bool = true):Map<String, String> {
-		
-		if(location == null){
-		#if js
-			location = QueryString ? js.Browser.location.search : js.Browser.location.hash;
-		#else
-			throw "must set location string manually in non js browser target.";
-		#end
-		}
-		
-		var h:Array<String> = location.split(QueryString ? "&" : "/"), l = h.length, retval = new Map<String, String>(), t;
-		while(l-->0){
-		var split = h[l].indexOf("=");
-		t = [];
-		if(split != -1){
-			t[0] = h[l].substr(0, split);
-			t[1] = h[l].substr(split + 1);
-		}else{
-			t[0] = h[l];
-		}
-		if(l == 0){
-			while(QueryString == true ? t[0].charAt(0) == "?" : t[0].charAt(0) == "#" || t[0].charAt(0) == "!" ){
-			t[0] = t[0].substr(1);
-			}
-		}
-		retval.set(t[0], t.length > 1 ? StringTools.urlDecode(t[1]) : null);
-		}
-		return retval;
-	}
 	@:keep
 	public static function Version()
 		return Macros.GetLastGitTag();
+
+	private static function mapToDynamic(map:Map<Dynamic,Dynamic>):Dynamic{
+		var retval:Dynamic = {};
+		for(k in map.keys()){
+			Reflect.setField(retval, k, map.get(k));
+		}
+		return retval;
+	}
 	
 }

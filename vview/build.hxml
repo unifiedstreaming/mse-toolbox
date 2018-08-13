@@ -1,5 +1,7 @@
 -cp src
 -cp ../macro
+-cp ../mp4lib/src
+-cp ../uapi/lib
 -js bin/vview.js
 -main Main
 -resource ./res/template/stats.html@stats

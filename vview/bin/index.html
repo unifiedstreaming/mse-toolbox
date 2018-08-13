@@ -4,7 +4,18 @@
         </style>
     </head>
     <body>
-        <script src="vview.js"></script>
+        <script src="/uapi/bin/uapi.js"></script>
+       
        
     </body>
+    <div id="video">
+        
+    </div>
+    <script>
+        uapi.writePlayer(video, "https://demo.unified-streaming.com/video/tears-of-steel/tears-of-steel.ism/.mpd", "dashjs:2.8.0", 
+            {"dashjs":{}}).then(function(frame){
+                //handle custom logic
+        });
+    </script>
+    <script src="vview.js"></script>
 </html>

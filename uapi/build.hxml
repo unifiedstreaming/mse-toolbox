@@ -1,4 +1,5 @@
 -cp src
+-cp lib
 -cp ../macro
 -js bin/uapi.js
 -main Main

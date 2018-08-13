@@ -374,15 +374,12 @@ Main.HashPipeJs = function(immediate) {
 	if(immediate == null) {
 		immediate = false;
 	}
-	var pipe = null;
-	var retval = { pipe : function(func) {
-		pipe = func;
+	return { pipe : function(func) {
 		uapi_Hooks.HashPipe(immediate).pipe(function(data) {
-			var retval1 = Main.mapToDynamic(data.args);
-			pipe({ args : retval1, values : data.values});
+			var tmp = Main.mapToDynamic(data.args);
+			func({ args : tmp, values : data.values});
 		});
 	}};
-	return retval;
 };
 Main.KeyValueStringParserJs = function(location,QueryString) {
 	if(QueryString == null) {
@@ -391,7 +388,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-4-g2da872f";
+	return "1.0-5-g0ad9fc2";
 };
 Main.mapToDynamic = function(map) {
 	var retval = { };

@@ -227,18 +227,13 @@ class Main {
 
 
 	@:keep	
-	public static function HashPipeJs(?immediate:Bool = false):DeferredPipe{
-		var pipe:{ args:Dynamic, values:Array<String>}->Dynamic = null;
-        var retval:DeferredPipe = { pipe: function(func) {
-                pipe = func;
+	public static function HashPipeJs(?immediate:Bool = false):DeferredPipe
+        return { pipe: function(func) {
 				Hooks.HashPipe(immediate).pipe(function(data:{ args:Map<String, String>, values:Array<String>}){
-					pipe({ args:mapToDynamic(data.args), values:data.values });
+					func({ args:mapToDynamic(data.args), values:data.values });
 				});
             }
         };
-		
-		return retval;
-	}
 	
 	@:keep	
 	public static function KeyValueStringParserJs(location:String = null, QueryString:Bool = true)

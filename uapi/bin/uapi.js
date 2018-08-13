@@ -370,6 +370,9 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 	iframe.src = tmp + "\");";
 	return retval;
 };
+Main.HashPipe = function(immediate) {
+	return Main.HashPipeJs(immediate);
+};
 Main.HashPipeJs = function(immediate) {
 	if(immediate == null) {
 		immediate = false;
@@ -381,6 +384,9 @@ Main.HashPipeJs = function(immediate) {
 		});
 	}};
 };
+Main.KeyValueStringParser = function(location,QueryString) {
+	return Main.KeyValueStringParserJs(location,QueryString);
+};
 Main.KeyValueStringParserJs = function(location,QueryString) {
 	if(QueryString == null) {
 		QueryString = true;
@@ -388,7 +394,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-5-g0ad9fc2";
+	return "1.0-6-g3430662";
 };
 Main.mapToDynamic = function(map) {
 	var retval = { };

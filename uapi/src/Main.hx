@@ -225,6 +225,9 @@ class Main {
 		return retval;
 	}
 
+	@:keep
+	public static function HashPipe(?immediate:Bool)
+		return HashPipeJs(immediate);
 
 	@:keep	
 	public static function HashPipeJs(?immediate:Bool = false):DeferredPipe
@@ -234,7 +237,11 @@ class Main {
 				});
             }
         };
-	
+
+	@:keep
+	public static function KeyValueStringParser(location:String, QueryString:Bool)
+		return KeyValueStringParserJs(location, QueryString);
+
 	@:keep	
 	public static function KeyValueStringParserJs(location:String = null, QueryString:Bool = true)
 		return mapToDynamic(Utils.KeyValueStringParser(location, QueryString));

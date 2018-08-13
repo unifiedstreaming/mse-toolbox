@@ -391,7 +391,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-2-g5b001f0";
+	return "1.0-3-gc79522e";
 };
 Main.mapToDynamic = function(map) {
 	var retval = { };
@@ -1993,7 +1993,7 @@ uapi_Hooks.HashPipe = function(immediate) {
 			var hashChange1 = uapi_Utils.KeyValueStringParser(null,null,hash.split("/").filter(function(s) {
 				if(s.indexOf("=") > -1) {
 					return true;
-				} else if(s.indexOf("#") == -1) {
+				} else if(s.indexOf("#") == -1 && s.length > 0) {
 					simple_arguments.push(s);
 				}
 				return false;

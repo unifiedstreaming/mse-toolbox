@@ -73,7 +73,7 @@ class Hooks {
                     args: Utils.KeyValueStringParser(hash.split("/").filter(function(s){
                         if(s.indexOf("=") > -1)
                             return true;
-                        else if(s.indexOf("#") == -1)
+                        else if(s.indexOf("#") == -1 && s.length > 0)
                             simple_arguments.push(s);
                         return false;
                     })),

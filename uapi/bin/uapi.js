@@ -377,11 +377,11 @@ Main.HashPipeJs = function(immediate) {
 	var pipe = null;
 	var retval = { pipe : function(func) {
 		pipe = func;
+		uapi_Hooks.HashPipe(immediate).pipe(function(data) {
+			var retval1 = Main.mapToDynamic(data.args);
+			pipe({ args : retval1, values : data.values});
+		});
 	}};
-	uapi_Hooks.HashPipe(immediate).pipe(function(data) {
-		var tmp = Main.mapToDynamic(data.args);
-		pipe({ args : tmp, values : data.values});
-	});
 	return retval;
 };
 Main.KeyValueStringParserJs = function(location,QueryString) {
@@ -391,7 +391,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-3-gc79522e";
+	return "1.0-4-g2da872f";
 };
 Main.mapToDynamic = function(map) {
 	var retval = { };
@@ -1983,9 +1983,6 @@ uapi_Hooks.HashPipe = function(immediate) {
 		immediate = false;
 	}
 	var pipe = null;
-	var retval = { pipe : function(func) {
-		pipe = func;
-	}};
 	var hashChange = function(e) {
 		var hash = window.location.hash;
 		var simple_arguments = [];
@@ -2001,10 +1998,13 @@ uapi_Hooks.HashPipe = function(immediate) {
 			pipe({ args : hashChange1, values : simple_arguments});
 		}
 	};
+	var retval = { pipe : function(func) {
+		pipe = func;
+		if(immediate) {
+			hashChange();
+		}
+	}};
 	window.addEventListener("hashchange",hashChange);
-	if(immediate) {
-		window.setTimeout(hashChange,0);
-	}
 	return retval;
 };
 var uapi_Utils = function() { };

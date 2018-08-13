@@ -61,10 +61,6 @@ class Hooks {
 
     public static function HashPipe(immediate:Bool = false):DeferredPipe{
 		var pipe:{ args:Map<String, String>, values:Array<String>}->Dynamic = null;
-        var retval:DeferredPipe = { pipe: function(func) {
-                pipe = func;
-            }
-        };
         var hashChange = function(?e:js.html.Event = null){
             var hash = js.Browser.window.location.hash;
             var simple_arguments = [];
@@ -80,11 +76,14 @@ class Hooks {
                     values: simple_arguments
                 });
 		};
+        var retval:DeferredPipe = { pipe: function(func) {
+                pipe = func;
+                if(immediate)
+                    hashChange();
+            }
+        };
 		//js.Browser.window.addEventListener("popstate");
 		js.Browser.window.addEventListener("hashchange", hashChange);
-
-        if(immediate)
-            js.Browser.window.setTimeout(hashChange, 0);
 
 		return retval;
 	}

@@ -48,18 +48,20 @@ class DashJs {
 
             var audioMenu = [ { title: "Auto switch", info: "audio" } ];
             var AudioBitrateInfoList:Array<Dynamic> = player.getBitrateInfoListFor("audio");
-            for(info in AudioBitrateInfoList){
-                audioMenu.push({title: '${Math.floor(info.bitrate / 1000)} kbps' , info: info });
+            if(AudioBitrateInfoList != null){
+                for(info in AudioBitrateInfoList){
+                    audioMenu.push({title: '${Math.floor(info.bitrate / 1000)} kbps' , info: info });
+                }
+                addMenu("Audio bitrates", audioMenu, handleBitrateSwitch);
             }
-            addMenu("Audio bitrates", audioMenu, handleBitrateSwitch);
-            
             var videoMenu = [ { title: "Auto switch", info: "video" } ];
             var VideoBitrateInfoList:Array<Dynamic> = player.getBitrateInfoListFor("video");
-            for(info in VideoBitrateInfoList){
-                videoMenu.push({title: '${Math.floor(info.bitrate / 1000)} kbps' , info: info });
+            if(VideoBitrateInfoList != null){
+                for(info in VideoBitrateInfoList){
+                    videoMenu.push({title: '${Math.floor(info.bitrate / 1000)} kbps' , info: info });
+                }
+                addMenu("Video bitrates", videoMenu, handleBitrateSwitch);
             }
-            addMenu("Video bitrates", videoMenu, handleBitrateSwitch);
-            
             var audioTracks = [];
             var AudioTrackInfoList:Array<Dynamic> = player.getTracksFor("audio");
             for(info in AudioTrackInfoList){

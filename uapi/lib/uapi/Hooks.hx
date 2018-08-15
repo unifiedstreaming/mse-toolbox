@@ -61,25 +61,49 @@ class Hooks {
 
     public static function HashPipe(immediate:Bool = false):DeferredPipe{
 		var pipe:{ args:Map<String, String>, values:Array<String>}->Dynamic = null;
+        var _args = new Map<String, String>();
+        var _values = new Array<String>();
         var hashChange = function(?e:js.html.Event = null){
             var hash = js.Browser.window.location.hash;
             var simple_arguments = [];
             if(pipe != null)
                 pipe({
-                    args: Utils.KeyValueStringParser(hash.split("/").filter(function(s){
+                    args: _args = Utils.KeyValueStringParser(hash.split("/").filter(function(s){
                         if(s.indexOf("=") > -1)
                             return true;
                         else if(s.indexOf("#") == -1 && s.length > 0)
                             simple_arguments.push(s);
                         return false;
                     })),
-                    values: simple_arguments
+                    values: _values = simple_arguments
                 });
 		};
         var retval:DeferredPipe = { pipe: function(func) {
                 pipe = func;
                 if(immediate)
                     hashChange();
+                return {
+                    update:function(args:Map<String, String>, ?values:Array<String> = null, ?append:Bool = true){
+                        if(args != null){
+                            if(append){
+                                for(k in _args.keys())
+                                    if(!args.exists(k))
+                                        args.set(k, _args.get(k));
+                                if(values != null)
+                                    for(v in values)
+                                        if(_values.indexOf(v) == -1)
+                                            _values.push(v);
+                            }else{
+                                if(values != null)
+                                    _values = values;
+                            }
+                            _args = args;
+                            for(k in _args.keys())
+                                _values.push('$k=${_args.get(k)}');
+                            js.Browser.window.location.hash = "!/"+_values.join("/");
+                        }
+                    }
+                }
             }
         };
 		//js.Browser.window.addEventListener("popstate");

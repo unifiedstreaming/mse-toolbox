@@ -237,9 +237,15 @@ class Main {
 	@:keep	
 	public static function HashPipeJs(?immediate:Bool = false):DeferredPipe
         return { pipe: function(func) {
-				Hooks.HashPipe(immediate).pipe(function(data:{ args:Map<String, String>, values:Array<String>}){
+				var update = Hooks.HashPipe(immediate).pipe(function(data:{ args:Map<String, String>, values:Array<String>}){
 					func({ args:mapToDynamic(data.args), values:data.values });
-				});
+				}).update;
+				return { 
+					update: function(args:Dynamic, ?values:Array<String> = null, ?append:Bool = true){
+						update(dynamicToMap(args), values, append);
+					}
+				}
+				
             }
         };
 
@@ -255,11 +261,17 @@ class Main {
 	public static function Version()
 		return Macros.GetLastGitTag();
 
+	private static function dynamicToMap(object:Dynamic):Map<Dynamic,Dynamic>{
+		var retval:Map<String,Dynamic> = new Map<String,Dynamic>();
+		for(f in Reflect.fields(object))
+			retval.set(f, Reflect.field(object,f));
+		return retval;
+	}
+
 	private static function mapToDynamic(map:Map<Dynamic,Dynamic>):Dynamic{
 		var retval:Dynamic = {};
-		for(k in map.keys()){
+		for(k in map.keys())
 			Reflect.setField(retval, k, map.get(k));
-		}
 		return retval;
 	}
 	

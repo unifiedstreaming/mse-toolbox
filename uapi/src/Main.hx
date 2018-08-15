@@ -6,6 +6,11 @@ import js.html.RequestMode;
 import js.html.Response;
 import uapi.Hooks;
 import uapi.Utils;
+
+/**
+ * haxe -resource based player loader and basic site tools
+ * 	Add new player targets by adding sources json and player code in hxml
+ */
 @:expose("uapi")
 class Main {
     public function new() {        

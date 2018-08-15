@@ -38,7 +38,7 @@ class HlsJs {
                 var audioTracks = [{ title: "Auto switch", info: null }];
                 var AudioTrackInfoList:Array<Dynamic> = player.audioTracks;
                 for(info in AudioTrackInfoList){
-                    audioTracks.push({title: '${info.groupId}' , info: info });
+                    audioTracks.push({title: '${info.name}[${info.groupId}]' , info: info });
                 }
                 if(AudioTrackInfoList.length > 1)
                     addMenu("Audio tracks", audioTracks, function(e){

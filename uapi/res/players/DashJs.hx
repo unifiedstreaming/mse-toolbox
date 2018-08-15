@@ -64,7 +64,7 @@ class DashJs {
             }
             var audioTracks = [];
             var AudioTrackInfoList:Array<Dynamic> = player.getTracksFor("audio");
-            if(AudioTrackInfoList.length > 0){
+            if(AudioTrackInfoList.length > 1){
                 for(info in AudioTrackInfoList){
                     audioTracks.push({title: '${info.type}:${info.lang}' , info: info });
                 }
@@ -72,7 +72,7 @@ class DashJs {
             }
             var videoTracks = [];
             var VideoTrackInfoList:Array<Dynamic> = player.getTracksFor("video");
-            if(VideoTrackInfoList.length > 0){
+            if(VideoTrackInfoList.length > 1){
                 for(info in VideoTrackInfoList){
                     videoTracks.push({title: '${info.type}:${info.lang}' , info: info });
                 }

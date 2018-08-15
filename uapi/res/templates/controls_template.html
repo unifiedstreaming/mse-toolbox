@@ -68,5 +68,8 @@
             resetControlsHeight();
             resetAspectRatio();
         });
+        window.addEventListener("keydown", function(e){
+            container.dispatchEvent(e);
+        });
     </script>
 </div>

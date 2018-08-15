@@ -64,18 +64,20 @@ class DashJs {
             }
             var audioTracks = [];
             var AudioTrackInfoList:Array<Dynamic> = player.getTracksFor("audio");
-            for(info in AudioTrackInfoList){
-                audioTracks.push({title: '${info.type}:${info.lang}' , info: info });
+            if(AudioTrackInfoList.length > 0){
+                for(info in AudioTrackInfoList){
+                    audioTracks.push({title: '${info.type}:${info.lang}' , info: info });
+                }
+                addMenu("Audio tracks", audioTracks, handleTrackSwitch, player.getCurrentTrackFor("audio").index - 1);
             }
-            addMenu("Audio tracks", audioTracks, handleTrackSwitch, player.getCurrentTrackFor("audio").index - 1);
-
             var videoTracks = [];
             var VideoTrackInfoList:Array<Dynamic> = player.getTracksFor("video");
-            for(info in VideoTrackInfoList){
-                videoTracks.push({title: '${info.type}:${info.lang}' , info: info });
+            if(VideoTrackInfoList.length > 0){
+                for(info in VideoTrackInfoList){
+                    videoTracks.push({title: '${info.type}:${info.lang}' , info: info });
+                }
+                addMenu("Video tracks", videoTracks, handleTrackSwitch, player.getCurrentTrackFor("video").index - 1);
             }
-            addMenu("Video tracks", videoTracks, handleTrackSwitch, player.getCurrentTrackFor("video").index - 1);
-
             if(textTracks.length > 0){
                 addMenu("Texttracks", textTracks, function(e){
                 player.setTextTrack(e.target.selectedIndex);        

@@ -65,17 +65,18 @@ class Hooks {
         var _values = new Array<String>();
         var hashChange = function(?e:js.html.Event = null){
             var hash = js.Browser.window.location.hash;
-            var simple_arguments = [];
+            var toggle_arguments = [];
             if(pipe != null)
+                _args = Utils.KeyValueStringParser(hash, false); 
+                for(k in _args.keys()){ 
+                    if(_args.get(k) == null){ 
+                        _args.remove(k); 
+                        toggle_arguments.push(k); 
+                    }
+                };
                 pipe({
-                    args: _args = Utils.KeyValueStringParser(hash.split("/").filter(function(s){
-                        if(s.indexOf("=") > -1)
-                            return true;
-                        else if(s.indexOf("#") == -1 && s.length > 0)
-                            simple_arguments.push(s);
-                        return false;
-                    })),
-                    values: _values = simple_arguments
+                    args: _args,
+                    values: _values = toggle_arguments
                 });
 		};
         var retval:DeferredPipe = { pipe: function(func) {
@@ -83,21 +84,27 @@ class Hooks {
                 if(immediate)
                     hashChange();
                 return {
-                    update:function(args:Map<String, String>, ?values:Array<String> = null, ?append:Bool = true){
+                    update:function(args:Map<String, String>, ?values:Array<String> = null, ?rewrite:Bool = false, ?toggle = true){
                         if(args != null){
-                            if(append){
-                                for(k in _args.keys())
-                                    if(!args.exists(k))
-                                        args.set(k, _args.get(k));
-                                if(values != null)
-                                    for(v in values)
-                                        if(_values.indexOf(v) == -1)
-                                            _values.push(v);
-                            }else{
+                            if(rewrite){
+                                _args = args;
                                 if(values != null)
                                     _values = values;
+                            }else{
+                                for(k in args.keys())
+                                    if(!_args.exists(k))
+                                        _args.set(k, args.get(k));
+                                    else if(toggle && args.get(k) == "") //toggle
+                                        args.remove(k);
+                                if(values != null)
+                                    for(v in values){
+                                        var str = Std.string(v);
+                                        if(_values.indexOf(str) == -1)
+                                            _values.push(str);
+                                        else if(toggle)
+                                            _values.splice(_values.indexOf(str), 1); //toggle
+                                    }
                             }
-                            _args = args;
                             for(k in _args.keys())
                                 _values.push('$k=${_args.get(k)}');
                             js.Browser.window.location.hash = "!/"+_values.join("/");

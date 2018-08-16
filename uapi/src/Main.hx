@@ -241,8 +241,8 @@ class Main {
 					func({ args:mapToDynamic(data.args), values:data.values });
 				}).update;
 				return { 
-					update: function(args:Dynamic, ?values:Array<String> = null, ?append:Bool = true){
-						update(dynamicToMap(args), values, append);
+					update: function(args:Dynamic, ?values:Array<String> = null, ?rewrite:Bool, ?toggle:Bool){
+						update(dynamicToMap(args), values, rewrite, toggle);
 					}
 				}
 				
@@ -261,14 +261,14 @@ class Main {
 	public static function Version()
 		return Macros.GetLastGitTag();
 
-	private static function dynamicToMap(object:Dynamic):Map<Dynamic,Dynamic>{
+	private static function dynamicToMap(object:Dynamic):Map<String,Dynamic>{
 		var retval:Map<String,Dynamic> = new Map<String,Dynamic>();
 		for(f in Reflect.fields(object))
 			retval.set(f, Reflect.field(object,f));
 		return retval;
 	}
 
-	private static function mapToDynamic(map:Map<Dynamic,Dynamic>):Dynamic{
+	private static function mapToDynamic(map:Map<String,Dynamic>):Dynamic{
 		var retval:Dynamic = {};
 		for(k in map.keys())
 			Reflect.setField(retval, k, map.get(k));

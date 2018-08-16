@@ -378,10 +378,14 @@ Main.HashPipeJs = function(immediate) {
 		immediate = false;
 	}
 	return { pipe : function(func) {
-		uapi_Hooks.HashPipe(immediate).pipe(function(data) {
-			var tmp = Main.mapToDynamic(data.args);
-			func({ args : tmp, values : data.values});
-		});
+		var update = uapi_Hooks.HashPipe(immediate).pipe(function(data) {
+			var update1 = Main.mapToDynamic(data.args);
+			func({ args : update1, values : data.values});
+		}).update;
+		return { update : function(args,values,rewrite,toggle) {
+			var tmp = Main.dynamicToMap(args);
+			update(tmp,values,rewrite,toggle);
+		}};
 	}};
 };
 Main.KeyValueStringParser = function(location,QueryString) {
@@ -394,14 +398,30 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-12-g0bfee00";
+	return "1.0-14-g330ec99";
+};
+Main.dynamicToMap = function(object) {
+	var retval = new haxe_ds_StringMap();
+	var _g = 0;
+	var _g1 = Reflect.fields(object);
+	while(_g < _g1.length) {
+		var f = _g1[_g];
+		++_g;
+		var value = Reflect.field(object,f);
+		if(__map_reserved[f] != null) {
+			retval.setReserved(f,value);
+		} else {
+			retval.h[f] = value;
+		}
+	}
+	return retval;
 };
 Main.mapToDynamic = function(map) {
 	var retval = { };
 	var k = map.keys();
 	while(k.hasNext()) {
 		var k1 = k.next();
-		retval[k1] = map.get(k1);
+		retval[k1] = __map_reserved[k1] != null ? map.getReserved(k1) : map.h[k1];
 	}
 	return retval;
 };
@@ -530,9 +550,6 @@ Type.createEnum = function(e,constr,params) {
 var haxe_IMap = function() { };
 $hxClasses["haxe.IMap"] = haxe_IMap;
 haxe_IMap.__name__ = true;
-haxe_IMap.prototype = {
-	__class__: haxe_IMap
-};
 var haxe_Resource = function() { };
 $hxClasses["haxe.Resource"] = haxe_Resource;
 haxe_Resource.__name__ = true;
@@ -1559,17 +1576,7 @@ $hxClasses["haxe.ds.IntMap"] = haxe_ds_IntMap;
 haxe_ds_IntMap.__name__ = true;
 haxe_ds_IntMap.__interfaces__ = [haxe_IMap];
 haxe_ds_IntMap.prototype = {
-	get: function(key) {
-		return this.h[key];
-	}
-	,keys: function() {
-		var a = [];
-		for( var key in this.h ) if(this.h.hasOwnProperty(key)) {
-			a.push(key | 0);
-		}
-		return HxOverrides.iter(a);
-	}
-	,__class__: haxe_ds_IntMap
+	__class__: haxe_ds_IntMap
 };
 var haxe_ds_ObjectMap = function() {
 	this.h = { __keys__ : { }};
@@ -1583,18 +1590,6 @@ haxe_ds_ObjectMap.prototype = {
 		this.h[id] = value;
 		this.h.__keys__[id] = key;
 	}
-	,get: function(key) {
-		return this.h[key.__id__];
-	}
-	,keys: function() {
-		var a = [];
-		for( var key in this.h.__keys__ ) {
-		if(this.h.hasOwnProperty(key)) {
-			a.push(this.h.__keys__[key]);
-		}
-		}
-		return HxOverrides.iter(a);
-	}
 	,__class__: haxe_ds_ObjectMap
 };
 var haxe_ds_StringMap = function() {
@@ -1604,13 +1599,7 @@ $hxClasses["haxe.ds.StringMap"] = haxe_ds_StringMap;
 haxe_ds_StringMap.__name__ = true;
 haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
 haxe_ds_StringMap.prototype = {
-	get: function(key) {
-		if(__map_reserved[key] != null) {
-			return this.getReserved(key);
-		}
-		return this.h[key];
-	}
-	,setReserved: function(key,value) {
+	setReserved: function(key,value) {
 		if(this.rh == null) {
 			this.rh = { };
 		}
@@ -1628,6 +1617,22 @@ haxe_ds_StringMap.prototype = {
 			return false;
 		}
 		return this.rh.hasOwnProperty("$" + key);
+	}
+	,remove: function(key) {
+		if(__map_reserved[key] != null) {
+			key = "$" + key;
+			if(this.rh == null || !this.rh.hasOwnProperty(key)) {
+				return false;
+			}
+			delete(this.rh[key]);
+			return true;
+		} else {
+			if(!this.h.hasOwnProperty(key)) {
+				return false;
+			}
+			delete(this.h[key]);
+			return true;
+		}
 	}
 	,keys: function() {
 		return HxOverrides.iter(this.arrayKeys());
@@ -1986,26 +1991,83 @@ uapi_Hooks.HashPipe = function(immediate) {
 		immediate = false;
 	}
 	var pipe = null;
+	var _args = new haxe_ds_StringMap();
+	var _values = [];
 	var hashChange = function(e) {
 		var hash = window.location.hash;
-		var simple_arguments = [];
+		var toggle_arguments = [];
 		if(pipe != null) {
-			var hashChange1 = uapi_Utils.KeyValueStringParser(null,null,hash.split("/").filter(function(s) {
-				if(s.indexOf("=") > -1) {
-					return true;
-				} else if(s.indexOf("#") == -1 && s.length > 0) {
-					simple_arguments.push(s);
-				}
-				return false;
-			}));
-			pipe({ args : hashChange1, values : simple_arguments});
+			_args = uapi_Utils.KeyValueStringParser(hash,false);
 		}
+		var k = _args.keys();
+		while(k.hasNext()) {
+			var k1 = k.next();
+			if((__map_reserved[k1] != null ? _args.getReserved(k1) : _args.h[k1]) == null) {
+				_args.remove(k1);
+				toggle_arguments.push(k1);
+			}
+		}
+		_values = toggle_arguments;
+		pipe({ args : _args, values : _values});
 	};
 	var retval = { pipe : function(func) {
 		pipe = func;
 		if(immediate) {
 			hashChange();
 		}
+		return { update : function(args,values,rewrite,toggle) {
+			if(toggle == null) {
+				toggle = true;
+			}
+			if(rewrite == null) {
+				rewrite = false;
+			}
+			if(args != null) {
+				if(rewrite) {
+					_args = args;
+					if(values != null) {
+						_values = values;
+					}
+				} else {
+					var k2 = args.keys();
+					while(k2.hasNext()) {
+						var k3 = k2.next();
+						if(!(__map_reserved[k3] != null ? _args.existsReserved(k3) : _args.h.hasOwnProperty(k3))) {
+							var value = __map_reserved[k3] != null ? args.getReserved(k3) : args.h[k3];
+							if(__map_reserved[k3] != null) {
+								_args.setReserved(k3,value);
+							} else {
+								_args.h[k3] = value;
+							}
+						} else if(toggle && (__map_reserved[k3] != null ? args.getReserved(k3) : args.h[k3]) == "") {
+							args.remove(k3);
+						}
+					}
+					if(values != null) {
+						var _g = 0;
+						while(_g < values.length) {
+							var v = values[_g];
+							++_g;
+							var str = v == null ? "null" : "" + v;
+							if(_values.indexOf(str) == -1) {
+								_values.push(str);
+							} else if(toggle) {
+								var retval1 = _values.indexOf(str);
+								_values.splice(retval1,1);
+							}
+						}
+					}
+				}
+				var k4 = _args.keys();
+				while(k4.hasNext()) {
+					var k5 = k4.next();
+					var retval2 = __map_reserved[k5] != null ? _args.getReserved(k5) : _args.h[k5];
+					_values.push("" + k5 + "=" + retval2);
+				}
+				var retval3 = _values.join("/");
+				window.location.hash = "!/" + retval3;
+			}
+		}};
 	}};
 	window.addEventListener("hashchange",hashChange);
 	return retval;
@@ -2013,7 +2075,7 @@ uapi_Hooks.HashPipe = function(immediate) {
 var uapi_Utils = function() { };
 $hxClasses["uapi.Utils"] = uapi_Utils;
 uapi_Utils.__name__ = true;
-uapi_Utils.KeyValueStringParser = function(location,QueryString,inArray) {
+uapi_Utils.KeyValueStringParser = function(location,QueryString) {
 	if(QueryString == null) {
 		QueryString = true;
 	}
@@ -2024,29 +2086,30 @@ uapi_Utils.KeyValueStringParser = function(location,QueryString,inArray) {
 			location = window.location.hash;
 		}
 	}
-	var h = inArray != null ? inArray : location.split(QueryString ? "&" : "/");
-	var l = h.length;
+	while(QueryString == true ? location.charAt(0) == "?" : location.charAt(0) == "#" || location.charAt(0) == "!") location = HxOverrides.substr(location,1,null);
+	var h = location.split(QueryString ? "&" : "/");
+	var l = 0;
 	var retval = new haxe_ds_StringMap();
 	var t;
-	while(l-- > 0) {
-		var split = h[l].indexOf("=");
-		t = [];
-		if(split != -1) {
-			t[0] = HxOverrides.substr(h[l],0,split);
-			t[1] = HxOverrides.substr(h[l],split + 1,null);
-		} else {
-			t[0] = h[l];
+	while(l < h.length) {
+		if(h[l].length > 0) {
+			var split = h[l].indexOf("=");
+			t = [];
+			if(split != -1) {
+				t[0] = HxOverrides.substr(h[l],0,split);
+				t[1] = HxOverrides.substr(h[l],split + 1,null);
+			} else {
+				t[0] = h[l];
+			}
+			var value = t.length > 1 ? decodeURIComponent(t[1].split("+").join(" ")) : null;
+			var key = t[0];
+			if(__map_reserved[key] != null) {
+				retval.setReserved(key,value);
+			} else {
+				retval.h[key] = value;
+			}
 		}
-		if(l == 0) {
-			while(QueryString == true ? t[0].charAt(0) == "?" : t[0].charAt(0) == "#" || t[0].charAt(0) == "!") t[0] = HxOverrides.substr(t[0],1,null);
-		}
-		var value = t.length > 1 ? decodeURIComponent(t[1].split("+").join(" ")) : null;
-		var key = t[0];
-		if(__map_reserved[key] != null) {
-			retval.setReserved(key,value);
-		} else {
-			retval.h[key] = value;
-		}
+		++l;
 	}
 	return retval;
 };

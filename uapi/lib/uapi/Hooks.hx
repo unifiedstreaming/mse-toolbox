@@ -87,7 +87,8 @@ class Hooks {
                     update:function(args:Map<String, String>, ?values:Array<String> = null, ?rewrite:Bool = false, ?toggle = true){
                         if(args != null){
                             if(rewrite){
-                                _args = args;
+                                if(args != null)
+                                    _args = args;
                                 if(values != null)
                                     _values = values;
                             }else{

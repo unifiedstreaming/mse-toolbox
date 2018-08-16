@@ -398,7 +398,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-14-g330ec99";
+	return "1.0-15-gaf367e5";
 };
 Main.dynamicToMap = function(object) {
 	var retval = new haxe_ds_StringMap();
@@ -2024,7 +2024,9 @@ uapi_Hooks.HashPipe = function(immediate) {
 			}
 			if(args != null) {
 				if(rewrite) {
-					_args = args;
+					if(args != null) {
+						_args = args;
+					}
 					if(values != null) {
 						_values = values;
 					}

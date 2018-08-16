@@ -13,8 +13,8 @@ class Utils {
 		while(QueryString == true ? location.charAt(0) == "?" : location.charAt(0) == "#" || location.charAt(0) == "!" )
 			location = location.substr(1);
 		
-		var h:Array<String> = location.split(QueryString ? "&" : "/"), l = 0, retval = new Map<String, String>(), t;
-		while(l < h.length){
+		var h:Array<String> = location.split(QueryString ? "&" : "/"), retval = new Map<String, String>(), t;
+		for(l in 0...h.length)
 			if(h[l].length > 0){
 				var split = h[l].indexOf("=");
 				t = [];
@@ -26,8 +26,6 @@ class Utils {
 				}
 				retval.set(t[0], t.length > 1 ? StringTools.urlDecode(t[1]) : null);
 			}
-			l++;
-		}
 		return retval;
 	}
 }

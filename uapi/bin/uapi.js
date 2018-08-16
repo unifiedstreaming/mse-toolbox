@@ -378,14 +378,16 @@ Main.HashPipeJs = function(immediate) {
 		immediate = false;
 	}
 	return { pipe : function(func) {
-		var update = uapi_Hooks.HashPipe(immediate).pipe(function(data) {
-			var update1 = Main.mapToDynamic(data.args);
-			func({ args : update1, values : data.values});
-		}).update;
-		return { update : function(args,values,rewrite,toggle) {
+		var retval = uapi_Hooks.HashPipe(immediate).pipe(function(data) {
+			var retval1 = Main.mapToDynamic(data.args);
+			func({ args : retval1, values : data.values});
+		});
+		var _hx_func = retval.update;
+		retval.update = function(args,values,rewrite,toggle) {
 			var tmp = Main.dynamicToMap(args);
-			update(tmp,values,rewrite,toggle);
-		}};
+			_hx_func(tmp,values,rewrite,toggle);
+		};
+		return retval;
 	}};
 };
 Main.KeyValueStringParser = function(location,QueryString) {
@@ -398,7 +400,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-15-gaf367e5";
+	return "1.0-16-ge64c961";
 };
 Main.dynamicToMap = function(object) {
 	var retval = new haxe_ds_StringMap();
@@ -2015,7 +2017,11 @@ uapi_Hooks.HashPipe = function(immediate) {
 		if(immediate) {
 			hashChange();
 		}
-		return { update : function(args,values,rewrite,toggle) {
+		return { args : function() {
+			return _args;
+		}, values : function() {
+			return _values;
+		}, update : function(args,values,rewrite,toggle) {
 			if(toggle == null) {
 				toggle = true;
 			}
@@ -2090,10 +2096,12 @@ uapi_Utils.KeyValueStringParser = function(location,QueryString) {
 	}
 	while(QueryString == true ? location.charAt(0) == "?" : location.charAt(0) == "#" || location.charAt(0) == "!") location = HxOverrides.substr(location,1,null);
 	var h = location.split(QueryString ? "&" : "/");
-	var l = 0;
 	var retval = new haxe_ds_StringMap();
 	var t;
-	while(l < h.length) {
+	var _g1 = 0;
+	var _g = h.length;
+	while(_g1 < _g) {
+		var l = _g1++;
 		if(h[l].length > 0) {
 			var split = h[l].indexOf("=");
 			t = [];
@@ -2111,7 +2119,6 @@ uapi_Utils.KeyValueStringParser = function(location,QueryString) {
 				retval.h[key] = value;
 			}
 		}
-		++l;
 	}
 	return retval;
 };

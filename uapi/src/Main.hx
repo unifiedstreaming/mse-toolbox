@@ -236,16 +236,16 @@ class Main {
 
 	@:keep	
 	public static function HashPipeJs(?immediate:Bool = false):DeferredPipe
-        return { pipe: function(func) {
-				var update = Hooks.HashPipe(immediate).pipe(function(data:{ args:Map<String, String>, values:Array<String>}){
+        return { 
+			pipe: function(func) {
+				var retval = Hooks.HashPipe(immediate).pipe(function(data:{ args:Map<String, String>, values:Array<String>}){
 					func({ args:mapToDynamic(data.args), values:data.values });
-				}).update;
-				return { 
-					update: function(args:Dynamic, ?values:Array<String> = null, ?rewrite:Bool, ?toggle:Bool){
-						update(dynamicToMap(args), values, rewrite, toggle);
-					}
+				});
+				var _hx_func = retval.update;
+				retval.update = function(args:Dynamic, ?values:Array<String> = null, ?rewrite:Bool, ?toggle:Bool){
+					_hx_func(dynamicToMap(args), values, rewrite, toggle);
 				}
-				
+				return retval;
             }
         };
 

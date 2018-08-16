@@ -84,7 +84,9 @@ class Hooks {
                 if(immediate)
                     hashChange();
                 return {
-                    update:function(args:Map<String, String>, ?values:Array<String> = null, ?rewrite:Bool = false, ?toggle = true){
+                    args: function(){ return _args; },
+                    values: function(){ return _values; },
+                    update: function(args:Map<String, String>, ?values:Array<String> = null, ?rewrite:Bool = false, ?toggle = true){
                         if(args != null){
                             if(rewrite){
                                 if(args != null)

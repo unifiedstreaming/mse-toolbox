@@ -190,11 +190,29 @@ class Main {
 					reject(e);
 					handleError(e.reason.toString(), contentWindow);
 				}
+				
 			}
-			iframe.hook_end = function(contentWindow:Dynamic){
+			iframe.hook_end = function(contentWindow:Dynamic, video:js.html.VideoElement){
 				//no player object in iframe, loading failed
 				if(player != "native" && !Reflect.hasField(contentWindow,'player'))
                 	throw "unable to load " + player_version_string;
+				
+				video.addEventListener("error", function(e:js.html.ErrorEvent){
+					Reflect.setField(Browser.window, "lastError", video.error);
+					var msg = switch(video.error.code) {
+						case 1: 'MEDIA_ERR_ABORTED';
+						case 2: 'MEDIA_ERR_NETWORK';
+						case 3: 'MEDIA_ERR_DECODE';
+						case 4: 'MEDIA_ERR_SRC_NOT_SUPPORTED';
+						case 5: 'MEDIA_ERR_ENCRYPTED';
+						default: 'UNKNOWN';
+					}
+					if(Reflect.field(video.error,"message") != null)
+						msg += Reflect.field(video.error,"message");
+					var log = 'HTMLMediaElement MediaError while playing\n${uri}\n\n${msg}\n\nsee\nhttps://developer.mozilla.org/en-US/docs/Web/API/MediaError for more details';
+					Browser.console.error(log);
+					Browser.alert(log);
+				});
 			}
 		});
 		#if documentwrite

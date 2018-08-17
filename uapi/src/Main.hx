@@ -175,6 +175,7 @@ class Main {
 				if(iframe_loaded){
 					window.resetControlsHeight();
 					window.document.getElementById("error").innerText += '$error\n';
+					Browser.console.error(error);
 				}else
 					delayed_errors.push(handleError.bind(error,window));
 			}
@@ -210,8 +211,8 @@ class Main {
 					if(Reflect.field(video.error,"message") != null)
 						msg += Reflect.field(video.error,"message");
 					var log = 'HTMLMediaElement MediaError while playing\n${uri}\n\n${msg}\n\nsee\nhttps://developer.mozilla.org/en-US/docs/Web/API/MediaError for more details';
-					Browser.console.error(log);
-					Browser.alert(log);
+					
+					handleError(log, contentWindow);
 				});
 			}
 		});

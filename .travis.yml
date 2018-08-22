@@ -28,4 +28,3 @@ install:
 
 script:
   - haxe uapi/build.hxml
-  

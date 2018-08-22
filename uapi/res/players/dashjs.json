@@ -1,4 +1,5 @@
 {
+    "2.9.0": ["https://cdnjs.cloudflare.com/ajax/libs/dashjs/2.9.0/dash.all.debug.js"],
     "2.8.0": ["https://cdnjs.cloudflare.com/ajax/libs/dashjs/2.8.0/dash.all.debug.js"],
     "2.7.0": ["https://cdnjs.cloudflare.com/ajax/libs/dashjs/2.7.0/dash.all.debug.js"],
     "2.6.8": ["https://cdnjs.cloudflare.com/ajax/libs/dashjs/2.6.8/dash.all.debug.js"],

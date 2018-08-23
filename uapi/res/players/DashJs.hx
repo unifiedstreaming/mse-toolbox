@@ -87,13 +87,22 @@ class DashJs {
 
         var textTracks:Array<Dynamic> = [];
         var onTracksAdded = function (e) {
+            textTracks = [];
             for(i in 0...e.tracks.length){
                 var info = e.tracks[i];
-                textTracks.push({title: '${info.kind}:${info.lang}', info: info });
+                var str = '${info.kind}:${info.lang}';
+                var meta = [];
+                if(info.isFragmented)
+                    meta.push("fragmented");
+                if(info.isEmbedded)
+                    meta.push("embedded");
+                if(info.isTTML)
+                    meta.push("ttml");
+                if(meta.length > 0){
+                    str += ' [${meta.join(":")}]';
+                }
+                textTracks.push({title: str, info: info });
             }
-            addMenu("Text tracks", textTracks, function(e){
-                player.setTextTrack(e.target.selectedIndex);        
-            });
         }
         
         player.on(dashjs.MediaPlayer.events.TEXT_TRACKS_ADDED, onTracksAdded, js.Lib.nativeThis);

@@ -16,6 +16,10 @@
 -resource res/players/hlsjs.json@hlsjs-src
 --macro Macros.getPlayerCode("res/players/HlsJs.hx@hlsjs", true)
 
+-resource res/players/hasplayer.json@hasplayer-src
+--macro Macros.getPlayerCode("res/players/HasPlayer.hx@hasplayer", true)
+
+
 -dce full
 #--times
 #-D documentwrite

@@ -38,12 +38,28 @@
                 background: gainsboro;
                 overflow: hidden;
             }
-            .controls pre {
+            .scroll{
+                overflow: auto;
+            }
+            .controls #error {
                 overflow: auto;
                 margin: 0px 0px 0px 2px;
                 max-height: 250px;
-                overflow: scroll;
+                display: inline-block;
             }
+            #error .message {
+                font-size: 10px !important;
+                font-family: Menlo, monospace;
+                font-weight: 100;
+                -webkit-font-smoothing: antialiased;
+                border-bottom: 1px solid grey;
+                white-space: nowrap;
+            }
+            
+            .message:hover {
+                background: lightgray;
+            }
+
             #controls_elements {
                 padding: 10px 12px 5px 12px;
                 display: flex;
@@ -59,8 +75,6 @@
                 width: 99%;
                 cursor:pointer;
             }
-            
-            
             @media (max-width: 1100px) {
                 #controls_elements div {
                     width: 25%;
@@ -77,10 +91,11 @@
                 }
             }
 
+            /*  make scrollbar invisible *
             ::-webkit-scrollbar {
-                width: 0px;  /* remove scrollbar space */
-                background: transparent;  /* optional: just make scrollbar invisible */
-            }
+                width: 0px;  
+                background: transparent;  
+            }*/
             
         </style>
         <script>
@@ -100,7 +115,7 @@
             ::body::
         <div class="controls">
             <span class="title">::title::&nbsp;<a target="_blank" href="::title_href::">(::title_version::)</a></span>
-            <pre id="error"></pre>
+            <div class="scroll"><div id="error"></div></div>
             ::controls::
         </div>
         <script>

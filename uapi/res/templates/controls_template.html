@@ -59,15 +59,13 @@
         video.addEventListener("loadeddata", resetAspectRatio);
         video.addEventListener("loadstart", resetAspectRatio);
         video.addEventListener("playing", resetAspectRatio);
-        window.addEventListener("resize", resetControlsHeight);
-        video.addEventListener("loadedmetadata", function(e){
+        var both = function(e){
             resetAspectRatio();
             resetControlsHeight();
-        });
-        window.addEventListener("load", function(e){
-            resetControlsHeight();
-            resetAspectRatio();
-        });
+        };
+        window.addEventListener("resize", both);
+        video.addEventListener("loadedmetadata", both);
+        window.addEventListener("load", both);
         window.addEventListener("keydown", function(e){
             container.dispatchEvent(new e.constructor(e.type, e));
         });

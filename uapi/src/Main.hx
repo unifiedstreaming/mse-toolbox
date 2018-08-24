@@ -176,10 +176,14 @@ class Main {
 				if(Argan.getDefault("quiet", "do not show errors in output", false))
 					return;
 				if(iframe_loaded){
-					window.document.getElementById("error").innerText += '💬 $error\n';
+					var msg = window.document.createElement("div");
+					msg.className = "message";
+					msg.innerText += '💬 $error\n';
+					window.document.getElementById("error").appendChild(msg);
 					if(logToConsole)
 						topWindow.console.error(error);
 					window.resetControlsHeight();
+					window.resetAspectRatio();
 				}else
 					delayed_errors.push(handleError.bind(error,window));
 			}

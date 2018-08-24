@@ -42,7 +42,7 @@ class Hooks {
         };
         for(m in methods)
             hookMethod(object, m).pipe(function(arguments){
-                Reflect.callMethod(js.Lib.nativeThis, pipe, [m, arguments]);
+                return Reflect.callMethod(js.Lib.nativeThis, pipe, [m, arguments]);
             });
 
         return retval;

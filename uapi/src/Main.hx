@@ -168,14 +168,17 @@ class Main {
 					delayed_errors.pop()();
 				resolve({frame: iframe, player:Reflect.field(iframe.contentWindow, "player"), video: Reflect.field(iframe.contentWindow, "video")});
 			});
-
+			
 			//handle errors
+			var topWindow = Browser.window;
 			var handleError:String->Dynamic->Void = null;
 			handleError = function(error, window){
+				if(Argan.getDefault("quiet", "do not show errors in output", false))
+					return;
 				if(iframe_loaded){
 					window.resetControlsHeight();
-					window.document.getElementById("error").innerText += '$error\n';
-					Browser.console.error(error);
+					window.document.getElementById("error").innerText += '💬 $error\n';
+					topWindow.console.error(error);
 				}else
 					delayed_errors.push(handleError.bind(error,window));
 			}
@@ -191,6 +194,11 @@ class Main {
 					reject(e);
 					handleError(e.reason.toString(), contentWindow);
 				}
+				Hooks.hookMethods(contentWindow.console, ["error", "warn"]).pipe(function(method:String, args:Array<Dynamic>){
+					handleError('console.$method:\t${args}', contentWindow);
+					return true;
+				});
+
 				
 			}
 			iframe.hook_end = function(contentWindow:Dynamic, video:js.html.VideoElement){

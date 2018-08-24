@@ -364,11 +364,11 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 				return;
 			}
 			if(iframe_loaded) {
-				window.resetControlsHeight();
 				window.document.getElementById("error").innerText += "💬 " + error1 + "\n";
 				if(logToConsole) {
 					topWindow.console.error(error1);
 				}
+				window.resetControlsHeight();
 			} else {
 				var f = handleError;
 				var a1 = error1;
@@ -464,7 +464,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-30-g31053c7";
+	return "1.0-31-ga9d9095";
 };
 Main.dynamicToMap = function(object) {
 	var retval = new haxe_ds_StringMap();

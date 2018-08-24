@@ -176,10 +176,10 @@ class Main {
 				if(Argan.getDefault("quiet", "do not show errors in output", false))
 					return;
 				if(iframe_loaded){
-					window.resetControlsHeight();
 					window.document.getElementById("error").innerText += '💬 $error\n';
 					if(logToConsole)
 						topWindow.console.error(error);
+					window.resetControlsHeight();
 				}else
 					delayed_errors.push(handleError.bind(error,window));
 			}

@@ -334,7 +334,10 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 		});
 		var topWindow = window;
 		var handleError = null;
-		handleError = function(error1,window) {
+		handleError = function(error1,window,logToConsole) {
+			if(logToConsole == null) {
+				logToConsole = true;
+			}
 			var _2;
 			var _3;
 			if(Argan.args != null) {
@@ -363,7 +366,9 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 			if(iframe_loaded) {
 				window.resetControlsHeight();
 				window.document.getElementById("error").innerText += "💬 " + error1 + "\n";
-				topWindow.console.error(error1);
+				if(logToConsole) {
+					topWindow.console.error(error1);
+				}
 			} else {
 				var f = handleError;
 				var a1 = error1;
@@ -387,8 +392,7 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 				handleError(retval3,contentWindow);
 			};
 			uapi_Hooks.hookMethods(contentWindow.console,["error","warn"]).pipe(function(method,args) {
-				handleError("console." + method + ":\t" + Std.string(args),contentWindow);
-				return true;
+				handleError("console." + method + ":\t" + Std.string(args),contentWindow,false);
 			});
 		};
 		iframe1.hook_end = function(contentWindow1,video) {
@@ -460,7 +464,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-29-g44d2c2a";
+	return "1.0-30-g31053c7";
 };
 Main.dynamicToMap = function(object) {
 	var retval = new haxe_ds_StringMap();

@@ -171,14 +171,15 @@ class Main {
 			
 			//handle errors
 			var topWindow = Browser.window;
-			var handleError:String->Dynamic->Void = null;
-			handleError = function(error, window){
+			var handleError:String->Dynamic->?Bool->Void = null;
+			handleError = function(error, window, ?logToConsole = true){
 				if(Argan.getDefault("quiet", "do not show errors in output", false))
 					return;
 				if(iframe_loaded){
 					window.resetControlsHeight();
 					window.document.getElementById("error").innerText += '💬 $error\n';
-					topWindow.console.error(error);
+					if(logToConsole)
+						topWindow.console.error(error);
 				}else
 					delayed_errors.push(handleError.bind(error,window));
 			}
@@ -195,8 +196,7 @@ class Main {
 					handleError(e.reason.toString(), contentWindow);
 				}
 				Hooks.hookMethods(contentWindow.console, ["error", "warn"]).pipe(function(method:String, args:Array<Dynamic>){
-					handleError('console.$method:\t${args}', contentWindow);
-					return true;
+					handleError('console.$method:\t${args}', contentWindow, false);
 				});
 
 				

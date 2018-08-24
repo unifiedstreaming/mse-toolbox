@@ -95,7 +95,7 @@ class DashJs {
                 if(info.isFragmented)
                     meta.push("fragmented");
                 else
-                    meta.push("sidecar")
+                    meta.push("sidecar");
                 
                 if(info.isEmbedded)
                     meta.push("embedded");

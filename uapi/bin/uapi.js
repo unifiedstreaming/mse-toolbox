@@ -389,7 +389,7 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 					msg = "UNKNOWN";
 				}
 				if(Reflect.field(video.error,"message") != null) {
-					msg += Std.string(Reflect.field(video.error,"message"));
+					msg += "\nMediaError.message: " + Std.string(Reflect.field(video.error,"message"));
 				}
 				var log = "HTMLMediaElement MediaError while playing\n" + uri + "\n\n" + msg + "\n\nsee\nhttps://developer.mozilla.org/en-US/docs/Web/API/MediaError for more details";
 				handleError(log,contentWindow1);
@@ -430,7 +430,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-27-g26fac95";
+	return "1.0-28-g95484cf";
 };
 Main.dynamicToMap = function(object) {
 	var retval = new haxe_ds_StringMap();

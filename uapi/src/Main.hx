@@ -209,7 +209,7 @@ class Main {
 						default: 'UNKNOWN';
 					}
 					if(Reflect.field(video.error,"message") != null)
-						msg += Reflect.field(video.error,"message");
+						msg += "\nMediaError.message: " + Reflect.field(video.error,"message");
 					var log = 'HTMLMediaElement MediaError while playing\n${uri}\n\n${msg}\n\nsee\nhttps://developer.mozilla.org/en-US/docs/Web/API/MediaError for more details';
 					
 					handleError(log, contentWindow);

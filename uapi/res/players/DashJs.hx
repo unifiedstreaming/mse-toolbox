@@ -94,6 +94,9 @@ class DashJs {
                 var meta = [];
                 if(info.isFragmented)
                     meta.push("fragmented");
+                else
+                    meta.push("sidecar")
+                
                 if(info.isEmbedded)
                     meta.push("embedded");
                 if(info.isTTML)

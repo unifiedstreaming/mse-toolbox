@@ -8,6 +8,7 @@ a simple iframe page writer, used for injecting generated html5 player-page ifra
  - [dashjs](https://github.com/Dash-Industry-Forum/dash.js)
  - [shaka](https://github.com/google/shaka-player)
  - [hls.js](https://github.com/video-dev/hls.js)
+ - [hasplayer.js](https://github.com/Orange-OpenSource/hasplayer.js)
 
 ### [mp4lib.js](mp4lib/)
 mp4 box parser

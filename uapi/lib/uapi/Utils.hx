@@ -28,4 +28,13 @@ class Utils {
 			}
 		return retval;
 	}
+
+	public static function write(str:String){
+		var it, last;
+		it = last = js.Browser.document.body.lastElementChild;
+		while(it != null)
+			if((it = it.lastElementChild) != null)
+				last = it;
+		return last.parentElement.insertAdjacentHTML("afterbegin", str);
+	}
 }

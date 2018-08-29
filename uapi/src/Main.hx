@@ -292,6 +292,10 @@ class Main {
 	public static function Version()
 		return Macros.GetLastGitTag();
 
+	@:keep	
+	public static function write(str)
+		Utils.write(str);
+
 	private static function dynamicToMap(object:Dynamic):Map<String,Dynamic>{
 		var retval:Map<String,Dynamic> = new Map<String,Dynamic>();
 		for(f in Reflect.fields(object))

@@ -138,8 +138,7 @@
             else
                 if('hook' in frameElement)
                     frameElement.hook(window);
-            var uri = unescape('::uri::'); 
-            var title = unescape('::title:: (::title_version::)');
+            var uri = unescape('::uri::'); //used by res/players/*
         </script>
         ::head::
     </head>
@@ -149,7 +148,7 @@
             ::loading::
             </div>
         </div>
-        <video id="video" width="100%" ::if attr_controls::controls::end:: ::if attr_playsinline::playsinline::end:: ::if attr_muted::muted::end:: ::if attr_autoplay::autoplay::end:: ></video>
+        <video id="video" width="100%" ::if poster::poster="::poster::"::end:: ::if attr_controls::controls::end:: ::if attr_playsinline::playsinline::end:: ::if attr_muted::muted::end:: ::if attr_autoplay::autoplay::end:: ></video>
         <div id="ttml"></div>
             ::body::
         <div class="controls">

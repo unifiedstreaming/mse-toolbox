@@ -131,9 +131,10 @@ class Main {
 		var html = new haxe.Template(haxe.Resource.getString("template")).execute({
 			uri: StringTools.urlEncode(uri),
 			loading: haxe.Resource.getString("logo"),
-			title: player,
+			title: '$player ($version)',
 			title_version: version,
 			title_href: last_src,
+			poster: generatePosterImage(uri, player.toUpperCase()),
 			attr_autoplay: Argan.get("autoplay", "set videoelement autoplay state", true),
 			attr_muted: Argan.get("muted", "set videoelement muted state", false),
 			attr_controls: Argan.get("controls", "disable videoelement built in controls", true),
@@ -312,6 +313,20 @@ class Main {
 		for(k in map.keys())
 			Reflect.setField(retval, k, map.get(k));
 		return retval;
+	}
+
+	private static function generatePosterImage(uri:String, title:String){
+		var canvas = js.Browser.document.createCanvasElement();
+        canvas.width = 720;
+        canvas.height = 404;
+        var ctx = canvas.getContext("2d");
+        ctx.font = "bold 55pt sans-serif";
+        ctx.fillStyle = "#333";
+        ctx.textAlign="center";
+        ctx.fillText(title.toUpperCase(),360,200);
+        ctx.font = "italic 12pt sans-serif";
+        ctx.fillText(uri,360,250);
+        return canvas.toDataURL();
 	}
 	
 }

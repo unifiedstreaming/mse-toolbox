@@ -130,10 +130,14 @@ class Main {
 		
 		var html = new haxe.Template(haxe.Resource.getString("template")).execute({
 			uri: StringTools.urlEncode(uri),
+			loading: haxe.Resource.getString("logo"),
 			title: player,
 			title_version: version,
 			title_href: last_src,
-			autoplay: Argan.get("autoplay", "set autoplay state", true),
+			attr_autoplay: Argan.get("autoplay", "set videoelement autoplay state", true),
+			attr_muted: Argan.get("muted", "set videoelement muted state", false),
+			attr_controls: Argan.get("controls", "disable videoelement built in controls", true),
+			attr_playsinline: Argan.get("playsinline", "disable videoelement playsinline attribute", true),
 			head: head.join("\n"),
 			body: body.join("\n"),
 			controls: error != null ? '<pre>uapi error:\n$error</pre>' : haxe.Resource.getString('controls_template')

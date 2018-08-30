@@ -27,6 +27,26 @@
                 font-variant-caps: small-caps;
                 text-decoration: none;
             }
+            .loading {
+                width: 100%;
+                position: absolute;
+                background: darkgrey;
+                opacity: .4;
+                height: 100%;
+                filter: blur(1.2px);
+                visibility: visible;
+            }
+            .hide {
+                animation: hide .3s linear forwards;
+            }
+            .loading div {
+                width: 20%;
+                color: white;
+                transform: translateX(200%) translateY(80%);
+            }
+            .loading div svg {
+                animation: loading 15s infinite linear backwards;
+            }
             a {
                 position: relative !important;
                 color: black;
@@ -98,6 +118,15 @@
                 background: transparent;  
             }*/
             
+            @keyframes loading {
+                from {transform:rotate(0deg);}
+                to {transform:rotate(360deg);}
+            }
+            @keyframes hide {
+                from {opacity:.8; visibility: visible;}
+                to {opacity: 0.0; visibility: hidden;}
+            }
+
         </style>
         <script>
             if(!frameElement)
@@ -111,7 +140,12 @@
         ::head::
     </head>
     <body>
-        <video id="video" width="100%" controls playsinline ::if autoplay::autoplay::end:: ></video>
+        <div id="loader" class="loading">
+            <div>
+            ::loading::
+            </div>
+        </div>
+        <video id="video" width="100%" ::if attr_controls::controls::end:: ::if attr_playsinline::playsinline::end:: ::if attr_muted::muted::end:: ::if attr_autoplay::autoplay::end:: ></video>
         <div id="ttml"></div>
             ::body::
         <div class="controls">

@@ -5,6 +5,9 @@ import Argan;
 class DashJs {
     //static function __init__() untyped {}
     static function main() untyped {
+        var title:String = Reflect.field(Browser.window, "title");
+        if(title.indexOf(untyped dashjs.Version) == -1)
+            Browser.console.warn('Loaded DashJs version "${untyped dashjs.Version}" not matching player title "${title}"');
         var player = expose_player(untyped dashjs.MediaPlayer().create());
         player.initialize();
         window.help = function(){

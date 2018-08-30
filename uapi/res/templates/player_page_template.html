@@ -160,6 +160,8 @@
         <script>
             if('hook_end' in frameElement)
                 frameElement.hook_end(window, video);
+            if(!loader.classList.contains("hide"))
+                loader.classList.add("hide");
         </script>
     </body>
 </html>

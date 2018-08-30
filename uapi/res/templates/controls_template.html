@@ -61,8 +61,6 @@
         var loader = document.getElementById("loader");
         video.addEventListener("loadeddata", function(e){
             resetAspectRatio(e);
-            if(!loader.classList.contains("hide"))
-                loader.classList.add("hide");
         });
         video.addEventListener("loadstart", resetAspectRatio);
         video.addEventListener("playing", resetAspectRatio);

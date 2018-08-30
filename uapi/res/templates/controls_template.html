@@ -5,6 +5,7 @@
         var target = window.frameElement.parentElement;
         target.parentElement.insertBefore(controls_elements, target.nextSibling);
         */
+        var loader = document.getElementById("loader");
         var canvas = document.createElement("canvas");
         canvas.width = 720;
         canvas.height = 404;
@@ -29,6 +30,7 @@
         var resetAspectRatio = function(){
             //correct container aspect ratio with video aspect ratio
             container.style.paddingBottom = 100/video.offsetWidth*video.offsetHeight + "%";
+            loader.style.height = video.offsetHeight + "px";
         }
         addMenu = function(title, options, handler, selectedIndex){
             var div = document.createElement("div");

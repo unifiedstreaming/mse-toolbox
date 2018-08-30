@@ -29,9 +29,9 @@
             }
             .loading {
                 width: 100%;
-                position: absolute;
+                position: fixed;
                 background: darkgrey;
-                opacity: .4;
+                opacity: .8;
                 height: 100%;
                 filter: blur(1.2px);
                 visibility: visible;
@@ -42,10 +42,14 @@
             .loading div {
                 width: 20%;
                 color: white;
-                transform: translateX(200%) translateY(80%);
+                margin: 0;
+                top: 50%;
+                transform: translate(-50%, -58%);
+                position: absolute;
+                left: 50%;
             }
             .loading div svg {
-                animation: loading 15s infinite linear backwards;
+                animation: loading 5s infinite linear backwards;
             }
             a {
                 position: relative !important;

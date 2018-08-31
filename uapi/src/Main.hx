@@ -131,7 +131,7 @@ class Main {
 		var html = new haxe.Template(haxe.Resource.getString("template")).execute({
 			uri: StringTools.urlEncode(uri),
 			loading: haxe.Resource.getString("logo"),
-			title: '$player ($version)',
+			title: player,
 			title_version: version,
 			title_href: last_src,
 			poster: generatePosterImage(uri, player.toUpperCase()),

@@ -138,7 +138,9 @@
             else
                 if('hook' in frameElement)
                     frameElement.hook(window);
-            var uri = unescape('::uri::'); //used by res/players/*
+            //used /res/players/*:
+            var uri = unescape('::uri::'); 
+            var title = unescape('::title:: (::title_version::)');
         </script>
         ::head::
     </head>

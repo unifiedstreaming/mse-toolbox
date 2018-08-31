@@ -30,8 +30,6 @@
             .loading {
                 width: 100%;
                 position: fixed;
-                background: darkgrey;
-                opacity: .8;
                 height: 100%;
                 /*filter: blur(1.2px);*/
                 visibility: visible;
@@ -44,9 +42,10 @@
                 color: white;
                 margin: 0;
                 top: 50%;
-                transform: translate(-50%, -58%);
+                transform: translate(-50%, -50%);
                 position: absolute;
                 left: 50%;
+                opacity: .5;
             }
             .loading div svg {
                 animation: loading 5s infinite linear backwards;
@@ -161,8 +160,6 @@
         <script>
             if('hook_end' in frameElement)
                 frameElement.hook_end(window, video);
-            if(!loader.classList.contains("hide"))
-                loader.classList.add("hide");
         </script>
     </body>
 </html>

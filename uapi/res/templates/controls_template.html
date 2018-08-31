@@ -48,9 +48,15 @@
             resetControlsHeight();
         };
         var loader = document.getElementById("loader");
+        function hideLoader(){
+            if(!loader.classList.contains("hide"))
+                loader.classList.add("hide");
+        }
         video.addEventListener("loadeddata", function(e){
             resetAspectRatio(e);
+            hideLoader();
         });
+        video.addEventListener("error", hideLoader);
         video.addEventListener("loadstart", resetAspectRatio);
         video.addEventListener("playing", resetAspectRatio);
         var both = function(e){

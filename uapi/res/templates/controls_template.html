@@ -52,16 +52,14 @@
             if(!loader.classList.contains("hide"))
                 loader.classList.add("hide");
         }
-        video.addEventListener("loadeddata", function(e){
-            resetAspectRatio(e);
-            hideLoader();
-        });
+        video.addEventListener("loadeddata", resetAspectRatio);
         video.addEventListener("error", hideLoader);
         video.addEventListener("loadstart", resetAspectRatio);
         video.addEventListener("playing", resetAspectRatio);
         var both = function(e){
             resetAspectRatio();
             resetControlsHeight();
+            hideLoader();
         };
         window.addEventListener("resize", both);
         video.addEventListener("loadedmetadata", both);

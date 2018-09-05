@@ -149,9 +149,10 @@
             ::loading::
             </div>
         </div>
-        <video id="video" width="100%" ::if poster::poster="::poster::"::end:: ::if attr_controls::controls::end:: ::if attr_playsinline::playsinline::end:: ::if attr_muted::muted::end:: ::if attr_autoplay::autoplay::end:: ></video>
+        <video id="video" width="100%" $$poster() ::if attr_controls::controls::end:: ::if attr_playsinline::playsinline::end:: ::if attr_muted::muted::end:: ::if attr_autoplay::autoplay::end:: ></video>
         <div id="ttml"></div>
             ::body::
+            
         <div class="controls">
             <span class="title">::title::&nbsp;<a target="_blank" href="::title_href::">(::title_version::)</a></span>
             <div class="scroll"><div id="error"></div></div>

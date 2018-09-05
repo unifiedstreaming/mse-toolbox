@@ -134,7 +134,6 @@ class Main {
 			title: player,
 			title_version: version,
 			title_href: last_src,
-			poster: generatePosterImage(uri, player.toUpperCase()),
 			attr_autoplay: Argan.get("autoplay", "set videoelement autoplay state", true),
 			attr_muted: Argan.get("muted", "set videoelement muted state", false),
 			attr_controls: Argan.get("controls", "disable videoelement built in controls", true),
@@ -142,6 +141,14 @@ class Main {
 			head: head.join("\n"),
 			body: body.join("\n"),
 			controls: error != null ? '<pre>uapi error:\n$error</pre>' : haxe.Resource.getString('controls_template')
+		}, {
+			poster: function(resolve:Void->Void){
+				var canvasDataURL = generatePosterImage(uri, player.toUpperCase());
+				var split = canvasDataURL.split(",");
+				var retval = Reflect.hasField(Browser.window, "Blob") ? 
+				js.html.URL.createObjectURL(new js.html.Blob([haxe.crypto.Base64.decode(split[1]).getData()], {type: split[0].split(";")[0]})) : canvasDataURL;
+				return 'poster="${retval}"';
+			}
 		});
 
 		var container = Browser.document.createDivElement();
@@ -256,11 +263,19 @@ class Main {
 					iframe.srcdoc = html;
 				
 				using javascript: url _also_ inherits origin
+				using iframe.src = js.html.URL.createObjectURL(blob) _also_ inherits origin
 			*/
 			//var ticks = StringTools.replace(html, "`", "\\`" );
 			//iframe.src = 'javascript:unescape(`${StringTools.urlEncode(ticks)}`);';
 			//html.split("\n")
-			iframe.src = 'javascript:atob("${haxe.crypto.Base64.encode(haxe.io.Bytes.ofString(html))}");';
+
+			if(Reflect.hasField(Browser.window, "Blob")){
+				iframe.src = js.html.URL.createObjectURL(
+					new js.html.Blob([haxe.io.Bytes.ofString(html).getData()], {type: 'text/html'})
+				);
+			}else{
+				iframe.src = 'javascript:atob("${haxe.crypto.Base64.encode(haxe.io.Bytes.ofString(html))}");';
+			}
 		#end
 
 		return retval;
@@ -314,12 +329,20 @@ class Main {
 			Reflect.setField(retval, k, map.get(k));
 		return retval;
 	}
-
+/*
+	private static function dataUriToBlob(dataURL){
+			var split = dataURI.split(',');
+			var mimetype = split[0];
+			var binary = atob(dataURI.split(',')[1]), array = [];
+			for(var i = 0; i < binary.length; i++) array.push(binary.charCodeAt(i));
+			return new js.html.Blob([new Uint8Array(array)], {type: dataTYPE});
+	}
+*/
 	private static function generatePosterImage(uri:String, title:String){
 		var canvas = js.Browser.document.createCanvasElement();
         canvas.width = 720;
         canvas.height = 404;
-        var ctx = canvas.getContext("2d");
+        var ctx:js.html.CanvasRenderingContext2D = canvas.getContext("2d");
         ctx.font = "bold 55pt sans-serif";
         ctx.fillStyle = "#333";
         ctx.textAlign="center";

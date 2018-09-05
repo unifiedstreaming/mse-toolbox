@@ -62,6 +62,9 @@ class Main {
 	 * @param urls 
 	 */
 	public static function addPlayerSrc(player:String, urls:Array<String>){
+		urls = urls.map(function(url){
+			return absUrl(url);
+		});
 		playerSrcExtended.set(player,urls);
 	}
 
@@ -183,21 +186,21 @@ class Main {
 			
 			//handle errors
 			var topWindow = Browser.window;
-			var handleError:String->Dynamic->?Bool->Void = null;
-			handleError = function(error, window, ?logToConsole = true){
+			var handleError:Dynamic->String->Dynamic->?Bool->Void = null;
+			handleError = function(error, message, window, ?logToConsole = true){
 				if(Argan.getDefault("quiet", "do not show errors in output", false))
 					return;
 				if(iframe_loaded){
 					var msg = window.document.createElement("div");
 					msg.className = "message";
-					msg.innerText += '💬 $error\n';
+					msg.innerText += '💬 $message\n';
 					window.document.getElementById("error").appendChild(msg);
 					if(logToConsole)
 						topWindow.console.error(error);
 					window.resetControlsHeight();
 					window.resetAspectRatio();
 				}else
-					delayed_errors.push(handleError.bind(error,window));
+					delayed_errors.push(handleError.bind(error,message,window,logToConsole));
 			}
 			//use fixed hook callback from player_page_template.html to be able to add event listeners _before_ page load
 			var iframe:Dynamic = iframe;
@@ -205,14 +208,14 @@ class Main {
 				contentWindow.config = Reflect.field(player_config, player);
 				contentWindow.addEventListener("error", function(e:js.html.ErrorEvent){
 					reject(e);
-					handleError(new js.Error(e.message).stack, contentWindow);
+					handleError(e, 'error.message:${e.message}, ${e.filename}:${e.lineno}', contentWindow);
 				});
 				contentWindow.onunhandledrejection = function(e:Dynamic) { //safari does not do trigger addEventListener('unhandledrejection',...)
 					reject(e);
-					handleError(e.reason.toString(), contentWindow);
+					handleError(e, e.reason.toString(), contentWindow);
 				}
 				Hooks.hookMethods(contentWindow.console, ["error", "warn"]).pipe(function(method:String, args:Array<Dynamic>){
-					handleError('console.$method:\t${args}', contentWindow, false);
+					handleError(args, 'console.$method:\t${args}', contentWindow, false);
 				});
 
 				
@@ -236,7 +239,7 @@ class Main {
 						msg += "\nMediaError.message: " + Reflect.field(video.error,"message");
 					var log = 'HTMLMediaElement MediaError while playing\n${uri}\n\n${msg}\n\nsee\nhttps://developer.mozilla.org/en-US/docs/Web/API/MediaError for more details';
 					
-					handleError(log, contentWindow);
+					handleError(e, log, contentWindow);
 				});
 			}
 		});
@@ -270,6 +273,7 @@ class Main {
 			//html.split("\n")
 
 			if(Reflect.hasField(Browser.window, "Blob")){
+				iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
 				iframe.src = js.html.URL.createObjectURL(
 					new js.html.Blob([haxe.io.Bytes.ofString(html).getData()], {type: 'text/html'})
 				);
@@ -315,6 +319,13 @@ class Main {
 	@:keep	
 	public static function write(str)
 		Utils.write(str);
+
+	@:keep
+	public static function absUrl(url:String){
+		var abs = Browser.document.createAnchorElement();
+		abs.href = url;
+		return abs.href;
+	}
 
 	private static function dynamicToMap(object:Dynamic):Map<String,Dynamic>{
 		var retval:Map<String,Dynamic> = new Map<String,Dynamic>();

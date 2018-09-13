@@ -194,7 +194,7 @@ Main.getPlayers = function() {
 	while(_g < _g1.length) {
 		var n = _g1[_g];
 		++_g;
-		if(n.indexOf("template") == -1 && n != Argan.HELP_RESOURCE_KEY && !StringTools.endsWith(n,"-src") && !StringTools.endsWith(n,"-argan")) {
+		if(n.indexOf("logo") == -1 && n.indexOf("template") == -1 && n != Argan.HELP_RESOURCE_KEY && !StringTools.endsWith(n,"-src") && !StringTools.endsWith(n,"-argan")) {
 			players[n] = JSON.parse(haxe_Resource.getString(n + "-argan"));
 		}
 	}
@@ -552,7 +552,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-53-g0643b99";
+	return "1.0-55-g9409134";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);

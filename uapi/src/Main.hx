@@ -36,7 +36,7 @@ class Main {
 	public static function getPlayers(){
 		var players = {};
 		for(n in haxe.Resource.listNames()){
-			if(n.indexOf("template") == -1 && n != Argan.HELP_RESOURCE_KEY &&
+			if(n.indexOf("logo") == -1 && n.indexOf("template") == -1 && n != Argan.HELP_RESOURCE_KEY &&
 				!StringTools.endsWith(n, "-src") && 
 				!StringTools.endsWith(n, "-argan"))
 				Reflect.setField(players, n, haxe.Json.parse(haxe.Resource.getString(n + "-argan")));

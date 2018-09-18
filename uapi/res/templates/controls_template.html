@@ -21,8 +21,15 @@
             container.style.paddingBottom = 100/video.offsetWidth*video.offsetHeight + "%";
             loader.style.height = video.offsetHeight + "px";
         }
+        var menus = {};
+        removeMenu = function(title) {
+            if(title in menus){
+                menus[title].parentElement.removeChild(menus[title]);
+                delete menus[title];
+            }
+        }
         addMenu = function(title, options, handler, selectedIndex){
-            var div = document.createElement("div");
+            var div = menus[title] = document.createElement("div");
             var label = document.createElement("label");
             label.innerText = title;
             div.appendChild(label);

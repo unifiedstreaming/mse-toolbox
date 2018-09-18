@@ -109,6 +109,13 @@ class DashJs {
                 }
                 textTracks.push({title: str, info: info });
             }
+            if(textTracks.length > 0){
+                removeMenu("Texttracks");
+                addMenu("Texttracks", textTracks, function(e){
+                player.setTextTrack(e.target.selectedIndex);        
+                }, player.getCurrentTextTrackIndex());
+            }
+            
         }
         
         player.on(dashjs.MediaPlayer.events.TEXT_TRACKS_ADDED, onTracksAdded, js.Lib.nativeThis);

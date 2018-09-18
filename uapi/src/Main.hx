@@ -212,6 +212,7 @@ class Main {
 			//handle errors
 			var topWindow = Browser.window;
 			var handleError:Dynamic->String->Dynamic->?Bool->Void = null;
+			var messageCount = 0;
 			handleError = function(error, message, window, ?logToConsole = true){
 				if(Argan.getDefault("quiet", "do not show errors in output", false))
 					return;
@@ -222,6 +223,7 @@ class Main {
 					window.document.getElementById("error").appendChild(msg);
 					if(logToConsole)
 						topWindow.console.error(error);
+					window.messagecount.innerText = '${++messageCount} message${messageCount > 1 ? "s" : ""}';
 					window.resetControlsHeight();
 					window.resetAspectRatio();
 				}else
@@ -247,7 +249,11 @@ class Main {
 				//no player object in iframe, loading failed
 				if(player != "native" && !Reflect.hasField(contentWindow,'player'))
                 	throw "unable to load " + player_version_string;
-				
+				contentWindow.messagecount.addEventListener("click", function(event){
+					event.target.parentElement.classList.toggle('folded');
+					contentWindow.resetControlsHeight();
+					contentWindow.resetAspectRatio();
+				});
 				video.addEventListener("error", function(e:js.html.ErrorEvent){
 					Reflect.setField(Browser.window, "lastError", video.error);
 					var msg = switch(video.error.code) {

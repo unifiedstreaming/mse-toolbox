@@ -84,6 +84,37 @@
                 background: lightgray;
             }
 
+            .folded {
+                height: 15px;
+                overflow:hidden;
+                
+            }
+            #error {
+                display: block;
+            }
+
+            .folded #error {
+                display: none;
+            }
+            #messagecount {
+                margin-left: 2px;
+                user-select: none;
+                cursor: pointer;
+            }
+            #messagecount:hover {
+                text-decoration: underline;
+            }
+            #messagecount::before {
+                content: "▼";
+                margin-right: 2px;
+            }
+            .folded #messagecount::before {
+                content: "▼";
+                transform: rotate(-90deg);
+                display: inline-block;
+                margin-right: 2px;
+            }
+
             #controls_elements {
                 padding: 10px 12px 5px 12px;
                 display: flex;
@@ -155,7 +186,9 @@
             
         <div class="controls">
             <span class="title">::title::&nbsp;<a target="_blank" href="::title_href::">(::title_version::)</a></span>
-            <div class="scroll"><div id="error"></div></div>
+            <div class="scroll folded"><div id="messagecount">&nbsp;> 10 messages
+
+            </div><div id="error"></div></div>
             ::controls::
         </div>
         <script>

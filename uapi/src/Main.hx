@@ -7,6 +7,13 @@ import js.html.Response;
 import uapi.Hooks;
 import uapi.Utils;
 
+typedef PlayerHandle = {
+	reload:String->js.Promise<PlayerHandle>,
+	frame:js.html.IFrameElement,
+	player:Dynamic,
+	video:js.html.VideoElement
+}
+
 /**
  * haxe -resource based player loader and basic site tools
  * 	Add new player targets by adding sources json and player code in hxml
@@ -81,7 +88,7 @@ class Main {
 	private static var id:Int = 0;
 
 	@:keep
-	public static function writePlayer(parent:js.html.Element, uri:String, player_version_string:String = "dashjs", player_config:Dynamic = null, ?inject_head:String = null, ?inject_body:String = null){
+	public static function writePlayer(parent:js.html.Element, uri:String, player_version_string:String = "dashjs", player_config:Dynamic = null, ?inject_head:String = null, ?inject_body:String = null):js.Promise<PlayerHandle> {
 		Argan.start(player_config);
 		// https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-srcdoc
 		var iframe = Browser.document.createIFrameElement();
@@ -172,7 +179,7 @@ class Main {
 		container.appendChild(iframe);
 		parent.appendChild(container);
 
-		var retval = new js.Promise(function(resolve, reject) {
+		var retval:js.Promise<PlayerHandle> = new js.Promise(function(resolve, reject) {
 			var iframe_loaded = false;
 			var delayed_errors = [];
 
@@ -181,7 +188,20 @@ class Main {
 				iframe_loaded = true;
 				while(delayed_errors.length > 0)
 					delayed_errors.pop()();
-				resolve({frame: iframe, player:Reflect.field(iframe.contentWindow, "player"), video: Reflect.field(iframe.contentWindow, "video")});
+				var hndl:PlayerHandle = null;
+				hndl = {	
+							reload: function(uri:String) {
+								hndl.frame.parentElement.parentElement.removeChild(hndl.frame.parentElement);
+								return writePlayer(parent, uri, player_version_string, player_config, inject_head, inject_body).then(function(nframe:PlayerHandle){
+									hndl = nframe;
+									return nframe;
+								});
+							},
+							frame: iframe, 
+							player:Reflect.field(iframe.contentWindow, "player"), 
+							video: Reflect.field(iframe.contentWindow, "video")
+						}
+				resolve(hndl);
 			});
 			
 			//handle errors
@@ -217,8 +237,6 @@ class Main {
 				Hooks.hookMethods(contentWindow.console, ["error", "warn"]).pipe(function(method:String, args:Array<Dynamic>){
 					handleError(args, 'console.$method:\t${args}', contentWindow, false);
 				});
-
-				
 			}
 			iframe.hook_end = function(contentWindow:Dynamic, video:js.html.VideoElement){
 				//no player object in iframe, loading failed

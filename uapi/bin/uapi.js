@@ -404,9 +404,16 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 		iframe.addEventListener("load",function(event) {
 			iframe_loaded = true;
 			while(delayed_errors.length > 0) (delayed_errors.pop())();
-			var retval2 = Reflect.field(iframe.contentWindow,"player");
-			var retval3 = Reflect.field(iframe.contentWindow,"video");
-			resolve1({ frame : iframe, player : retval2, video : retval3});
+			var hndl = null;
+			var hndl1 = Reflect.field(iframe.contentWindow,"player");
+			hndl = { reload : function(uri1) {
+				hndl.frame.parentElement.parentElement.removeChild(hndl.frame.parentElement);
+				return Main.writePlayer(parent,uri1,player_version_string,player_config,inject_head,inject_body).then(function(nframe) {
+					hndl = nframe;
+					return nframe;
+				});
+			}, frame : iframe, player : hndl1, video : Reflect.field(iframe.contentWindow,"video")};
+			resolve1(hndl);
 		});
 		var topWindow = window;
 		var handleError = null;
@@ -470,8 +477,8 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 			});
 			contentWindow.onunhandledrejection = function(e1) {
 				reject(e1);
-				var retval4 = e1.reason.toString();
-				handleError(e1,retval4,contentWindow);
+				var retval2 = e1.reason.toString();
+				handleError(e1,retval2,contentWindow);
 			};
 			uapi_Hooks.hookMethods(contentWindow.console,["error","warn"]).pipe(function(method,args) {
 				handleError(args,"console." + method + ":\t" + Std.string(args),contentWindow,false);
@@ -552,7 +559,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-55-g9409134";
+	return "1.0-56-gb949343";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);

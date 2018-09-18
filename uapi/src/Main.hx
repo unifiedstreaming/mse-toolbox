@@ -94,6 +94,7 @@ class Main {
 		// https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-srcdoc
 		var iframe = Browser.document.createIFrameElement();
 		iframe.src = "about:blank";
+		iframe.setAttribute("importance", "high");
 		iframe.setAttribute("border", "0");
 		iframe.setAttribute("allowfullscreen", "true");
 		iframe.setAttribute("seamless", "true");
@@ -116,7 +117,7 @@ class Main {
 		}else{
 			if(playerSrcExtended.exists(player_version_string)){
 				for(src in playerSrcExtended.get(player_version_string))
-					head.push('<script src="${last_src = src}"></script>');
+					head.push('<script crossorigin src="${last_src = src}"></script>');
 			}else{
 				var srcs = playerSrcOverride == null ? haxe.Json.parse(haxe.Resource.getString('${player}-src')) : playerSrcOverride;
 				//load from json '${player}-src'
@@ -125,7 +126,7 @@ class Main {
 					if(Reflect.hasField(srcs, s)){
 						var list:Array<String> = Reflect.field(srcs, s);
 						for(src in list)
-							head.push('<script src="${last_src = src}"></script>');
+							head.push('<script crossorigin src="${last_src = src}"></script>');
 							//head.push('<script onerror="if(event.type==\'error\')console.log(\'usapi was unable to load ${StringTools.htmlEscape(src)}\'); return false;" src="$src"></script>');
 					}else{
 						error = 'unknown version:${version} for "${player}"';
@@ -219,6 +220,7 @@ class Main {
 				if(iframe_loaded){
 					var msg = window.document.createElement("div");
 					msg.className = "message";
+					message = StringTools.replace(message, "\\n", "\n");
 					msg.innerText += '💬 $message\n';
 					window.document.getElementById("error").appendChild(msg);
 					if(logToConsole)

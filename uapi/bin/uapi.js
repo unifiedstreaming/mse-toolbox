@@ -406,9 +406,15 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 			while(delayed_errors.length > 0) (delayed_errors.pop())();
 			var hndl = null;
 			var hndl1 = Reflect.field(iframe.contentWindow,"player");
-			hndl = { reload : function(uri1) {
+			hndl = { reload : function(uri1,version1,config) {
+				if(version1 == null) {
+					version1 = player_version_string;
+				}
+				if(config == null) {
+					config = player_config;
+				}
 				hndl.frame.parentElement.parentElement.removeChild(hndl.frame.parentElement);
-				return Main.writePlayer(parent,uri1,player_version_string,player_config,inject_head,inject_body).then(function(nframe) {
+				return Main.writePlayer(parent,uri1,version1,config,inject_head,inject_body).then(function(nframe) {
 					hndl = nframe;
 					return nframe;
 				});
@@ -559,7 +565,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-56-gb949343";
+	return "1.0-57-g7660ee3";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);

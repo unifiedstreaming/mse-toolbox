@@ -7,8 +7,9 @@ import js.html.Response;
 import uapi.Hooks;
 import uapi.Utils;
 
+typedef PlayerOptions = Dynamic;
 typedef PlayerHandle = {
-	reload:String->js.Promise<PlayerHandle>,
+	reload:String->String->PlayerOptions->js.Promise<PlayerHandle>,
 	frame:js.html.IFrameElement,
 	player:Dynamic,
 	video:js.html.VideoElement
@@ -190,9 +191,13 @@ class Main {
 					delayed_errors.pop()();
 				var hndl:PlayerHandle = null;
 				hndl = {	
-							reload: function(uri:String) {
+							reload: function(uri:String, ?version:String = null, config:Dynamic = null) {
+								if(version == null)
+									version = player_version_string;
+								if(config == null)
+									config = player_config;
 								hndl.frame.parentElement.parentElement.removeChild(hndl.frame.parentElement);
-								return writePlayer(parent, uri, player_version_string, player_config, inject_head, inject_body).then(function(nframe:PlayerHandle){
+								return writePlayer(parent, uri, version, config, inject_head, inject_body).then(function(nframe:PlayerHandle){
 									hndl = nframe;
 									return nframe;
 								});

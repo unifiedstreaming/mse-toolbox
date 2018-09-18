@@ -198,7 +198,10 @@ class Main {
 								if(config == null)
 									config = player_config;
 								hndl.frame.parentElement.parentElement.removeChild(hndl.frame.parentElement);
-								return writePlayer(parent, uri, version, config, inject_head, inject_body).then(function(nframe:PlayerHandle){
+								return writePlayer(parent, uri, version, config, inject_head, inject_body).catchError(function(e){
+									hndl.frame = e.target.frameElement;
+									return hndl;
+								}).then(function(nframe:PlayerHandle){
 									hndl = nframe;
 									return nframe;
 								});

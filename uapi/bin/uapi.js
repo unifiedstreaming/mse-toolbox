@@ -415,7 +415,10 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 					config = player_config;
 				}
 				hndl.frame.parentElement.parentElement.removeChild(hndl.frame.parentElement);
-				return Main.writePlayer(parent,uri1,version1,config,inject_head,inject_body).then(function(nframe) {
+				return Main.writePlayer(parent,uri1,version1,config,inject_head,inject_body)["catch"](function(e) {
+					hndl.frame = e.target.frameElement;
+					return hndl;
+				}).then(function(nframe) {
 					hndl = nframe;
 					return nframe;
 				});
@@ -482,14 +485,14 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 		var iframe1 = iframe;
 		iframe1.hook = function(contentWindow) {
 			contentWindow.config = Reflect.field(player_config,player);
-			contentWindow.addEventListener("error",function(e) {
-				reject(e);
-				handleError(e,"error.message:" + e.message + ", " + e.filename + ":" + e.lineno,contentWindow);
-			});
-			contentWindow.onunhandledrejection = function(e1) {
+			contentWindow.addEventListener("error",function(e1) {
 				reject(e1);
-				var retval2 = e1.reason.toString();
-				handleError(e1,retval2,contentWindow);
+				handleError(e1,"error.message:" + e1.message + ", " + e1.filename + ":" + e1.lineno,contentWindow);
+			});
+			contentWindow.onunhandledrejection = function(e2) {
+				reject(e2);
+				var retval2 = e2.reason.toString();
+				handleError(e2,retval2,contentWindow);
 			};
 			uapi_Hooks.hookMethods(contentWindow.console,["error","warn"]).pipe(function(method,args) {
 				handleError(args,"console." + method + ":\t" + Std.string(args),contentWindow,false);
@@ -504,7 +507,7 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 				contentWindow1.resetControlsHeight();
 				contentWindow1.resetAspectRatio();
 			});
-			video.addEventListener("error",function(e2) {
+			video.addEventListener("error",function(e3) {
 				window["lastError"] = video.error;
 				var msg1;
 				var _g3 = video.error.code;
@@ -531,7 +534,7 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 					msg1 += "\nMediaError.message: " + Std.string(Reflect.field(video.error,"message"));
 				}
 				var log = "HTMLMediaElement MediaError while playing\n" + uri + "\n\n" + msg1 + "\n\nsee\nhttps://developer.mozilla.org/en-US/docs/Web/API/MediaError for more details";
-				handleError(e2,log,contentWindow1);
+				handleError(e3,log,contentWindow1);
 			});
 		};
 	});
@@ -575,7 +578,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-62-g5d3756c";
+	return "1.0-63-g9f60e1f";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);

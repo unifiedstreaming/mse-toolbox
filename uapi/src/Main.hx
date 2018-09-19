@@ -252,8 +252,6 @@ class Main {
 			}
 			iframe.hook_end = function(contentWindow:Dynamic, video:js.html.VideoElement){
 				//no player object in iframe, loading failed
-				if(player != "native" && !Reflect.hasField(contentWindow,'player'))
-                	throw "unable to load " + player_version_string;
 				contentWindow.messagecount.addEventListener("click", function(event){
 					event.target.parentElement.classList.toggle('folded');
 					contentWindow.resetControlsHeight();
@@ -272,8 +270,11 @@ class Main {
 					if(Reflect.field(video.error,"message") != null)
 						msg += "\nMediaError.message: " + Reflect.field(video.error,"message");
 					var log = 'HTMLMediaElement MediaError while playing\n${uri}\n\n${msg}\n\nsee\nhttps://developer.mozilla.org/en-US/docs/Web/API/MediaError for more details';
-					
 					handleError(e, log, contentWindow);
+
+					//throw an error to notify top window that selected "player" is not loaded correctly
+					if(player != "native" && !Reflect.hasField(contentWindow,'player'))
+                	throw "unable to load " + player_version_string;
 				});
 			}
 		});

@@ -499,9 +499,6 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 			});
 		};
 		iframe1.hook_end = function(contentWindow1,video) {
-			if(player != "native" && !Object.prototype.hasOwnProperty.call(contentWindow1,"player")) {
-				throw new js__$Boot_HaxeError("unable to load " + player_version_string);
-			}
 			contentWindow1.messagecount.addEventListener("click",function(event1) {
 				event1.target.parentElement.classList.toggle("folded");
 				contentWindow1.resetControlsHeight();
@@ -535,6 +532,9 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 				}
 				var log = "HTMLMediaElement MediaError while playing\n" + uri + "\n\n" + msg1 + "\n\nsee\nhttps://developer.mozilla.org/en-US/docs/Web/API/MediaError for more details";
 				handleError(e3,log,contentWindow1);
+				if(player != "native" && !Object.prototype.hasOwnProperty.call(contentWindow1,"player")) {
+					throw new js__$Boot_HaxeError("unable to load " + player_version_string);
+				}
 			});
 		};
 	});
@@ -578,7 +578,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-63-g9f60e1f";
+	return "1.0-64-g8d3cae4";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);

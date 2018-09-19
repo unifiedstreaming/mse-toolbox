@@ -105,9 +105,16 @@ class Main {
 		if(haxe.Resource.listNames().indexOf(player) == -1 && player != "native"){
 			throw 'unknown player "$player", please select any of ${haxe.Resource.listNames()}.';
 		}
+
+		var playerBody = haxe.Resource.getString('${player}');
+		if(Reflect.hasField(Browser.window, "Blob")){
+			var split = playerBody.split(",");
+			playerBody = js.html.URL.createObjectURL(new js.html.Blob([haxe.crypto.Base64.decode(split[1]).getData()], {type: split[0].split(";")[0]}));
+		}
+		
 		var version = meta[1];
 		var head = [ ];
-		var body = [ '<script src="${haxe.Resource.getString('${player}')}"></script>'];
+		var body = [ '<script src="${playerBody}"></script>'];
 		var error = null;
 		var last_src = "#";
 

@@ -237,9 +237,14 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 	if(haxe_Resource.listNames().indexOf(player) == -1 && player != "native") {
 		throw new js__$Boot_HaxeError("unknown player \"" + player + "\", please select any of " + Std.string(haxe_Resource.listNames()) + ".");
 	}
+	var playerBody = haxe_Resource.getString("" + player);
+	if(Object.prototype.hasOwnProperty.call(window,"Blob")) {
+		var split = playerBody.split(",");
+		playerBody = URL.createObjectURL(new Blob([haxe_crypto_Base64.decode(split[1]).b.bufferValue],{ type : split[0].split(";")[0]}));
+	}
 	var version = meta[1];
 	var head = [];
-	var body = ["<script src=\"" + haxe_Resource.getString("" + player) + "\"></script>"];
+	var body = ["<script src=\"" + playerBody + "\"></script>"];
 	var error = null;
 	var last_src = "#";
 	if(player == "native") {
@@ -383,8 +388,8 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 	var html6 = html.execute({ uri : html1, loading : html2, title : player, title_version : version, title_href : last_src, attr_autoplay : _, attr_muted : _2, attr_controls : _4, attr_playsinline : _6, head : html3, body : html4, controls : html5},{ poster : function(resolve) {
 		var canvasDataURL = player.toUpperCase();
 		var canvasDataURL1 = Main.generatePosterImage(uri,canvasDataURL);
-		var split = canvasDataURL1.split(",");
-		var retval = Object.prototype.hasOwnProperty.call(window,"Blob") ? URL.createObjectURL(new Blob([haxe_crypto_Base64.decode(split[1]).b.bufferValue],{ type : split[0].split(";")[0]})) : canvasDataURL1;
+		var split1 = canvasDataURL1.split(",");
+		var retval = Object.prototype.hasOwnProperty.call(window,"Blob") ? URL.createObjectURL(new Blob([haxe_crypto_Base64.decode(split1[1]).b.bufferValue],{ type : split1[0].split(";")[0]})) : canvasDataURL1;
 		return "poster=\"" + retval + "\"";
 	}});
 	var container = window.document.createElement("div");
@@ -578,7 +583,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-64-g8d3cae4";
+	return "1.0-65-g22e2d02";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);

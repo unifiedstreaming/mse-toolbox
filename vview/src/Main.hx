@@ -58,6 +58,15 @@ class Main {
                                         }
                                     }
                                 }
+                                var mvhd:mp4lib.MovieHeaderBox = cast boxes.findBoxByType("mvhd");
+                                if(mvhd != null){
+                                    trace('MovieHeaderBox.duration/timescale: ${mvhd.duration / mvhd.timescale}'); 
+                                }
+                                var sidx:mp4lib.SegmentIndexBox = cast boxes.findBoxByType("sidx");
+                                if(sidx != null){
+                                    trace('SegmentIndexBox.earliest_presentation_time/timescale: ${sidx.earliest_presentation_time / sidx.timescale}');
+                                }
+
                                 //js.Browser.console.log(boxes.findBoxByType("mdhd"));
                                 //js.Browser.console.log(boxes.findBoxByType("tfhd"));
                                 //js.Browser.console.log(boxes.findBoxByType("trun"));

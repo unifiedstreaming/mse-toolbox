@@ -15,7 +15,10 @@ import haxe.Utf8;
 class Macros
 {
 	public static macro function getPlayerCode(filePath:String, data_uri:Bool=false, delete_temp:Bool=#if debug false #else true #end):ExprOf<String> {
-        //haxe.macro.Compiler.getOutput();
+        //disable this macro in code completion mode
+		if(haxe.macro.Context.defined('display'))
+			return macro null;
+		//haxe.macro.Compiler.getOutput();
         var arr = filePath.split("@"); filePath = arr[0];
         var path = new haxe.io.Path(filePath);
         var resourceName = arr.length > 1 ? arr[1] : path.file;

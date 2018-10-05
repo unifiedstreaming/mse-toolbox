@@ -43,7 +43,9 @@ class Main {
 	@:keep
 	public static function getPlayers(){
 		var players = {};
-		for(n in haxe.Resource.listNames()){
+		var resources = haxe.Resource.listNames();
+		resources.push("native");
+		for(n in resources){
 			if(n.indexOf("logo") == -1 && n.indexOf("template") == -1 && n != Argan.HELP_RESOURCE_KEY &&
 				!StringTools.endsWith(n, "-src") && 
 				!StringTools.endsWith(n, "-argan"))
@@ -107,7 +109,7 @@ class Main {
 		}
 
 		var playerBody = haxe.Resource.getString('${player}');
-		if(Reflect.hasField(Browser.window, "Blob")){
+		if(playerBody != null && Reflect.hasField(Browser.window, "Blob")){
 			var split = playerBody.split(",");
 			playerBody = js.html.URL.createObjectURL(new js.html.Blob([haxe.crypto.Base64.decode(split[1]).getData()], {type: split[0].split(";")[0]}));
 		}

@@ -381,37 +381,40 @@
                     while(node.hasChildNodes()){
                         node.removeChild(node.lastChild);
                     }
-                    
-                    
-                    for(k in settings){
-                        var p = document.createElement('p');
-                        var label = document.createElement('label');
-                        label.innerText = k;
-                        label.classList.add("w-25");
+                    if(!settings){
+                        node.parentElement.classList.add("hidden");
+                    }else{
+                        for(k in settings){
+                            node.parentElement.classList.remove("hidden");
+                            var p = document.createElement('p');
+                            var label = document.createElement('label');
+                            label.innerText = k;
+                            label.classList.add("w-25");
 
-                        label.classList.add("input-sm");
-                        var input = document.createElement('input');
-                        input.classList.add("w-75");
-                        input.classList.add("input-sm");
-                        input.addEventListener('input', function(e){
-                            var input = e.target;
-                            if(cache == null){
-                                cache = {};
-                            }
-                            cache[input['data-ufp-setting']] = input.value;
-                            window.localStorage.setItem('setting-cache', JSON.stringify(cache));
-                        });
-                        input['data-ufp-setting'] = k;
-                        if(cache !== null && cache[k])
-                            input.value = cache[k];
-                        settings_elements.push(input);
-                        p.title = k + "; " + settings[k].default_;
-                        p.className = "settings_element";
-                        input.placeholder = settings[k].help + "; " + settings[k].default_;
-                        p.id = k;
-                        p.appendChild(label);
-                        p.appendChild(input);
-                        node.appendChild(p);
+                            label.classList.add("input-sm");
+                            var input = document.createElement('input');
+                            input.classList.add("w-75");
+                            input.classList.add("input-sm");
+                            input.addEventListener('input', function(e){
+                                var input = e.target;
+                                if(cache == null){
+                                    cache = {};
+                                }
+                                cache[input['data-ufp-setting']] = input.value;
+                                window.localStorage.setItem('setting-cache', JSON.stringify(cache));
+                            });
+                            input['data-ufp-setting'] = k;
+                            if(cache !== null && cache[k])
+                                input.value = cache[k];
+                            settings_elements.push(input);
+                            p.title = k + "; " + settings[k].default_;
+                            p.className = "settings_element";
+                            input.placeholder = settings[k].help + "; " + settings[k].default_;
+                            p.id = k;
+                            p.appendChild(label);
+                            p.appendChild(input);
+                            node.appendChild(p);
+                        }
                     }
                     document.getElementById("ufp-clear").onclick = function(e){
                         window.localStorage.removeItem('setting-cache'); window.location.reload();

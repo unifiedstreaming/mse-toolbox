@@ -422,8 +422,10 @@
                     }
                     while(s_version.hasChildNodes())
                         s_version.removeChild(s_version.lastChild);
-                        
+                    
+                    s_version.parentElement.classList.add("hidden");
                     for(p in uapi.getPlayerVersions(player)){
+                        s_version.parentElement.classList.remove("hidden");
                         var o = document.createElement('option');
                         o.value = p;
                         o.innerText = p;

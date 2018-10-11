@@ -27,7 +27,7 @@
                         'audio_only\0http://rdmedia.bbc.co.uk/dash/ondemand/testcard/1/client_manifest-audio.mpd', 
                         'Alternate audio tracks\0//demo.unified-streaming.com/video/elephantsdream/elephantsdream.ism/.mpd', 
                         'multi_audio\0//demo.unified-streaming.com/video/multi_audio/multi_audio.ism/.mpd',
-                        'trickmode\0//dash.akamaized.net/dash264/TestCases/9b/qualcomm/2/MultiRate.mpd',
+                        'Tiled Thumbnails\0//demo.unified-streaming.com/video/tears-of-steel/tears-of-steel-tiled-thumbnails.mpd',
                         'presentation_time_offset_2014\0//demo.unified-streaming.com/bbc/presentation_time_offset_2014/presentation_time_offset_2014.isml/.mpd']
         }
     </script>
@@ -406,6 +406,9 @@
                             input['data-ufp-setting'] = k;
                             if(cache !== null && cache[k])
                                 input.value = cache[k];
+                            if(k in hash)
+                                input.value = hash[k];
+
                             settings_elements.push(input);
                             p.title = k + "; " + settings[k].default_;
                             p.className = "settings_element";

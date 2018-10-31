@@ -3,7 +3,30 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
-        
+        {
+            "label": "copy uapi.js to /usp.code-shop.com/evaluation/uapi.js",
+            "type": "shell",
+            "command": "cp uapi/bin/uapi.js /Users/tecteun/Work/Code/svn.unified-streaming.com/trunk/usp.code-shop.com/evaluation/uapi.js",
+            "problemMatcher": [
+                "$haxe-error"
+            ]
+        },
+        {
+            "label": "copy uapi.js to /Users/tecteun/Work/Code/svn.unified-remix.com/svn/trunk/docker-images/remix-frontend/src/js/uapi.js",
+            "type": "shell",
+            "command": "cp uapi/bin/uapi.js /Users/tecteun/Work/Code/svn.unified-remix.com/svn/trunk/docker-images/remix-frontend/src/js/uapi.js",
+            "problemMatcher": [
+                "$haxe-error"
+            ]
+        },
+        {
+            "label": "copy mp4lib.js to /usp.code-shop.com/cpix/mp4lib.js",
+            "type": "shell",
+            "command": "cp mp4lib/bin/mp4lib.js /Users/tecteun/Work/Code/svn.unified-streaming.com/trunk/usp.code-shop.com/cpix/mp4lib.js",
+            "problemMatcher": [
+                "$haxe-error"
+            ]
+        },
         {
             "taskName": "uapi build.hxml",
             "command": "haxe",

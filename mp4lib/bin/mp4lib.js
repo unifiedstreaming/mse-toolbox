@@ -2272,12 +2272,60 @@ mp4lib_SchemeTypeBox.prototype = $extend(mp4lib_FullBox.prototype,{
 	}
 	,__class__: mp4lib_SchemeTypeBox
 });
-var mp4lib_EditListBox = function() {
+var mp4lib_EditListBox = function(size) {
+	mp4lib_FullBox.call(this,"elst",size);
+	this.entries = [];
 };
 mp4lib_EditListBox.__name__ = true;
-mp4lib_EditListBox.prototype = {
-	__class__: mp4lib_EditListBox
-};
+mp4lib_EditListBox.__super__ = mp4lib_FullBox;
+mp4lib_EditListBox.prototype = $extend(mp4lib_FullBox.prototype,{
+	computeLength: function() {
+		mp4lib_FullBox.prototype.computeLength.call(this);
+		this.size += mp4lib_Fields.FIELD_UINT32.getLength() * 2;
+		if(this.version == 1) {
+			var a = this.size;
+			var a1 = mp4lib_Fields.FIELD_UINT64.getLength() * 2 + mp4lib_Fields.FIELD_UINT16.getLength() * 2;
+			this.size = a + haxe__$Int32_Int32_$Impl_$._mul(a1,this.entry_count) | 0;
+		} else {
+			var a2 = this.size;
+			var a3 = mp4lib_Fields.FIELD_UINT32.getLength() * 2 + mp4lib_Fields.FIELD_UINT16.getLength() * 2;
+			this.size = a2 + haxe__$Int32_Int32_$Impl_$._mul(a3,this.entry_count) | 0;
+		}
+	}
+	,write: function(data,pos) {
+		mp4lib_FullBox.prototype.write.call(this,data,pos);
+		this._writeData(data,mp4lib_Fields.FIELD_UINT32,this.entry_count,{ fileName : "EditListBox.hx", lineNumber : 27, className : "mp4lib.EditListBox", methodName : "write"});
+		var _g1 = 0;
+		var _g = this.entry_count;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(this.version == 0) {
+				this._writeData(data,mp4lib_Fields.FIELD_UINT32,this.entries[i].segment_duration,{ fileName : "EditListBox.hx", lineNumber : 30, className : "mp4lib.EditListBox", methodName : "write"});
+				this._writeData(data,mp4lib_Fields.FIELD_UINT32,this.entries[i].media_time,{ fileName : "EditListBox.hx", lineNumber : 31, className : "mp4lib.EditListBox", methodName : "write"});
+			} else {
+				this._writeData(data,mp4lib_Fields.FIELD_UINT64,this.entries[i].segment_duration,{ fileName : "EditListBox.hx", lineNumber : 33, className : "mp4lib.EditListBox", methodName : "write"});
+				this._writeData(data,mp4lib_Fields.FIELD_UINT64,this.entries[i].media_time,{ fileName : "EditListBox.hx", lineNumber : 34, className : "mp4lib.EditListBox", methodName : "write"});
+			}
+			this._writeData(data,mp4lib_Fields.FIELD_UINT16,this.entries[i].media_rate_integer,{ fileName : "EditListBox.hx", lineNumber : 36, className : "mp4lib.EditListBox", methodName : "write"});
+			this._writeData(data,mp4lib_Fields.FIELD_UINT16,this.entries[i].media_rate_fraction,{ fileName : "EditListBox.hx", lineNumber : 37, className : "mp4lib.EditListBox", methodName : "write"});
+		}
+		return this.localPos;
+	}
+	,read: function(data,pos,end) {
+		mp4lib_FullBox.prototype.read.call(this,data,pos,end);
+		var i = 0;
+		var struct = { };
+		this.entry_count = this._readData(data,mp4lib_Fields.FIELD_UINT32);
+		var _g1 = 0;
+		var _g = this.entry_count;
+		while(_g1 < _g) {
+			var i1 = _g1++;
+			this.entries.push({ segment_duration : this._readData(data,this.version == 0 ? mp4lib_Fields.FIELD_UINT32 : mp4lib_Fields.FIELD_UINT64), media_time : this._readData(data,this.version == 0 ? mp4lib_Fields.FIELD_UINT32 : mp4lib_Fields.FIELD_UINT64), media_rate_integer : this._readData(data,mp4lib_Fields.FIELD_UINT16), media_rate_fraction : this._readData(data,mp4lib_Fields.FIELD_UINT16)});
+		}
+		return this.localPos;
+	}
+	,__class__: mp4lib_EditListBox
+});
 var mp4lib_HintMediaHeaderBox = function(size) {
 	mp4lib_FullBox.call(this,"hmhd",size);
 };
@@ -2768,7 +2816,7 @@ var Mp4lib = $hx_exports["mp4lib"] = function() {
 };
 Mp4lib.__name__ = true;
 Mp4lib.Version = function() {
-	return "v1.0-58-g8ab760f";
+	return "1.0-73-gff55da4";
 };
 Mp4lib.doGenerateInitSegment = function(tracks) {
 	var moov_file = new mp4lib_File();

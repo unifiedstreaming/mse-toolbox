@@ -22,7 +22,7 @@ class DashJs {
                                         "com.widevine.alpha":       {"serverURL": Argan.getDefault("drm_server_widevine","com.widevine.alpha", "https://widevine-proxy.appspot.com/proxy")},
                                         "com.microsoft.playready":  {"serverURL": Argan.getDefault("drm_server_playready","com.widevine.alpha", 'https://playready.directtaps.net/pr/svc/rightsmanager.asmx?PlayRight=1&UseSimpleNonPersistentLicense=1&PlayEnablers=786627D8-C2A6-44BE-8F88-08AE255B01A7')}
                                      });
-            player.setSegmentOverlapToleranceTime(Argan.getDefault("setSegmentOverlapToleranceTime","Segment overlap tolorance threshold", 4));
+            //player.setSegmentOverlapToleranceTime(Argan.getDefault("setSegmentOverlapToleranceTime","Segment overlap tolorance threshold", 4));
             player.attachTTMLRenderingDiv(document.getElementById("ttml"));
         }catch(e:Dynamic){ Browser.console.log(e); }
 

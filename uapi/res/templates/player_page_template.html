@@ -1,202 +1,213 @@
 <html>
-    <head>
-        <style>
-            html, body {
-                font-family:Arial, Helvetica, sans-serif;
-                background: dimgray;
-                color: black;
-                padding: 0;
-                margin: 0;
-                width: 100%;
-                height: 100%;
-                font-size: 10px;
-                font-family: sans-serif;
-            }
-            .title {
-                top: 1.5px;
-                background: inherit;
-                padding-left: 5px;
-                padding-right: 5px;
-            }
-            .title, .title a {
-                position: absolute;
-                right: 0px;
-                font-weight: 100;
-                font-size: 10px;
-                user-select: none;
-                font-variant-caps: small-caps;
-                text-decoration: none;
-            }
-            .loading {
-                width: 100%;
-                position: fixed;
-                height: 100%;
-                /*filter: blur(1.2px);*/
-                visibility: visible;
-            }
-            .hide {
-                animation: hide .3s linear forwards;
-            }
-            .loading div {
-                width: 20%;
-                color: white;
-                margin: 0;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                position: absolute;
-                left: 50%;
-                opacity: .5;
-            }
-            .loading div svg {
-                animation: loading 5s infinite linear backwards;
-            }
-            a {
-                position: relative !important;
-                color: black;
-            }
-            .controls{
-                position:absolute;
-                bottom: 0;
-                width: 100%;
-                background: gainsboro;
-                overflow: hidden;
-            }
-            .messagebox{
-                overflow: hidden;
-            }
-            .controls #error {
-                overflow: auto;
-                margin: 0px 0px 0px 2px;
-                max-height: 250px;
-                display: inline-block;
-                width: 100%;
-            }
-            #error .message {
-                font-size: 10px !important;
-                font-family: Menlo, monospace;
-                font-weight: 100;
-                -webkit-font-smoothing: antialiased;
-                border-bottom: 1px solid grey;
-                white-space: pre;
-            }
-            
-            .message:hover {
-                background: lightgray;
-            }
+	<head>
+		<style>
+			html, body {
+				font-family:Arial, Helvetica, sans-serif;
+				background: dimgray;
+				color: black;
+				padding: 0;
+				margin: 0;
+				width: 100%;
+				height: 100%;
+				font-size: 10px;
+				font-family: sans-serif;
+			}
+			.title {
+				top: 1.5px;
+				background: inherit;
+				padding-left: 5px;
+				padding-right: 5px;
+			}
+			.title, .title a {
+				position: absolute;
+				right: 0px;
+				font-weight: 100;
+				font-size: 10px;
+				user-select: none;
+				font-variant-caps: small-caps;
+				text-decoration: none;
+			}
+			.loading {
+				width: 100%;
+				position: fixed;
+				height: 100%;
+				/*filter: blur(1.2px);*/
+				visibility: visible;
+			}
+			.hide {
+				animation: hide .3s linear forwards;
+			}
+			.loading div {
+				width: 20%;
+				color: white;
+				margin: 0;
+				top: 50%;
+				transform: translate(-50%, -50%);
+				position: absolute;
+				left: 50%;
+				opacity: .5;
+			}
+			.loading div svg {
+				animation: loading 5s infinite linear backwards;
+			}
+			a {
+				position: relative !important;
+				color: black;
+			}
+			
+			.messagebox{
+				overflow: hidden;
+			}
+			#controls{
+				position:absolute;
+				bottom: 0;
+				width: 100%;
+				background: gainsboro;
+				overflow: hidden;
+			}
+			#controls #error {
+				overflow: auto;
+				margin: 0px 0px 0px 2px;
+				max-height: 250px;
+				display: inline-block;
+				width: 100%;
+			}
+			#error .message {
+				font-size: 10px !important;
+				font-family: Menlo, monospace;
+				font-weight: 100;
+				-webkit-font-smoothing: antialiased;
+				border-bottom: 1px solid grey;
+				white-space: pre;
+			}
+			
+			.message:hover {
+				background: lightgray;
+			}
 
-            .folded {
-                height: 15px;
-                overflow:hidden;
-                
-            }
-            #error {
-                display: block;
-            }
+			.folded {
+				height: 15px;
+				overflow:hidden;
+				
+			}
+			#error {
+				display: block;
+			}
 
-            .folded #error {
-                display: none;
-            }
-            #messagecount {
-                margin-left: 2px;
-                user-select: none;
-                cursor: pointer;
-                height: 15px;
-            }
-            #messagecount:hover {
-                text-decoration: underline;
-            }
-            #messagecount::before {
-                content: "▼";
-                margin-right: 2px;
-                display: inline-block;
-                transition: transform 100ms linear;
-            }
-            .folded #messagecount::before {
-                content: "▼";
-                transform: rotate(-90deg);
-                display: inline-block;
-                margin-right: 2px;
-            }
+			.folded #error {
+				display: none;
+			}
+			#messagecount {
+				margin-left: 2px;
+				user-select: none;
+				cursor: pointer;
+				height: 15px;
+			}
+			#messagecount:hover {
+				text-decoration: underline;
+			}
+			#messagecount::before {
+				content: "▼";
+				margin-right: 2px;
+				display: inline-block;
+				transition: transform 100ms linear;
+			}
+			.folded #messagecount::before {
+				content: "▼";
+				transform: rotate(-90deg);
+				display: inline-block;
+				margin-right: 2px;
+			}
+			#video_controls_wrapper, #controls_custom {
+				position: absolute;
+			}
+			#controls_custom {
+				width: 100%;
+				height: 100%;
+				top: 0;
+			}
+			#controls_elements {
+				padding: 10px 12px 5px 12px;
+				display: flex;
+				flex-wrap: wrap;
+			}
+			#controls_elements div:hover {
+				background: lightgrey;
+			}
+			#controls_elements label {
+				margin-left: 2px;
+			}
+			#controls_elements div select {
+				width: 99%;
+				cursor:pointer;
+			}
+			@media (max-width: 1100px) {
+				#controls_elements div {
+					width: 25%;
+				}
+			}
+			@media (max-width: 800px) {
+				#controls_elements div {
+					width: 33%;
+				}
+			}
+			@media (max-width: 400px) {
+				#controls_elements div {
+					width: 50%;
+				}
+			}
 
-            #controls_elements {
-                padding: 10px 12px 5px 12px;
-                display: flex;
-                flex-wrap: wrap;
-            }
-            #controls_elements div:hover {
-                background: lightgrey;
-            }
-            #controls_elements label {
-                margin-left: 2px;
-            }
-            #controls_elements div select {
-                width: 99%;
-                cursor:pointer;
-            }
-            @media (max-width: 1100px) {
-                #controls_elements div {
-                    width: 25%;
-                }
-            }
-            @media (max-width: 800px) {
-                #controls_elements div {
-                    width: 33%;
-                }
-            }
-            @media (max-width: 400px) {
-                #controls_elements div {
-                    width: 50%;
-                }
-            }
+			/*  make scrollbar invisible *
+			::-webkit-scrollbar {
+				width: 0px;  
+				background: transparent;  
+			}*/
+			
+			@keyframes loading {
+				from {transform:rotate(0deg);}
+				to {transform:rotate(360deg);}
+			}
+			@keyframes hide {
+				from {opacity:.8; visibility: visible;}
+				to {opacity: 0.0; visibility: hidden;}
+			}
 
-            /*  make scrollbar invisible *
-            ::-webkit-scrollbar {
-                width: 0px;  
-                background: transparent;  
-            }*/
-            
-            @keyframes loading {
-                from {transform:rotate(0deg);}
-                to {transform:rotate(360deg);}
-            }
-            @keyframes hide {
-                from {opacity:.8; visibility: visible;}
-                to {opacity: 0.0; visibility: hidden;}
-            }
-
-        </style>
-        <script>
-            if(!frameElement)
-                throw "check same-origin policy";
-            else
-                if('hook' in frameElement)
-                    frameElement.hook(window);
-            //used /res/players/*:
-            var uri = unescape('::uri::'); 
-            var title = unescape('::title:: (::title_version::)');
-        </script>
-        ::head::
-    </head>
-    <body>
-        <div id="loader" class="loading">
-            <div>
-            ::loading::
-            </div>
-        </div>
-        <video id="video" width="100%" $$poster() ::if attr_controls::controls::end:: ::if attr_playsinline::playsinline::end:: ::if attr_muted::muted::end:: ::if attr_autoplay::autoplay::end:: ></video>
-        <div id="ttml"></div>
-            ::body::
-            
-        <div class="controls">
-            <span class="title">::title::&nbsp;<a target="_blank" href="::title_href::">(::title_version::)</a></span>
-            <div class="messagebox folded"><div id="messagecount">no messages
-
-            </div><div id="error"></div></div>
-            ::controls::
-        </div>
-        <script>
-            if('hook_end' in frameElement)
-                frameElement.hook_end(window, video);
-        </script>
-    </body>
+		</style>
+		<script>
+			if(!frameElement)
+				throw "check same-origin policy";
+			else
+				if('hook' in frameElement)
+					frameElement.hook(window);
+			//used /res/players/*:
+			var uri = unescape('::uri::'); 
+			var title = unescape('::title:: (::title_version::)');
+		</script>
+		::head::
+	</head>
+	<body>
+		<div id="loader" class="loading">
+			<div>
+			::loading::
+			</div>
+		</div>
+		<div id="video_controls_wrapper">
+			<video id="video" width="100%" $$poster() ::if attr_controls::controls::end:: ::if attr_playsinline::playsinline::end:: ::if attr_muted::muted::end:: ::if attr_autoplay::autoplay::end:: ></video>
+			<div id="ttml"></div>
+			<div id="controls_custom"></div>
+		</div>
+		::body::
+		<div id="controls">
+			<span class="title">::title::&nbsp;<a target="_blank" href="::title_href::">(::title_version::)</a></span>
+			<div class="messagebox folded">
+				<div id="messagecount">no messages</div>
+				<div id="error"></div>
+			</div>
+			::controls::
+		</div>
+		<script>
+			if('hook_end' in frameElement)
+				frameElement.hook_end(window, video);
+		</script>
+	</body>
 </html>

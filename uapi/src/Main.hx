@@ -12,7 +12,8 @@ typedef PlayerHandle = {
 	reload:String->String->PlayerOptions->js.Promise<PlayerHandle>,
 	frame:js.html.IFrameElement,
 	player:Dynamic,
-	video:js.html.VideoElement
+	video:js.html.VideoElement,
+	controls_custom:js.html.DivElement
 }
 
 /**
@@ -217,7 +218,8 @@ class Main {
 							},
 							frame: iframe, 
 							player:Reflect.field(iframe.contentWindow, "player"), 
-							video: Reflect.field(iframe.contentWindow, "video")
+							video: Reflect.field(iframe.contentWindow, "video"),
+							controls_custom: Reflect.field(iframe.contentWindow, "controls_custom")
 						}
 				resolve(hndl);
 			});

@@ -493,8 +493,10 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 		iframe1.hook = function(contentWindow) {
 			contentWindow.config = Reflect.field(player_config,player);
 			contentWindow.addEventListener("error",function(e1) {
-				reject(e1);
-				handleError(e1,"error.message:" + e1.message + ", " + e1.filename + ":" + e1.lineno,contentWindow);
+				if(e1.message != "ResizeObserver loop limit exceeded") {
+					reject(e1);
+					handleError(e1,"error.message:" + e1.message + ", " + e1.filename + ":" + e1.lineno,contentWindow);
+				}
 			});
 			contentWindow.onunhandledrejection = function(e2) {
 				reject(e2);
@@ -585,7 +587,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-78-g2b06f6a";
+	return "1.0-79-g1126f6e";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);

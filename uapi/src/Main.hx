@@ -250,8 +250,10 @@ class Main {
 			iframe.hook = function(contentWindow:Dynamic){
 				contentWindow.config = Reflect.field(player_config, player);
 				contentWindow.addEventListener("error", function(e:js.html.ErrorEvent){
-					reject(e);
-					handleError(e, 'error.message:${e.message}, ${e.filename}:${e.lineno}', contentWindow);
+					if(e.message != "ResizeObserver loop limit exceeded"){
+						reject(e);
+						handleError(e, 'error.message:${e.message}, ${e.filename}:${e.lineno}', contentWindow);
+					}
 				});
 				contentWindow.onunhandledrejection = function(e:Dynamic) { //safari does not do trigger addEventListener('unhandledrejection',...)
 					reject(e);

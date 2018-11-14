@@ -587,7 +587,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-79-g1126f6e";
+	return "1.0-83-g65425c9";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);
@@ -2274,22 +2274,77 @@ uapi_Hooks.HashPipe = function(immediate) {
 	var pipe = null;
 	var _args = new haxe_ds_StringMap();
 	var _values = [];
+	var updateHash = function(args,values,rewrite,toggle) {
+		if(toggle == null) {
+			toggle = true;
+		}
+		if(rewrite == null) {
+			rewrite = false;
+		}
+		if(args != null) {
+			if(rewrite) {
+				if(args != null) {
+					_args = args;
+				}
+				if(values != null) {
+					_values = values;
+				}
+			} else {
+				var k = args.keys();
+				while(k.hasNext()) {
+					var k1 = k.next();
+					if(!(__map_reserved[k1] != null ? _args.existsReserved(k1) : _args.h.hasOwnProperty(k1))) {
+						var value = __map_reserved[k1] != null ? args.getReserved(k1) : args.h[k1];
+						if(__map_reserved[k1] != null) {
+							_args.setReserved(k1,value);
+						} else {
+							_args.h[k1] = value;
+						}
+					} else if(toggle && (__map_reserved[k1] != null ? args.getReserved(k1) : args.h[k1]) == "") {
+						args.remove(k1);
+					}
+				}
+				if(values != null) {
+					var _g = 0;
+					while(_g < values.length) {
+						var v = values[_g];
+						++_g;
+						var str = v == null ? "null" : "" + v;
+						if(_values.indexOf(str) == -1) {
+							_values.push(str);
+						} else if(toggle) {
+							var updateHash1 = _values.indexOf(str);
+							_values.splice(updateHash1,1);
+						}
+					}
+				}
+			}
+			var k2 = _args.keys();
+			while(k2.hasNext()) {
+				var k3 = k2.next();
+				var updateHash2 = __map_reserved[k3] != null ? _args.getReserved(k3) : _args.h[k3];
+				_values.push("" + k3 + "=" + updateHash2);
+			}
+			var updateHash3 = _values.join("/");
+			window.location.hash = "!/" + updateHash3;
+		}
+	};
 	var hashChange = function(e) {
 		var hash = window.location.hash;
 		var toggle_arguments = [];
 		if(pipe != null) {
 			_args = uapi_Utils.KeyValueStringParser(hash,false);
 		}
-		var k = _args.keys();
-		while(k.hasNext()) {
-			var k1 = k.next();
-			if((__map_reserved[k1] != null ? _args.getReserved(k1) : _args.h[k1]) == null) {
-				_args.remove(k1);
-				toggle_arguments.push(k1);
+		var k4 = _args.keys();
+		while(k4.hasNext()) {
+			var k5 = k4.next();
+			if((__map_reserved[k5] != null ? _args.getReserved(k5) : _args.h[k5]) == null) {
+				_args.remove(k5);
+				toggle_arguments.push(k5);
 			}
 		}
 		_values = toggle_arguments;
-		pipe({ args : _args, values : _values});
+		pipe({ update : updateHash, args : _args, values : _values});
 	};
 	var retval = { pipe : function(func) {
 		pipe = func;
@@ -2300,61 +2355,7 @@ uapi_Hooks.HashPipe = function(immediate) {
 			return _args;
 		}, values : function() {
 			return _values;
-		}, update : function(args,values,rewrite,toggle) {
-			if(toggle == null) {
-				toggle = true;
-			}
-			if(rewrite == null) {
-				rewrite = false;
-			}
-			if(args != null) {
-				if(rewrite) {
-					if(args != null) {
-						_args = args;
-					}
-					if(values != null) {
-						_values = values;
-					}
-				} else {
-					var k2 = args.keys();
-					while(k2.hasNext()) {
-						var k3 = k2.next();
-						if(!(__map_reserved[k3] != null ? _args.existsReserved(k3) : _args.h.hasOwnProperty(k3))) {
-							var value = __map_reserved[k3] != null ? args.getReserved(k3) : args.h[k3];
-							if(__map_reserved[k3] != null) {
-								_args.setReserved(k3,value);
-							} else {
-								_args.h[k3] = value;
-							}
-						} else if(toggle && (__map_reserved[k3] != null ? args.getReserved(k3) : args.h[k3]) == "") {
-							args.remove(k3);
-						}
-					}
-					if(values != null) {
-						var _g = 0;
-						while(_g < values.length) {
-							var v = values[_g];
-							++_g;
-							var str = v == null ? "null" : "" + v;
-							if(_values.indexOf(str) == -1) {
-								_values.push(str);
-							} else if(toggle) {
-								var retval1 = _values.indexOf(str);
-								_values.splice(retval1,1);
-							}
-						}
-					}
-				}
-				var k4 = _args.keys();
-				while(k4.hasNext()) {
-					var k5 = k4.next();
-					var retval2 = __map_reserved[k5] != null ? _args.getReserved(k5) : _args.h[k5];
-					_values.push("" + k5 + "=" + retval2);
-				}
-				var retval3 = _values.join("/");
-				window.location.hash = "!/" + retval3;
-			}
-		}};
+		}, update : updateHash};
 	}};
 	window.addEventListener("hashchange",hashChange);
 	return retval;

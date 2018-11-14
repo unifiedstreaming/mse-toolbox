@@ -60,9 +60,36 @@ class Hooks {
 	}
 
     public static function HashPipe(immediate:Bool = false):DeferredPipe{
-		var pipe:{ args:Map<String, String>, values:Array<String>}->Dynamic = null;
+		var pipe:{ args:Map<String, String>, values:Array<String>, update:Map<String, String>->Array<String>->Bool->Bool->Void }->Dynamic = null;
         var _args = new Map<String, String>();
         var _values = new Array<String>();
+        var updateHash = function(args:Map<String, String>, ?values:Array<String> = null, ?rewrite:Bool = false, ?toggle = true){
+            if(args != null){
+                if(rewrite){
+                    if(args != null)
+                        _args = args;
+                    if(values != null)
+                        _values = values;
+                }else{
+                    for(k in args.keys())
+                        if(!_args.exists(k))
+                            _args.set(k, args.get(k));
+                        else if(toggle && args.get(k) == "") //toggle
+                            args.remove(k);
+                    if(values != null)
+                        for(v in values){
+                            var str = Std.string(v);
+                            if(_values.indexOf(str) == -1)
+                                _values.push(str);
+                            else if(toggle)
+                                _values.splice(_values.indexOf(str), 1); //toggle
+                        }
+                }
+                for(k in _args.keys())
+                    _values.push('$k=${_args.get(k)}');
+                js.Browser.window.location.hash = "!/"+_values.join("/");
+            }
+        }
         var hashChange = function(?e:js.html.Event = null){
             var hash = js.Browser.window.location.hash;
             var toggle_arguments = [];
@@ -75,6 +102,7 @@ class Hooks {
                     }
                 };
                 pipe({
+                    update: updateHash,
                     args: _args,
                     values: _values = toggle_arguments
                 });
@@ -86,33 +114,7 @@ class Hooks {
                 return {
                     args: function(){ return _args; },
                     values: function(){ return _values; },
-                    update: function(args:Map<String, String>, ?values:Array<String> = null, ?rewrite:Bool = false, ?toggle = true){
-                        if(args != null){
-                            if(rewrite){
-                                if(args != null)
-                                    _args = args;
-                                if(values != null)
-                                    _values = values;
-                            }else{
-                                for(k in args.keys())
-                                    if(!_args.exists(k))
-                                        _args.set(k, args.get(k));
-                                    else if(toggle && args.get(k) == "") //toggle
-                                        args.remove(k);
-                                if(values != null)
-                                    for(v in values){
-                                        var str = Std.string(v);
-                                        if(_values.indexOf(str) == -1)
-                                            _values.push(str);
-                                        else if(toggle)
-                                            _values.splice(_values.indexOf(str), 1); //toggle
-                                    }
-                            }
-                            for(k in _args.keys())
-                                _values.push('$k=${_args.get(k)}');
-                            js.Browser.window.location.hash = "!/"+_values.join("/");
-                        }
-                    }
+                    update: updateHash
                 }
             }
         };

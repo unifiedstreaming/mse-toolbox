@@ -106,6 +106,7 @@ class Hooks {
                         toggle_arguments.push(k); 
                     }
                 };
+                //callback pipe:
                 pipe({
                     update: updateHash,
                     args: _args,

@@ -33,6 +33,8 @@ players:
  - [hls.js](https://github.com/video-dev/hls.js)
  - [hasplayer.js](https://github.com/Orange-OpenSource/hasplayer.js)
 
+## Video debugging tools
+
 ### [mp4lib.js](mp4lib/)
 
 MP4 box parser

@@ -1,0 +1,11 @@
+-cp src
+-cp lib
+-cp ../macro
+-js bin/uapi.js
+-main Main
+-lib argan
+
+-dce full
+#--times
+#-D documentwrite
+#-debug

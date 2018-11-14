@@ -429,6 +429,9 @@ Main.writePlayer = function(parent,uri,player_version_string,player_config,injec
 					hndl = nframe;
 					return nframe;
 				});
+			}, destroy : function() {
+				iframe.parentElement.parentElement.removeChild(iframe.parentElement);
+				hndl = null;
 			}, frame : iframe, player : hndl1, video : hndl2, controls_custom : Reflect.field(iframe.contentWindow,"controls_custom")};
 			resolve1(hndl);
 		});
@@ -589,7 +592,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-84-g5f11388";
+	return "1.0-86-gbfbc784";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);
@@ -598,6 +601,9 @@ Main.absUrl = function(url) {
 	var abs = window.document.createElement("a");
 	abs.href = url;
 	return abs.href;
+};
+Main.requestUrl = function(url) {
+	return uapi_JsUtils.HttpRequest(url);
 };
 Main.dynamicToMap = function(object) {
 	var retval = new haxe_ds_StringMap();
@@ -2364,6 +2370,23 @@ uapi_Hooks.HashPipe = function(immediate) {
 		}, update : updateHash};
 	}};
 	window.addEventListener("hashchange",hashChange);
+	return retval;
+};
+var uapi_JsUtils = function() { };
+$hxClasses["uapi.JsUtils"] = uapi_JsUtils;
+uapi_JsUtils.__name__ = true;
+uapi_JsUtils.HttpRequest = function(url) {
+	var pipe = null;
+	var retval = { pipe : function(func) {
+		pipe = func;
+	}};
+	window.fetch(url,{ "credentials" : "omit", "headers" : { }, "referrerPolicy" : "no-referrer-when-downgrade", "body" : null, "method" : "GET", "mode" : "cors"}).then(function(response) {
+		response.text().then(function(res) {
+			if(pipe != null) {
+				pipe(res);
+			}
+		});
+	});
 	return retval;
 };
 var uapi_Utils = function() { };

@@ -10,6 +10,7 @@ import uapi.Utils;
 typedef PlayerOptions = Dynamic;
 typedef PlayerHandle = {
 	reload:String->String->PlayerOptions->js.Promise<PlayerHandle>,
+	destroy: Void->Void,
 	frame:js.html.IFrameElement,
 	player:Dynamic,
 	video:js.html.VideoElement,
@@ -216,6 +217,7 @@ class Main {
 									return nframe;
 								});
 							},
+							destroy: function(){ iframe.parentElement.parentElement.removeChild(iframe.parentElement); hndl = null; },
 							frame: iframe, 
 							player:Reflect.field(iframe.contentWindow, "player"), 
 							video: Reflect.field(iframe.contentWindow, "video"),
@@ -380,7 +382,10 @@ class Main {
 		abs.href = url;
 		return abs.href;
 	}
-
+	@:keep
+	public static function requestUrl(url:String){
+		return uapi.JsUtils.HttpRequest(url);
+	}
 	private static function dynamicToMap(object:Dynamic):Map<String,Dynamic>{
 		var retval:Map<String,Dynamic> = new Map<String,Dynamic>();
 		for(f in Reflect.fields(object))

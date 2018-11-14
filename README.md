@@ -10,6 +10,8 @@ a simple iframe page writer, used for injecting generated html5 player-page ifra
  - [hls.js](https://github.com/video-dev/hls.js)
  - [hasplayer.js](https://github.com/Orange-OpenSource/hasplayer.js)
 
+[Demo](https://unifiedstreaming.github.io/mse-toolbox/uapi/bin/)
+
 ### [mp4lib.js](mp4lib/)
 mp4 box parser
 

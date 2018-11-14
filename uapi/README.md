@@ -1,6 +1,7 @@
-# UAPI
+# uapi.js
 
-Unified player api 
+AKA, Unified player API
+
 Simple iframe page writer, used for injecting generated html5 player-page iframes dynamically. Currently supports the following players:
  - [dashjs](https://github.com/Dash-Industry-Forum/dash.js)
  - [shaka](https://github.com/google/shaka-player)
@@ -11,8 +12,11 @@ Simple iframe page writer, used for injecting generated html5 player-page iframe
 
     haxe build.hxml
 
-## api documentation
-    
+See [build.hxml](./build.hxml) for inline documentatation describing the different steps in the build process.
+
+## API documentation
+
+-----------
     uapi.getPlayers()
 
 Will return an object with all supported players and configuration options, that may be passed to uapi.writePlayer
@@ -65,12 +69,31 @@ Will return an object with all supported players and configuration options, that
 	}
 }
 ```
+-----------
+    uapi.writePlayer(
+		parent:js.html.Element, 
+		uri:String, 
+		player_version_string:String = "dashjs", 
+		player_config:Dynamic = null, 
+		?inject_head:String = null, 
+		?inject_body:String = null):js.Promise<{
+			reload:String->String->PlayerOptions->js.Promise<PlayerHandle>,
+			frame:js.html.IFrameElement,
+			player:Dynamic,
+			video:js.html.VideoElement,
+			controls_custom:js.html.DivElement
+		}>
 
-    uapi.writePlayer();
+Writes player to target DOMElement
 
-    
+## Adding new player versions
+[res/players](res/players) contains json files with the supported versions and paths to each player
+- [res/players/dashjs.json](res/players/dashjs.json)
+- [res/players/shaka.json](res/players/shaka.json)
+- [res/players/hlsjs.json](res/players/hlsjs.json)
+- [res/players/hasplayer.json](res/players/hasplayer.json)
 
-## usage examples
 
-## test page
-[uapi test page](bin/index.html)
+
+## [uapi demo page](https://unifiedstreaming.github.io/mse-toolbox/uapi/bin/index.html)
+use this demo page to generate implementation code examples.

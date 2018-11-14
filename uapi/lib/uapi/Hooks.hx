@@ -60,10 +60,10 @@ class Hooks {
 	}
 
     public static function HashPipe(immediate:Bool = false):DeferredPipe{
-		var pipe:{ args:Map<String, String>, values:Array<String>, update:Map<String, String>->Array<String>->Bool->Bool->Void }->Dynamic = null;
+		var pipe:{ args:Map<String, String>, values:Array<String>, update:Map<String, String>->Array<String>->Bool->Bool->Bool->Void }->Dynamic = null;
         var _args = new Map<String, String>();
         var _values = new Array<String>();
-        var updateHash = function(args:Map<String, String>, ?values:Array<String> = null, ?rewrite:Bool = false, ?toggle = true){
+        var updateHash = function(args:Map<String, String>, ?values:Array<String> = null, ?rewrite:Bool = false, ?toggle = true, ?replacestate:Bool){
             if(args != null){
                 if(rewrite){
                     if(args != null)
@@ -87,7 +87,12 @@ class Hooks {
                 }
                 for(k in _args.keys())
                     _values.push('$k=${_args.get(k)}');
-                js.Browser.window.location.hash = "!/"+_values.join("/");
+
+                var updated_hash = "!/"+_values.join("/");
+                if(replacestate)
+                    js.Browser.window.history.replaceState(null, null, "#" + updated_hash)
+                else
+                    js.Browser.window.location.hash = updated_hash;
             }
         }
         var hashChange = function(?e:js.html.Event = null){

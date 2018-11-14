@@ -567,12 +567,14 @@ Main.HashPipeJs = function(immediate) {
 	return { pipe : function(func) {
 		var retval = uapi_Hooks.HashPipe(immediate).pipe(function(data) {
 			var retval1 = Main.mapToDynamic(data.args);
-			func({ args : retval1, values : data.values});
+			func({ args : retval1, values : data.values, update : function(args,values,rewrite,toggle) {
+				data.update(Main.dynamicToMap(args),values,rewrite,toggle,true);
+			}});
 		});
 		var _hx_func = retval.update;
-		retval.update = function(args,values,rewrite,toggle) {
-			var tmp = Main.dynamicToMap(args);
-			_hx_func(tmp,values,rewrite,toggle);
+		retval.update = function(args1,values1,rewrite1,toggle1) {
+			var tmp = Main.dynamicToMap(args1);
+			_hx_func(tmp,values1,rewrite1,toggle1);
 		};
 		return retval;
 	}};
@@ -587,7 +589,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-83-g65425c9";
+	return "1.0-84-g5f11388";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);
@@ -2274,7 +2276,7 @@ uapi_Hooks.HashPipe = function(immediate) {
 	var pipe = null;
 	var _args = new haxe_ds_StringMap();
 	var _values = [];
-	var updateHash = function(args,values,rewrite,toggle) {
+	var updateHash = function(args,values,rewrite,toggle,replacestate) {
 		if(toggle == null) {
 			toggle = true;
 		}
@@ -2325,8 +2327,12 @@ uapi_Hooks.HashPipe = function(immediate) {
 				var updateHash2 = __map_reserved[k3] != null ? _args.getReserved(k3) : _args.h[k3];
 				_values.push("" + k3 + "=" + updateHash2);
 			}
-			var updateHash3 = _values.join("/");
-			window.location.hash = "!/" + updateHash3;
+			var updated_hash = "!/" + _values.join("/");
+			if(replacestate) {
+				window.history.replaceState(null,null,"#" + updated_hash);
+			} else {
+				window.location.hash = updated_hash;
+			}
 		}
 	};
 	var hashChange = function(e) {

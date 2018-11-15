@@ -161,4 +161,20 @@ class Macros
 	{	
 		return { expr : EConst(CString(sys.net.Host.localhost())), pos : haxe.macro.Context.currentPos() };
 	}
+	
+	macro public static function GetPlayersCDNJS(player:String) 
+	{	
+		var data = haxe.Json.parse(haxe.Http.requestUrl('https://api.cdnjs.com/libraries/${player}/'));
+		if(data != null){
+			var assets:Array<Dynamic> = data.assets;
+			for(a in assets){
+				trace('https://cdnjs.cloudflare.com/ajax/libs/dashjs/${a.version}/${a.files[0]}');
+			}
+		}
+		
+		//sys.io.File.saveContent('my_folder/my_file.json',content);
+		
+		return { expr : EConst(CString(sys.net.Host.localhost())), pos : haxe.macro.Context.currentPos() };
+	}
+
 }

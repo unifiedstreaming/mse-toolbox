@@ -8,6 +8,7 @@
 -resource res/templates/player_page_template.html@template
 -resource res/templates/controls_template.html@controls_template
 
+#-macro Macros.GetPlayersCDNJS("dashjs")
 -resource res/players/dashjs.json@dashjs-src
 --macro Macros.getPlayerCode("res/players/DashJs.hx@dashjs", true)
 
@@ -19,7 +20,7 @@
 
 -resource res/players/hasplayer.json@hasplayer-src
 --macro Macros.getPlayerCode("res/players/HasPlayer.hx@hasplayer", true)
-
+ 
 
 -dce full
 #--times

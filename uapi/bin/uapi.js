@@ -592,7 +592,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "1.0-86-gbfbc784";
+	return "1.0-87-gf7aa5d7";
 };
 Main.write = function(str) {
 	uapi_Utils.write(str);
@@ -602,8 +602,8 @@ Main.absUrl = function(url) {
 	abs.href = url;
 	return abs.href;
 };
-Main.requestUrl = function(url) {
-	return uapi_JsUtils.HttpRequest(url);
+Main.requestUrl = function(url,binary) {
+	return uapi_JsUtils.HttpRequest(url,binary);
 };
 Main.dynamicToMap = function(object) {
 	var retval = new haxe_ds_StringMap();
@@ -2375,13 +2375,20 @@ uapi_Hooks.HashPipe = function(immediate) {
 var uapi_JsUtils = function() { };
 $hxClasses["uapi.JsUtils"] = uapi_JsUtils;
 uapi_JsUtils.__name__ = true;
-uapi_JsUtils.HttpRequest = function(url) {
+uapi_JsUtils.HttpRequest = function(url,binary,method,headers,body) {
+	if(method == null) {
+		method = "GET";
+	}
+	if(binary == null) {
+		binary = false;
+	}
 	var pipe = null;
 	var retval = { pipe : function(func) {
 		pipe = func;
 	}};
-	window.fetch(url,{ "credentials" : "omit", "headers" : { }, "referrerPolicy" : "no-referrer-when-downgrade", "body" : null, "method" : "GET", "mode" : "cors"}).then(function(response) {
-		response.text().then(function(res) {
+	window.fetch(url,{ "credentials" : "omit", "headers" : headers, "referrerPolicy" : "no-referrer-when-downgrade", "body" : body, "method" : method, "mode" : "cors"}).then(function(response) {
+		var p = binary ? response.arrayBuffer() : response.text();
+		p.then(function(res) {
 			if(pipe != null) {
 				pipe(res);
 			}

@@ -23,24 +23,8 @@ typedef PlayerHandle = {
  */
 @:expose("uapi")
 class Main {
-    public function new() {        
-        Browser.window.fetch("https://api.cdnjs.com/libraries/shaka-player", 
-        {   "credentials": RequestCredentials.OMIT,
-            "headers":{},
-            "referrerPolicy": ReferrerPolicy.NO_REFERRER_WHEN_DOWNGRADE,
-            "body":null,
-            "method":"GET",
-            "mode": RequestMode.CORS
-        }).then(function(response:Response){
-            response.json().then(function(res){
-                trace(res);
-            });
-        });
-    }
-
-    static function main() {
-        //new Main();
-    }
+    public function new(){};
+    static function main(){};
 
 	@:keep
 	public static function getPlayers(){
@@ -301,9 +285,9 @@ class Main {
 			doc.write(html);
 			doc.close();
 		#else
-			/*
-				multiple options to try and make any browser show the generated source in the debug inspector
-				only data: url seems to work, but data: runs in a new, empty, security context. sandbox attribute does not enable it.
+			/*	
+				☝ multiple options to try and make any browser show the generated source in the debug inspector
+				only data: url seems to work, but data: runs in a new, empty, security context. sandbox attribute "allow-same-origin" does not enable it.
 
 				sandbox attribute "allow-same-origin" does not seem to have any effect with iframe.src = "data:...", iframe is not able to access parent
 				https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox
@@ -383,8 +367,8 @@ class Main {
 		return abs.href;
 	}
 	@:keep
-	public static function requestUrl(url:String){
-		return uapi.JsUtils.HttpRequest(url);
+	public static function requestUrl(url, binary){
+		return uapi.JsUtils.HttpRequest(url,binary);
 	}
 	private static function dynamicToMap(object:Dynamic):Map<String,Dynamic>{
 		var retval:Map<String,Dynamic> = new Map<String,Dynamic>();

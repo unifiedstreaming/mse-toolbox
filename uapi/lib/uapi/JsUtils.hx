@@ -4,23 +4,25 @@ import js.html.RequestCredentials;
 import js.html.ReferrerPolicy;
 import js.html.RequestMode;
 import js.html.Response;
+import js.Promise;
 import uapi.Hooks;
 class JsUtils {
-	public static function HttpRequest(url):DeferredPipe{
-        var pipe:String->Void = null;
+	public static function HttpRequest(url:String, binary:Bool = false, method:String = "GET", headers:Dynamic = null, body:Dynamic = null):DeferredPipe{
+        var pipe:Dynamic->Void = null;
         var retval:DeferredPipe = { pipe: function(func) {
                 pipe = func;
             }
         };
 		Browser.window.fetch(url,
         {   "credentials": RequestCredentials.OMIT,
-            "headers":{},
+            "headers":headers,
             "referrerPolicy": ReferrerPolicy.NO_REFERRER_WHEN_DOWNGRADE,
-            "body":null,
-            "method":"GET",
+            "body":body,
+            "method": method,
             "mode": RequestMode.CORS
         }).then(function(response:Response){
-            response.text().then(function(res){
+            var p:Promise<Dynamic> = binary ? response.arrayBuffer() : response.text();
+            p.then(function(res){
                 if(pipe != null)
                     pipe(res);
             });

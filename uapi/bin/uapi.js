@@ -592,10 +592,10 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "stable-3-ge7f7f5a";
+	return "stable-7-gc1860ae";
 };
 Main.write = function(str) {
-	uapi_Utils.write(str);
+	uapi_JsUtils.write(str);
 };
 Main.absUrl = function(url) {
 	var abs = window.document.createElement("a");
@@ -2396,6 +2396,19 @@ uapi_JsUtils.HttpRequest = function(url,binary,method,headers,body) {
 	});
 	return retval;
 };
+uapi_JsUtils.write = function(str) {
+	var it;
+	var last = window.document.body.lastElementChild;
+	it = last;
+	while(it != null) {
+		it = it.lastElementChild;
+		if(it != null) {
+			last = it;
+		}
+	}
+	last.parentElement.insertAdjacentHTML("afterbegin",str);
+	return;
+};
 var uapi_Utils = function() { };
 $hxClasses["uapi.Utils"] = uapi_Utils;
 uapi_Utils.__name__ = true;
@@ -2437,19 +2450,6 @@ uapi_Utils.KeyValueStringParser = function(location,QueryString) {
 		}
 	}
 	return retval;
-};
-uapi_Utils.write = function(str) {
-	var it;
-	var last = window.document.body.lastElementChild;
-	it = last;
-	while(it != null) {
-		it = it.lastElementChild;
-		if(it != null) {
-			last = it;
-		}
-	}
-	last.parentElement.insertAdjacentHTML("afterbegin",str);
-	return;
 };
 function $iterator(o) { if( o instanceof Array ) return function() { return HxOverrides.iter(o); }; return typeof(o.iterator) == 'function' ? $bind(o,o.iterator) : o.iterator; }
 var $_, $fid = 0;

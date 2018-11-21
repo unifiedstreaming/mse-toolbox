@@ -2,7 +2,6 @@ package ;
 import js.html.Element;
 import js.html.Node;
 import js.Browser;
-import haxe.io.Bytes;
 import Xml;
 
 typedef GuiTemplate = {
@@ -191,7 +190,7 @@ class Mal {
       if(parent.exists(GUI_PARSER_ATTRIBUTE)){
         uuid = parent.get(GUI_PARSER_ATTRIBUTE);
       } else {
-        uuid = GenerateUUID();
+        uuid = uapi.Utils.GenerateUUID("maluuid-");
         parent.set(GUI_PARSER_ATTRIBUTE, uuid);
       }
       var name = att;
@@ -218,24 +217,5 @@ class Mal {
     }
   }
   
-  private function GenerateUUID():String 
-  {
-    var t = Date.now().getTime();
-    var b:Bytes = Bytes.alloc(16);
-    var c:Int = 1;
-    
-    b.set(0, Std.int(t * 0xFF));
-    while(c < (16)){
-      b.set(c, Math.round(Math.random() * 0xFF));
-      c += 1;
-    }
-    
-    var retval = '${b.toHex()}';
-    var r:EReg = ~/(.{7})(.{4})(.{4})(.{4})(.*)/gi;
-    
-    if(r.match(retval)){
-      retval = r.replace(retval, "$1-$2-$3-$4-$5");
-    }
-    return 'maluuid-$retval';
-  }
+ 
 }

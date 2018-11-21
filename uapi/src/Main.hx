@@ -1,11 +1,8 @@
 package ;
 import js.Browser;
-import js.html.RequestCredentials;
-import js.html.ReferrerPolicy;
-import js.html.RequestMode;
-import js.html.Response;
 import uapi.Hooks;
 import uapi.Utils;
+import uapi.JsUtils;
 
 typedef PlayerOptions = Dynamic;
 typedef PlayerHandle = {
@@ -358,7 +355,7 @@ class Main {
 
 	@:keep	
 	public static function write(str)
-		Utils.write(str);
+		JsUtils.write(str);
 
 	@:keep
 	public static function absUrl(url:String){

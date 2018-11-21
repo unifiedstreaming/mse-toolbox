@@ -38,6 +38,7 @@ class UIManager {
             max-width: 100%;
             max-height: 100%;
             background: rgba(248, 248, 255, 0.8);
+            top:5px;
             border: 1px inset black;
              box-shadow: 0px 0px 3px;
             transition: box-shadow 60ms ease-in;

@@ -24,7 +24,7 @@ class Macros
         var resourceName = arr.length > 1 ? arr[1] : path.file;
 
         var isInitMacro = haxe.macro.PositionTools.getInfos(haxe.macro.Context.currentPos()).file == "--macro";
-        trace("Compiling inline, initiated from " + haxe.macro.PositionTools.getInfos(haxe.macro.Context.currentPos()).file + "\n\tCwd: " + Sys.getCwd());
+        trace("Compiling inline, initiated from " + haxe.macro.PositionTools.getInfos(haxe.macro.Context.currentPos()).file + ", environment:\n\n\tCwd: " + Sys.getCwd() +"\n");
         
         if (FileSystem.exists(filePath)) {
             var command = "haxe";
@@ -32,13 +32,16 @@ class Macros
             var filename = filenameBase + ".js";
             var argan_options = '${filenameBase}.json';
             var command_args = ["-cp" , path.dir, "-main", path.file, "-lib", "argan", "-js", filename, '-D', 'argan_json_output=$argan_options']; //"-D=source-map-content"
-            trace("Compiling...\n\tCmd: " + command + " " + command_args.join(" "));
+            trace("Compiling...\nRunning: " + command + " " + command_args.join(" "));
             var p = try new sys.io.Process(command, command_args) catch ( e : Dynamic ) { trace("getPlayerCode error: no haxe in path?:\n\n\t" +  e); return macro null; };
 		    var output = p.stdout.readAll().toString();
 		    var error = p.stderr.readAll().toString();
+			Sys.println('----------------------------------------');
             if(error.length > 0)
-                trace('getPlayerCode("$filePath") -> error compiling "$filePath":\n\n\t' + error);
-            
+                Sys.println('getPlayerCode("$filePath") -> error compiling "$filePath":\n\n\t' + StringTools.trim(error));
+            if(output.length > 0)
+                Sys.println('${StringTools.trim(output)}');
+            Sys.println('----------------------------------------');
             if(FileSystem.exists(argan_options)){
                 haxe.macro.Context.addResource(resourceName + "-argan", File.getBytes(argan_options));
                 if(delete_temp)

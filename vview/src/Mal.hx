@@ -75,8 +75,8 @@ class Mal {
           var paramEl:js.html.Element = cast param;
           //Browser.console.log(element);
           if(paramEl != null){
-            var paramName = paramEl.getAttribute("param");
-            paramEl.removeAttribute("param");
+            var paramName = paramEl.getAttribute(GUI_PARSER_TEMPLATE_PARAM);
+            paramEl.removeAttribute(GUI_PARSER_TEMPLATE_PARAM);
             for(paramName in paramName.split(",")){
               if(StringTools.startsWith(paramName, "@")){
                 var parms = ~/@(.*):(.*)/;
@@ -92,10 +92,10 @@ class Mal {
             }
           }
         }
-        for(param in guiElement.element.querySelectorAll('*[param]')){
+        for(param in guiElement.element.querySelectorAll('*[${GUI_PARSER_TEMPLATE_PARAM}]')){
           mapParams(param);
         }
-        if(guiElement.element.hasAttribute("param")){
+        if(guiElement.element.hasAttribute(GUI_PARSER_TEMPLATE_PARAM)){
           mapParams(guiElement.element);
         }
       }

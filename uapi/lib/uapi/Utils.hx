@@ -52,7 +52,6 @@ class Utils {
 		return '${prefix}${retval}';
 	}
 
-#if false
 	//https://github.com/tsunaminoai/baseEmoji/blob/master/baseEmoji/baseEmoji.py  
 	static var EMOJI = ['\u{231A}', '\u{26BD}', '\u{2764}', '\u{1F34F}', '\u{1F3FB}', '\u{1F436}', '\u{1F600}', '\u{1F697}', '\u{1F34E}', '\u{1F3C0}', '\u{1F3FC}', '\u{1F431}', '\u{1F49B}', '\u{1F4F1}', '\u{1F62C}', '\u{1F695}', '\u{1F350}', '\u{1F3C8}', '\u{1F3FD}', '\u{1F42D}', '\u{1F49A}', '\u{1F4F2}', '\u{1F601}', '\u{1F699}', '\u{26BE}', '\u{1F34A}', '\u{1F3FE}', '\u{1F439}', '\u{1F499}', '\u{1F4BB}', '\u{1F602}', '\u{1F68C}', '\u{2328}', '\u{1F34B}', '\u{1F3BE}', '\u{1F3FF}', '\u{1F430}', '\u{1F49C}', '\u{1F603}', '\u{1F68E}', '\u{1F34C}', '\u{1F3CE}', '\u{1F3D0}', '\u{1F43B}', '\u{1F494}', '\u{1F5A5}', '\u{1F604}', '\u{2763}', '\u{1F349}', '\u{1F3C9}', '\u{1F43C}', '\u{1F5A8}', '\u{1F605}', '\u{1F693}', '\u{1F347}', '\u{1F3B1}', '\u{1F428}', '\u{1F495}', '\u{1F5B1}', '\u{1F606}', '\u{1F691}', '\u{26F3}', '\u{1F353}', '\u{1F42F}', '\u{1F49E}', '\u{1F5B2}', '\u{1F607}', '\u{1F692}', '\u{1F348}', '\u{1F3CC}', '\u{1F493}', '\u{1F579}', '\u{1F609}', '\u{1F690}', '\u{1F981}', '\u{1F352}', '\u{1F3D3}', '\u{1F42E}', '\u{1F497}', '\u{1F5DC}', '\u{1F60A}', '\u{1F69A}', '\u{1F351}', '\u{1F3F8}', '\u{1F437}', '\u{1F496}', '\u{1F4BD}', '\u{1F642}', '\u{1F69B}', '\u{1F34D}', '\u{1F3D2}', '\u{1F43D}', '\u{1F498}',
 				'\u{1F4BE}', '\u{1F643}', '\u{1F69C}', '\u{263A}', '\u{1F345}', '\u{1F3CD}', '\u{1F3D1}', '\u{1F438}', '\u{1F49D}', '\u{1F4BF}', '\u{1F346}', '\u{1F3CF}', '\u{1F419}', '\u{1F49F}', '\u{1F4C0}', '\u{1F60B}', '\u{1F6B2}', '\u{262E}', '\u{1F336}', '\u{1F3BF}', '\u{1F435}', '\u{1F4FC}', '\u{1F60C}', '\u{1F6A8}', '\u{26F7}', '\u{271D}', '\u{1F33D}', '\u{1F4F7}', '\u{1F60D}', '\u{1F648}', '\u{1F694}', '\u{262A}', '\u{1F360}', '\u{1F3C2}', '\u{1F4F8}', '\u{1F618}', '\u{1F649}', '\u{1F68D}', '\u{26F8}', '\u{1F36F}', '\u{1F4F9}', '\u{1F549}', '\u{1F617}', '\u{1F64A}', '\u{1F698}', '\u{2638}', '\u{1F35E}', '\u{1F3A5}', '\u{1F3F9}', '\u{1F412}', '\u{1F619}', '\u{1F696}', '\u{2721}', '\u{1F3A3}', '\u{1F414}', '\u{1F4FD}', '\u{1F61A}', '\u{1F6A1}', '\u{1F9C0}', '\u{1F357}', '\u{1F39E}', '\u{1F427}', '\u{1F52F}', '\u{1F61C}', '\u{1F6A0}', '\u{1F6A3}', '\u{1F356}', '\u{1F3CA}', '\u{1F426}', '\u{1F4DE}', '\u{1F54E}', '\u{1F61D}', '\u{1F69F}', '\u{260E}', '\u{262F}', '\u{1F364}', '\u{1F3C4}', '\u{1F424}', '\u{1F61B}', '\u{1F683}', '\u{2626}', '\u{1F373}', '\u{1F423}', '\u{1F4DF}', '\u{1F68B}', '\u{1F6C0}', '\u{1F911}', '\u{26F9}', '\u{1F354}', '\u{1F425}', '\u{1F4E0}', '\u{1F69D}', '\u{1F6D0}',
@@ -66,36 +65,34 @@ class Utils {
 				'\u{1F517}', '\u{23EA}', '\u{1F4CE}', '\u{1F500}', '\u{1F587}', '\u{2702}', '\u{1F48F}', '\u{1F501}', '\u{1F4D0}', '\u{1F502}', '\u{25C0}', '\u{1F4CF}', '\u{1F46A}', '\u{1F4CC}', '\u{1F53C}', '\u{1F4CD}', '\u{1F53D}', '\u{23EB}', '\u{1F6A9}', '\u{23EC}', '\u{1F3F3}', '\u{27A1}', '\u{1F3F4}', '\u{2B05}', '\u{1F510}', '\u{2B06}', '\u{1F512}', '\u{2B07}', '\u{1F513}', '\u{2197}', '\u{1F50F}', '\u{2198}', '\u{1F58A}', '\u{2199}', '\u{1F58B}', '\u{2196}', '\u{2712}', '\u{2195}', '\u{1F4DD}', '\u{2194}', '\u{270F}', '\u{1F504}', '\u{1F58D}', '\u{21AA}', '\u{1F45A}', '\u{1F58C}', '\u{21A9}', '\u{1F455}', '\u{1F50D}', '\u{2934}', '\u{1F456}', '\u{1F50E}', '\u{2935}', '\u{1F454}', '\u{1F457}', '\u{2139}', '\u{1F459}', '\u{1F458}', '\u{1F524}', '\u{1F484}', '\u{1F521}', '\u{1F48B}', '\u{1F520}', '\u{1F463}', '\u{1F523}', '\u{1F3B5}', '\u{1F460}', '\u{1F3B6}', '\u{1F461}', '\u{3030}', '\u{1F462}', '\u{27B0}', '\u{1F45E}', '\u{2714}', '\u{1F45F}', '\u{1F452}', '\u{1F503}', '\u{2795}', '\u{1F3A9}', '\u{26D1}', '\u{2796}', '\u{2797}', '\u{1F393}', '\u{2716}', '\u{1F451}', '\u{1F392}', '\u{1F4B2}', '\u{1F45D}', '\u{1F4B1}', '\u{1F45B}', '\u{1F45C}', '\u{1F4BC}', '\u{1F453}', '\u{1F51A}', '\u{1F519}', 
 				'\u{1F576}', '\u{1F48D}', '\u{1F51B}', '\u{1F302}', '\u{1F51D}', '\u{1F51C}', '\u{2611}', '\u{1F518}', '\u{26AA}', '\u{26AB}', '\u{1F534}', '\u{1F535}', '\u{1F538}', '\u{1F539}', '\u{1F536}', '\u{1F537}', '\u{1F53A}', '\u{25AA}', '\u{25AB}', '\u{2B1B}', '\u{2B1C}', '\u{1F53B}', '\u{25FC}', '\u{25FB}', '\u{25FE}', '\u{25FD}', '\u{1F532}', '\u{1F533}', '\u{1F508}', '\u{1F509}', '\u{1F50A}', '\u{1F507}', '\u{1F4E3}', '\u{1F4E2}', '\u{1F514}', '\u{1F515}', '\u{1F0CF}', '\u{1F004}', '\u{2660}', '\u{2663}', '\u{2665}', '\u{2666}', '\u{1F3B4}', '\u{1F4AD}', '\u{1F5EF}', '\u{1F4AC}', '\u{1F5E8}', '\u{1F550}', '\u{1F551}', '\u{1F552}', '\u{1F553}', '\u{1F554}', '\u{1F555}', '\u{1F556}', '\u{1F557}', '\u{1F558}', '\u{1F559}', '\u{1F55A}', '\u{1F55B}', '\u{1F55C}', '\u{1F55D}', '\u{1F55E}', '\u{1F55F}', '\u{1F560}', '\u{1F561}', '\u{1F562}', '\u{1F563}', '\u{1F564}', '\u{1F565}', '\u{1F566}', '\u{1F567}', '\u{1F1E6}\u{1F1EB}', '\u{1F1E6}\u{1F1FD}', '\u{1F1E6}\u{1F1F1}', '\u{1F1E9}\u{1F1FF}', '\u{1F1E6}\u{1F1F8}', '\u{1F1E6}\u{1F1E9}', '\u{1F1E6}\u{1F1F4}', '\u{1F1E6}\u{1F1EE}', '\u{1F1E6}\u{1F1F6}', '\u{1F1E6}\u{1F1EC}', '\u{1F1E6}\u{1F1F7}', '\u{1F1E6}\u{1F1F2}', '\u{1F1E6}\u{1F1FC}', '\u{1F1E6}\u{1F1FA}', 
 				'\u{1F1E6}\u{1F1F9}'];
-
-
 	public static var BYTES(default,null) = haxe.io.Bytes.ofString(EMOJI.join(""));
-
-	@:keep
-	@:expose("aap.test")
 	public static function Base1024Encode(str:String, complement = true){
 		var input = new haxe.io.BytesInput(haxe.io.Bytes.ofString(str));
 		var bi = new format.tools.BitsInput(input);
+		
 		var retval:StringBuf = new StringBuf();
-		while(input.position < input.length){
-			retval.add(EMOJI[bi.readBits(10)]);
+		while(input.position < input.length ){
+			retval.add(EMOJI[bi.readBits(input.length - input.position > 1 ? 10 : 8)]);
 		}
+		
 		trace(retval.toString());
 	}
 
 	//https://mathiasbynens.be/notes/javascript-unicode#iterating-over-symbols
-	@:keep
-	@:expose("aap.test2")
+	static var regexCodePoint = ~/([^\uD800-\uDFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDFFF])/g;
 	public static function Base1024Decode(str:String, complement = true){
-		var regexCodePoint = ~/([^\uD800-\uDFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDFFF])/g;
-		
 		var output = new haxe.io.BytesOutput();
 		var bo = new format.tools.BitsOutput(output);
+		var values:Array<Int> = [];
 		regexCodePoint.map(str, function(a){
-			bo.writeBits(10, EMOJI.indexOf(a.matched(0)));
+			values.push(EMOJI.indexOf(a.matched(0)));
 			return null;
 		});
+		var lst = values.pop();
+		for(v in values)
+			bo.writeBits(10, v);
+		bo.writeBits(8, lst);
 		
 		trace(output.getBytes().toString());
 	}
-#end
 }

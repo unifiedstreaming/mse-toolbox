@@ -4,6 +4,8 @@
 -js bin/uapi.js
 -main Main
 -lib argan
+#-D EXPERIMENTAL
+#-lib format
 -resource res/logo.svg@logo
 -resource res/templates/player_page_template.html@template
 -resource res/templates/controls_template.html@controls_template

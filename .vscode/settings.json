@@ -2,6 +2,7 @@
     "haxe.displayConfigurations": [ // one or more configurations for the haxe completion server
         ["--cwd", "vview/", "build.hxml"],
         ["--cwd", "uapi/", "build.hxml"],
+        ["--cwd", "uapi/", "build_completion.hxml"],
         ["--cwd", "mp4lib/", "build.hxml"],
         ["--cwd", "uapi/res/players/", "DashJs","-lib","argan", "-js", "out.js"],
         ["--cwd", "uapi/res/players/", "Shaka", "-lib","argan","-js", "out.js"],

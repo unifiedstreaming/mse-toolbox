@@ -4,7 +4,8 @@
 -js bin/uapi.js
 -main Main
 -lib argan
-
+#-D EXPERIMENTAL
+#-lib format
 -dce full
 #--times
 #-D documentwrite

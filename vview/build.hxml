@@ -5,3 +5,4 @@
 -js ../uapi/bin/vview.js
 -main Main
 -resource ./res/template/stats.html@stats
+-dce full

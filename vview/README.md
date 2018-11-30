@@ -4,7 +4,7 @@ VView is a separate add-on project for displaying additional video information, 
 
 # vview build
 
-VView build.hxml outputs to (../uapi/bin/vview.js)
+VView build.hxml outputs to [../uapi/bin/vview.js](../uapi/bin/vview.js)
 
 ## vview page
-[vview test page](bin/index.html)
+[vview test page](../uapi/bin/vview.html)

@@ -189,4 +189,40 @@ class Macros
 		return { expr : EConst(CString(sys.net.Host.localhost())), pos : haxe.macro.Context.currentPos() };
 	}
 
+	macro public static function saveScope(?file:String = "scope.txt"){
+		var buf:StringBuf = new StringBuf();
+		
+		
+        haxe.macro.Context.onAfterGenerate(function(){
+            
+        });
+        haxe.macro.Context.onGenerate(function(a){
+            for(basetype in a){
+                switch(basetype){
+                    case TInst(a, b): buf.add(a + "\n"); //a.get().exclude();
+                    case TEnum(a, b): buf.add(a + "\n");
+                    default:null;
+                }
+            }
+			File.saveContent(file, buf.toString());
+        });
+        return macro null;
+    }
+	macro public static function reuseScope(?file:String = "scope.txt"){
+		var exclude = File.getContent(file).split("\n");
+        haxe.macro.Context.onAfterGenerate(function(){
+            
+        });
+        haxe.macro.Context.onGenerate(function(a){
+            for(basetype in a){
+                switch(basetype){
+                    case TInst(a, b): exclude.indexOf(a.toString()) != -1 ? a.get().exclude() : null;
+                    case TEnum(a, b): exclude.indexOf(a.toString()) != -1 ? a.get().exclude() : null;
+                    default:null;
+                }
+            }
+        });
+        return macro null;
+    }
+
 }

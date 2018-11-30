@@ -8,12 +8,15 @@ import Mp4lib;
 import uapi.Hooks;
 import haxe.io.Path;
 class Main {
+
     public function new() {
+        
         //new Mal(Browser.document.body, Xml.parse(Resource.getString("stats")));
         var uim = new ui.UIManager();
         var window = uim.addWindow(ui.UIManager.WindowType.MAINWINDOW);
+        
         var window2 = uim.addWindow("aap");
-
+        
         var mal = new Mal(window, Xml.parse(Resource.getString("stats")).firstElement().firstElement());
         mal.addTemplate("tabs");
         mal.addTemplate("tab", [ "label" => "Stats" ]);
@@ -29,6 +32,8 @@ class Main {
         documentReady(js.Browser.window) ? 
             hookFrames() : 
             Browser.window.addEventListener("load", hookFrames);
+        
+        Macros.reuseScope("../uapi/scope.txt");
     }
 
     function hookFrames(?e:js.html.Event){

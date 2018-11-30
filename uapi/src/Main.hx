@@ -20,7 +20,9 @@ typedef PlayerHandle = {
  */
 @:expose("uapi")
 class Main {
-    public function new(){};
+    public function new(){
+		Macros.saveScope();
+	};
     static function main(){};
 
 	@:keep

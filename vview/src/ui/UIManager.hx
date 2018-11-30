@@ -70,7 +70,6 @@ class UIManager {
     ', false);
     }
 
-    @:keep
     public function addWindow(?title = 'window', ?x = 0, ?y = 0, ?width = DEFAULT_WIDTH, ?height = DEFAULT_HEIGHT, ?windowType:WindowType = null, ?append:Bool = true) {
         //windowType = CLOSEABLE("aal",  { x: 0, y: 0 }, { width:123, height:123 });
         return createWindow(windowType != null ? windowType : CLOSEABLE(title, { x: x, y: y }, { width:width, height:height }));

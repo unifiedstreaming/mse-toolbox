@@ -1,5 +1,7 @@
 # mse-toolbox
 
+![mse-toolbox logo](https://raw.githubusercontent.com/unifiedstreaming/mse-toolbox/master/uapi/bin/mse_toolbox.png)
+
 > Media Source Extensions. /ˈmiːdɪə/ /sɔːs/ /ɪkˈstɛnʃ(ə)n,ɛkˈstɛnʃ(ə)ns/ 
 > 
 > noun

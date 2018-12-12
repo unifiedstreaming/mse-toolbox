@@ -9,6 +9,9 @@ import uapi.Hooks;
 import haxe.io.Path;
 class Main {
 
+    static function __init__() untyped {
+        //console.log(1);
+    }
     public function new() {
         
         //new Mal(Browser.document.body, Xml.parse(Resource.getString("stats")));
@@ -33,7 +36,7 @@ class Main {
             hookFrames() : 
             Browser.window.addEventListener("load", hookFrames);
         
-        Macros.reuseScope("../uapi/scope.txt");
+        //Macros.reuseScope("../uapi/scope.txt", "uapi");
     }
 
     function hookFrames(?e:js.html.Event){

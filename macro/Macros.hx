@@ -199,8 +199,8 @@ class Macros
         haxe.macro.Context.onGenerate(function(a){
             for(basetype in a){
                 switch(basetype){
-                    case TInst(a, b): buf.add(a + "\n"); //a.get().exclude();
-                    case TEnum(a, b): buf.add(a + "\n");
+                    case TInst(a, b): if(!a.get().meta.has(":native")) buf.add(a + "\n"); //a.get().exclude();
+                    case TEnum(a, b): if(!a.get().meta.has(":native")) buf.add(a + "\n");
                     default:null;
                 }
             }
@@ -208,16 +208,47 @@ class Macros
         });
         return macro null;
     }
-	macro public static function reuseScope(?file:String = "scope.txt"){
+	macro public static function reuseScope(?file:String = "scope.txt", ?scopeObject:String = "uapi"){
 		var exclude = File.getContent(file).split("\n");
         haxe.macro.Context.onAfterGenerate(function(){
-            
+			var outputfile = new haxe.io.Path(haxe.macro.Compiler.getOutput());
+			var fileContent = File.getContent(outputfile.toString());
+			if(StringTools.endsWith(fileContent, ";\n")){
+				fileContent = StringTools.replace(fileContent, '"use strict";', "");
+				var head = fileContent.substr(0, fileContent.lastIndexOf("(typeof "));
+				var tail = fileContent.substr(fileContent.lastIndexOf("(typeof "));
+				fileContent = '${head}(${scopeObject}.getScope());';
+			}
+			File.saveContent(outputfile.toString(), fileContent);
         });
-        haxe.macro.Context.onGenerate(function(a){
+		/*
+        haxe.macro.Context.onAfterTyping(function(types){
+			for(basetype in types){
+                switch(basetype){
+                    case TClassDecl(a): if(exclude.indexOf(a.toString()) != -1) a.get().pack.insert(0, "$global");
+                    case TAbstract(a):  if(exclude.indexOf(a.toString()) != -1) a.get().pack.insert(0, "$global");
+                    case TEnumDecl(a):  if(exclude.indexOf(a.toString()) != -1) a.get().pack.insert(0, "$global");
+                    case TTypeDecl(a):  if(exclude.indexOf(a.toString()) != -1) a.get().pack.insert(0, "$global");
+                }
+            }
+		});
+		*/
+		haxe.macro.Context.onGenerate(function(a){
             for(basetype in a){
                 switch(basetype){
-                    case TInst(a, b): exclude.indexOf(a.toString()) != -1 ? a.get().exclude() : null;
-                    case TEnum(a, b): exclude.indexOf(a.toString()) != -1 ? a.get().exclude() : null;
+                    case TInst(a, b): 
+						//todo programmatically get Main class
+						if(exclude.indexOf(a.toString()) != -1){
+							var newScope = '$$global.${a.toString()}';
+							a.get().meta.add(":native", [ macro $v{newScope} ], haxe.macro.PositionTools.here());
+							a.toString() != "StringTools" && 
+							a.toString() != "haxe.ds.StringMap" && 
+							a.toString() != "haxe.Resource" &&
+							a.toString() != "uapi.Utils" &&
+							a.toString() != "Main" ? a.get().exclude() : null;
+						}
+                    case TEnum(a, b): 
+						exclude.indexOf(a.toString()) != -1 ? a.get().exclude() : null;
                     default:null;
                 }
             }

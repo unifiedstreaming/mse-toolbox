@@ -21,10 +21,26 @@ typedef PlayerHandle = {
 @:expose("uapi")
 class Main {
     public function new(){
-		Macros.saveScope();
+		//Macros.saveScope();
 	};
     static function main(){};
 
+	/*
+	@:keep
+	static function getScope(){
+		untyped __js__('var scope = {};
+for(var c in {0}){
+	var local = scope;
+	var arr = c.split(".");
+	for(var i = 0; i < arr.length-1; i++) {
+		if(!(arr[i] in local))
+			local[arr[i]] = {};
+		local = local[arr[i]];
+	};
+	local[arr[arr.length-1]] = {0}[c];
+}; scope.haxe.Json = window.JSON; return scope;', untyped $hxClasses);
+	};
+	*/
 	@:keep
 	public static function getPlayers(){
 		var players = {};

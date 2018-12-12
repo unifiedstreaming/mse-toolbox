@@ -336,6 +336,9 @@ class Main {
 						});
 				});
 				var _hx_func = retval.update;
+				var _hx_args = retval.args();
+				retval.args = function()
+					return mapToDynamic(_hx_args);
 				retval.update = function(args:Dynamic, ?values:Array<String> = null, ?rewrite:Bool, ?toggle:Bool){
 					_hx_func(dynamicToMap(args), values, rewrite, toggle);
 				}

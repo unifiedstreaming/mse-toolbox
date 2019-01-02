@@ -333,6 +333,9 @@ for(var c in {0}){
 
 		return retval;
 	}
+	
+	@:keep
+	var hooks:Dynamic = Hooks;
 
 	@:keep
 	public static function HashPipe(?immediate:Bool)

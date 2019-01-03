@@ -23,6 +23,9 @@
 -resource res/players/hasplayer.json@hasplayer-src
 --macro Macros.getPlayerCode("res/players/HasPlayer.hx@hasplayer", true)
 
+# explicitly expose Hooks library
+--macro haxe.macro.Compiler.addGlobalMetadata("uapi.Hooks", '@:expose("uapi.hooks")')
+
 -dce full
 #--times
 #-D documentwrite

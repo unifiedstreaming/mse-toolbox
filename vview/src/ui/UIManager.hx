@@ -87,10 +87,8 @@ class UIManager {
             case MAINWINDOW | null:
             case STANDARD(t, p, s) | CLOSEABLE(t, p, s): title = t; if(p != null) pos = p; if(s != null) size = s;
         }
-         
-        var im = Macros.importFilesAsB64String(["res/unified-streaming-logo.png"], false);
-        var image = Browser.document.createImageElement();
-        image.src = 'data:image/png;base64,${im[0].data}';
+        var image = Browser.document.createDivElement();
+        image.innerHTML = haxe.Resource.getString("logo"); //todo innerhtml
         JsUtils.setCSSStyles(image.style, [ "height" => '${TOPBAR_HEIGHT}px', "float" => "right" ]);
 
         var div = Browser.document.createDivElement();

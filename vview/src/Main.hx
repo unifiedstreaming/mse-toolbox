@@ -7,8 +7,14 @@ import js.html.XMLHttpRequestResponseType;
 import Mp4lib;
 import uapi.Hooks;
 import haxe.io.Path;
+typedef StreamingVideoSegment = {
+    start:Float,
+    end:Float,
+    data:Void->haxe.io.Bytes,
+    init:Void->haxe.io.Bytes
+}
 class Main {
-
+    
     static function __init__() untyped {
         //console.log(1);
     }

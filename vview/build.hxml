@@ -5,4 +5,5 @@
 -js ../uapi/bin/vview.js
 -main Main
 -resource ./res/template/stats.html@stats
+-resource ./res/logo_snippet.html@logo
 -dce full

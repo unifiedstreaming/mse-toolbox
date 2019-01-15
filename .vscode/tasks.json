@@ -28,6 +28,14 @@
             ]
         },
         {
+            "label": "copy uapi.js to /Users/tecteun/Work/Code/reflex-v3/app/rflx3/utils/reflex_host/static/uapi.js",
+            "type": "shell",
+            "command": "cp uapi/bin/uapi.js /Users/tecteun/Work/Code/reflex-v3/app/rflx3/utils/reflex_host/static/uapi.js",
+            "problemMatcher": [
+                "$haxe-error"
+            ]
+        },
+        {
             "taskName": "uapi build.hxml",
             "command": "haxe",
             "args": ["--cwd", "uapi/", "build.hxml"],

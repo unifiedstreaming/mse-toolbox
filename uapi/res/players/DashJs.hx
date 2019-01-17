@@ -34,7 +34,7 @@ class DashJs {
             //player.getLowLatencyEnabled();
             try{
                 player.setJumpGaps(true);
-            }catch(e){}
+            }catch(e:Dynamic){}
 
             clearMenu();
 

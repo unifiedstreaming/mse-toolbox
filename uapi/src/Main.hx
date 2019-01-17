@@ -4,7 +4,7 @@ import uapi.Hooks;
 import uapi.Utils;
 import uapi.JsUtils;
 
-typedef InjectRaw = haxe.ds.Either<String, Array<{index:Int, content:String}>>;
+typedef InjectRaw = haxe.extern.EitherType<String, Array<{index:Int, content:String}>>;
 typedef PlayerOptions = Dynamic;
 typedef PlayerHandle = {
 	reload:String->String->PlayerOptions->js.Promise<PlayerHandle>,
@@ -153,16 +153,11 @@ for(var c in {0}){
 				}
 			}
 		}
-		if(null != inject_head)
-			switch(inject_head){
-				case Left(string) : head.push(string);
-				case Right(cfgArray): for(el in cfgArray) head.insert(el.index == null ? -1 : el.index, el.content);
-			}
-		if(null != inject_body)
-			switch(inject_body){
-				case Left(string) : body.push(string);
-				case Right(cfgArray): for(el in cfgArray) body.insert(el.index == null ? -1 : el.index, el.content);
-			}
+
+		// inject additional html with optional InjectRaw type	
+		handleEitherType(inject_head, head);
+		handleEitherType(inject_body, body);
+
 		var html = new haxe.Template(haxe.Resource.getString("template")).execute({
 			uri: StringTools.urlEncode(uri),
 			loading: haxe.Resource.getString("logo"),
@@ -335,7 +330,7 @@ for(var c in {0}){
 			//html.split("\n")
 
 			if(Reflect.hasField(Browser.window, "Blob")){
-				iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+				iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-modals");
 				iframe.src = js.html.URL.createObjectURL(
 					new js.html.Blob([haxe.io.Bytes.ofString(html).getData()], {type: 'text/html'})
 				);
@@ -345,6 +340,16 @@ for(var c in {0}){
 		#end
 
 		return retval;
+	}
+
+	private static function handleEitherType(either:InjectRaw, array:Array<String>){
+		if(Std.is(either, String)){
+			array.push(either);
+		}else if(either != null){
+			var arr:Array<Dynamic> = Std.is(either, Array) ? either : [either];
+			for(el in arr)
+				array.insert(Reflect.hasField(el, 'index') && el.index == null ? el.index : -1, el.content);
+		}
 	}
 	
 	@:keep

@@ -3,6 +3,7 @@ import js.Browser;
 @:keep
 @:expose("Tree")
 class Tree {
+    private static inline var ID = "mse-toolbox-tree-";
     function new(data:Dynamic):Void {
         var obj = {
             aa: 1,
@@ -18,12 +19,13 @@ class Tree {
     }
     static function test(data:Dynamic):js.html.DOMElement{
         var base = Browser.document.createDivElement();
- 
+        base.className = '${ID}column';
         for(f in Reflect.fields(data)){
-            var el = Browser.document.createDivElement();
             var sub = Reflect.field(data, f);
             var _key = Browser.document.createDivElement();
-            _key.innerText = 'Key:$f';
+            _key.innerText = 'key: $f';
+            var el = Browser.document.createDivElement();
+            el.className = '${ID}row';
             el.appendChild(_key);
             switch(Type.typeof(sub)){
                 
@@ -31,7 +33,7 @@ class Tree {
                     el.appendChild(test(sub));
                 default:
                     var _value = Browser.document.createDivElement();
-                    _value.innerText = 'Value:$sub';
+                    _value.innerText = 'value: $sub';
                     el.appendChild(_value);
             }
             base.appendChild(el);

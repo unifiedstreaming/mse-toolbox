@@ -9,6 +9,7 @@ class DashJs {
         if(title.indexOf(untyped dashjs.Version) == -1)
             Browser.console.warn('Loaded DashJs version "${untyped dashjs.Version}" not matching player title "${title}"');
         var player = expose_player(untyped dashjs.MediaPlayer().create());
+        player.getDebug().setLogLevel(dashjs.Debug.LOG_LEVEL_INFO);
         player.initialize();
         window.help = function(){
             return Argan.help(true);
@@ -30,6 +31,10 @@ class DashJs {
             player.setTrackSwitchModeFor('video', 'alwaysReplace');
             player.setTrackSwitchModeFor('audio', 'alwaysReplace');
             player.setFastSwitchEnabled(true);
+            //player.getLowLatencyEnabled();
+            try{
+                player.setJumpGaps(true);
+            }catch(e){}
 
             clearMenu();
 

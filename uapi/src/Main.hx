@@ -4,6 +4,7 @@ import uapi.Hooks;
 import uapi.Utils;
 import uapi.JsUtils;
 
+typedef InjectRaw = haxe.ds.Either<String, {index:Int, content:String}>;
 typedef PlayerOptions = Dynamic;
 typedef PlayerHandle = {
 	reload:String->String->PlayerOptions->js.Promise<PlayerHandle>,
@@ -92,8 +93,14 @@ for(var c in {0}){
 	private static var id:Int = 0;
 
 	@:keep
-	public static function writePlayer(parent:js.html.Element, uri:String, player_version_string:String = "dashjs", player_config:Dynamic = null, ?inject_head:String = null, ?inject_body:String = null):js.Promise<PlayerHandle> {
+	public static function writePlayer(parent:js.html.Element, 
+	                                   uri:String, 
+									   player_version_string:String = "dashjs", 
+									   player_config:PlayerOptions = null, 
+									   ?inject_head:InjectRaw = null, 
+									   ?inject_body:InjectRaw = null):js.Promise<PlayerHandle> {
 		Argan.start(player_config);
+		
 		// https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-srcdoc
 		var iframe = Browser.document.createIFrameElement();
 		iframe.src = "about:blank";
@@ -105,14 +112,15 @@ for(var c in {0}){
 		//iframe.setAttribute("sandbox", "allow-same-origin allow-scripts");
 		var meta = player_version_string.split(":");
 		var player = meta[0];
-		if(haxe.Resource.listNames().indexOf(player) == -1 && player != "native"){
+		if(haxe.Resource.listNames().indexOf(player) == -1 && player != "native")
 			throw 'unknown player "$player", please select any of ${haxe.Resource.listNames()}.';
-		}
 
 		var playerBody = haxe.Resource.getString('${player}');
 		if(playerBody != null && Reflect.hasField(Browser.window, "Blob")){
 			var split = playerBody.split(",");
-			playerBody = js.html.URL.createObjectURL(new js.html.Blob([haxe.crypto.Base64.decode(split[1]).getData()], {type: split[0].split(";")[0]}));
+			playerBody = js.html.URL.createObjectURL(
+				new js.html.Blob([haxe.crypto.Base64.decode(split[1]).getData()], {type: split[0].split(";")[0]})
+			)
 		}
 		
 		var version = meta[1];
@@ -146,10 +154,15 @@ for(var c in {0}){
 			}
 		}
 		if(null != inject_head)
-			head.push(inject_head);
+			switch(inject_head){
+				case Left(string) : head.push(string);
+				case Right(cfg): head.insert(cfg.index, cfg.content);
+			}
 		if(null != inject_body)
-			body.push(inject_body);
-		
+			switch(inject_body){
+				case Left(string) : body.push(string);
+				case Right(cfg): body.insert(cfg.index, cfg.content);
+			}
 		var html = new haxe.Template(haxe.Resource.getString("template")).execute({
 			uri: StringTools.urlEncode(uri),
 			loading: haxe.Resource.getString("logo"),

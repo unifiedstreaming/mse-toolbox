@@ -4,7 +4,7 @@ import uapi.Hooks;
 import uapi.Utils;
 import uapi.JsUtils;
 
-typedef InjectRaw = haxe.ds.Either<String, {index:Int, content:String}>;
+typedef InjectRaw = haxe.ds.Either<String, Array<{index:Int, content:String}>>;
 typedef PlayerOptions = Dynamic;
 typedef PlayerHandle = {
 	reload:String->String->PlayerOptions->js.Promise<PlayerHandle>,
@@ -120,7 +120,7 @@ for(var c in {0}){
 			var split = playerBody.split(",");
 			playerBody = js.html.URL.createObjectURL(
 				new js.html.Blob([haxe.crypto.Base64.decode(split[1]).getData()], {type: split[0].split(";")[0]})
-			)
+			);
 		}
 		
 		var version = meta[1];
@@ -156,12 +156,12 @@ for(var c in {0}){
 		if(null != inject_head)
 			switch(inject_head){
 				case Left(string) : head.push(string);
-				case Right(cfg): head.insert(cfg.index, cfg.content);
+				case Right(cfgArray): for(el in cfgArray) head.insert(el.index == null ? -1 : el.index, el.content);
 			}
 		if(null != inject_body)
 			switch(inject_body){
 				case Left(string) : body.push(string);
-				case Right(cfg): body.insert(cfg.index, cfg.content);
+				case Right(cfgArray): for(el in cfgArray) body.insert(el.index == null ? -1 : el.index, el.content);
 			}
 		var html = new haxe.Template(haxe.Resource.getString("template")).execute({
 			uri: StringTools.urlEncode(uri),

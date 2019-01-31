@@ -1,13 +1,10 @@
 package ;
 import js.Browser;
-import haxe.Resource;
 import haxe.io.UInt8Array;
 import js.html.XMLHttpRequest;
 import js.html.XMLHttpRequestResponseType;
 import Mp4lib;
 import uapi.Hooks;
-import uapi.ui.UIManager;
-import uapi.ui.UIManager.WindowType;
 import haxe.io.Path;
 typedef StreamingVideoSegment = {
     start:Float,
@@ -18,28 +15,10 @@ typedef StreamingVideoSegment = {
 class Main {
     
     static function __init__() untyped {
-        //console.log(1);
+        
     }
     public function new() {
-        
-        //new Mal(Browser.document.body, Xml.parse(Resource.getString("stats")));
-        var uim = new UIManager();
-        var window = uim.addWindow(WindowType.MAINWINDOW);
-        
-        var window2 = uim.addWindow("aap");
-        
-        var mal = new Mal(window, Xml.parse(Resource.getString("stats")).firstElement().firstElement());
-        mal.addTemplate("tabs");
-        mal.addTemplate("tab", [ "label" => "Stats" ]);
-        mal.addTemplate("tab", [ "label" => "Debug" ]);
-        mal.addTemplate("tab", [ "label" => "Timeline" ], "tab_main_button");
-        mal.addTemplate("tab_main");
-        mal.addTemplate("right_column_line", [ "label" => "test", "text"=> "aap"]);
-        mal.addTemplate("audio_buffer");
-        mal.addTemplate("video_buffer");
-
-        Browser.document.body.appendChild(window);
-
+        new ui.Shell();
         documentReady(js.Browser.window) ? 
             hookFrames() : 
             Browser.window.addEventListener("load", hookFrames);

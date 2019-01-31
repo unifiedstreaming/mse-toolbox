@@ -1,4 +1,4 @@
-package ;
+package uapi.ui;
 import js.html.Element;
 import js.html.Node;
 import js.Browser;
@@ -67,12 +67,10 @@ class Mal {
     var template = templates.get(name);
     var append = function(element:Element, parent:Element){
       var guiElement:GuiElement = { element: cast element.cloneNode(true), param: new Map<String, Node>() };
-      //guiElement.element.setAttribute("param", element.getAttribute("param"));
       if(args != null){
         var mapParams = function(param){
           var paramNode:js.html.Node = cast param;
           var paramEl:js.html.Element = cast param;
-          //Browser.console.log(element);
           if(paramEl != null){
             var paramName = paramEl.getAttribute(GUI_PARSER_TEMPLATE_PARAM);
             paramEl.removeAttribute(GUI_PARSER_TEMPLATE_PARAM);
@@ -195,8 +193,10 @@ class Mal {
       }
       var name = att;
       
-      //rootNode.remove(GUI_PARSER_TEMPLATE);
-      //parent.removeChild(rootNode);
+      /*
+      rootNode.remove(GUI_PARSER_TEMPLATE);
+      parent.removeChild(rootNode);
+      */
       
       if(templates.exists(name))
         throw 'duplicate template name (${name}) found, aborting';

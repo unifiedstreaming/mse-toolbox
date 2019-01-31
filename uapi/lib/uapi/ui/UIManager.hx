@@ -1,6 +1,6 @@
-package ui;
+package uapi.ui;
 import js.Browser;
-import JsUtils;
+import uapi.JsUtils;
 import js.html.DivElement;
 import js.html.MutationObserver;
 import js.html.MutationRecord;

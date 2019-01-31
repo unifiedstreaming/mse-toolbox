@@ -6,6 +6,8 @@ import js.html.XMLHttpRequest;
 import js.html.XMLHttpRequestResponseType;
 import Mp4lib;
 import uapi.Hooks;
+import uapi.ui.UIManager;
+import uapi.ui.UIManager.WindowType;
 import haxe.io.Path;
 typedef StreamingVideoSegment = {
     start:Float,
@@ -21,8 +23,8 @@ class Main {
     public function new() {
         
         //new Mal(Browser.document.body, Xml.parse(Resource.getString("stats")));
-        var uim = new ui.UIManager();
-        var window = uim.addWindow(ui.UIManager.WindowType.MAINWINDOW);
+        var uim = new UIManager();
+        var window = uim.addWindow(WindowType.MAINWINDOW);
         
         var window2 = uim.addWindow("aap");
         

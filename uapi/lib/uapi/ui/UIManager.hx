@@ -113,7 +113,7 @@ class UIManager {
             "zIndex"                  => '1'
         ]);
 
-        topbar.innerText = null != title ? title : 'USP MSE Debugger: ${Macros.GetBuildHost()}, ${Macros.GetGitShortHead()}';
+        topbar.innerText = null != title ? title : 'USP MSE Debugger: ${Macros.GetVersion()}';
         topbar.appendChild(image);
 
         topbar.style.cursor = 'pointer';

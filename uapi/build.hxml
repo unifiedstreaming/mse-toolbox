@@ -35,7 +35,7 @@
 #-D documentwrite
 #-debug
 #-D check-macro
-
+#-D source-map
 --next 
 -cp ../macro
 --macro Macros.PrependVersion("uapi.js 📺 ", "bin/uapi.js")

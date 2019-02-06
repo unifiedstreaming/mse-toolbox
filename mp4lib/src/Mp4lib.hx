@@ -101,7 +101,7 @@ class Mp4lib {
 
   @:keep
   public static function Version()
-    return Macros.GetLastGitTag();
+    return Macros.GetVersion();
   
   public static function doGenerateInitSegment(?tracks:Array<Mp4Track> = null):UInt8Array{
     var moov_file = new mp4lib.File();

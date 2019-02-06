@@ -34,7 +34,7 @@ class Mal {
       parseGui(container, xml);
   }
 
-  private static inline var GUI_PARSER_ATTRIBUTE:String = "data-tmpid";
+  private static inline var GUI_PARSER_ATTRIBUTE:String = "data-malhx-template";
   private static inline var GUI_PARSER_TEMPLATE:String = "template";
   private static inline var GUI_PARSER_TEMPLATE_PARAM:String = "param";
   
@@ -107,7 +107,7 @@ class Mal {
       return guiElement.element;
     }
     
-    var parent = parentName == null ? null : addedElements.get(parentName).element.querySelector('*[data-tmpid="${template.parentId}"]');
+    var parent = parentName == null ? null : addedElements.get(parentName).element.querySelector('*[${GUI_PARSER_ATTRIBUTE}="${template.parentId}"]');
     if(template != null){
       if(rename != null)
         name = rename;
@@ -126,14 +126,12 @@ class Mal {
         }
         return retval;
       }
-      
+      var parentSelector:String = '*[${GUI_PARSER_ATTRIBUTE}="${template.parentId}"]';
       //serialize new template to DOM elements
       if(parent == null)
-        parent = container.querySelector('*[data-tmpid="${template.parentId}"]');
+        parent = container.querySelector(parentSelector);
       if(parent != null){
-        //parent.removeAttribute(GUI_PARSER_ATTRIBUTE);
-        
-        var tempParent = shadowDom.querySelector('*[data-tmpid="${template.parentId}"]');
+        var tempParent = shadowDom.querySelector(parentSelector);
         if(tempParent != null){
           tempParent.innerHTML += template.xml.toString();
           //put element back in the right position
@@ -141,9 +139,9 @@ class Mal {
             tempElementsCache.set(template.name, {element:tempParent.lastElementChild, parent:parent});
             retval = append(tempParent.lastElementChild, parent);
           }
-        } else { throw 'data-tmpid="${template.parentId}" is not in shadowDom'; }
+        } else { throw '${parentSelector}" is not in shadowDom'; }
       }else{
-        throw 'data-tmpid="${template.parentId}" is not in DOMTree';
+        throw '${parentSelector}" is not in DOMTree';
       };
     }else{
       throw 'template $name not found';
@@ -188,7 +186,7 @@ class Mal {
       if(parent.exists(GUI_PARSER_ATTRIBUTE)){
         uuid = parent.get(GUI_PARSER_ATTRIBUTE);
       } else {
-        uuid = uapi.Utils.GenerateUUID("maluuid-");
+        uuid = uapi.Utils.GenerateUUID();
         parent.set(GUI_PARSER_ATTRIBUTE, uuid);
       }
       var name = att;

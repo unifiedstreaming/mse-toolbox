@@ -6,19 +6,31 @@ import js.html.XMLHttpRequestResponseType;
 import Mp4lib;
 import uapi.Hooks;
 import haxe.io.Path;
+import uapi.JsUtils;
+
+@:enum
+abstract VideoType(String) {
+  var Audio = "Audio";
+  var Video = "Video";
+}
 typedef StreamingVideoSegment = {
-    start:Float,
-    end:Float,
-    data:Void->haxe.io.Bytes,
-    init:Void->haxe.io.Bytes
+    ?url:String,
+    ?start:Float,
+    ?end:Float,
+    ?duration:Float,
+    ?data:Void->haxe.io.Bytes,
+    ?init:Void->haxe.io.Bytes,
+    ?type:VideoType
 }
 class Main {
+    var shell:ui.Shell;
+    var segments:Array<StreamingVideoSegment> = [];
     
     static function __init__() untyped {
         
     }
     public function new() {
-        new ui.Shell();
+        shell = new ui.Shell();
         documentReady(js.Browser.window) ? 
             hookFrames() : 
             Browser.window.addEventListener("load", hookFrames);
@@ -61,9 +73,7 @@ class Main {
 
     function hookWindow(window:js.html.Window) : Void {
         var initSegments:Map<Path, mp4lib.MediaHeaderBox> = new Map();
-
         Hooks.hookMethod(window, "URL.createObjectURL").pipe(function(args:Array<Dynamic>){
-            Browser.console.log(11);
             if(args.length > 0)
                 js.Browser.console.log(Std.is(args[0], js.html.MediaSource));
         });
@@ -71,22 +81,31 @@ class Main {
             var xmlhttpRequest:XMLHttpRequest = js.Lib.nativeThis;
             switch(method){
                 case "prototype.open":
-                    var url = new Path(args[1].split("?")[0]);
-
+                    var segment:StreamingVideoSegment = {};
+                    var url = new Path(segment.url = args[1].split("?")[0]);
+                    
                     xmlhttpRequest.addEventListener("error", function(e:js.Error){
                         trace(e);
                     });
                     xmlhttpRequest.addEventListener("load", function(){
                         if(xmlhttpRequest.responseType == XMLHttpRequestResponseType.ARRAYBUFFER){
                             setCachePropery(xmlhttpRequest.response, "url", url);
+                            
                             var boxes = Mp4lib.deserialize(new UInt8Array(xmlhttpRequest.response));
                             var moov = boxes.findBoxByType("moov");
                             if(moov != null){
                                 //init segment
+                                segment.init = xmlhttpRequest.response;
                                 trace('init segment $url');
                                 initSegments.set(url, cast(boxes.findBoxByType("mdhd"),mp4lib.MediaHeaderBox));
                                 js.Browser.console.log('mdhd.duration: ${initSegments.get(url).duration} mdhd.timescale: ${initSegments.get(url).timescale}');
                             }
+                            var sidx:mp4lib.SegmentIndexBox = cast boxes.findBoxByType("sidx");
+                            if(sidx != null){
+                                trace('SegmentIndexBox.earliest_presentation_time/timescale: ${sidx.earliest_presentation_time / sidx.timescale}');
+                                segment.start = sidx.earliest_presentation_time / sidx.timescale;
+                            }
+
                             var moof = boxes.findBoxByType("moof");
                             if(moof != null){
                                 trace(boxes);
@@ -97,19 +116,22 @@ class Main {
                                     if(url.file.indexOf(k.file) != -1){
                                         js.Browser.console.log(url.file);
                                         var duration = sample_duration * sample_count / initSegments.get(k).timescale;
-                                        trace(duration);
+                                        segment.end = segment.start + duration;
+                                        segment.duration = duration;
                                         break;
                                     }
                                 }
                             }
+                            
                             var mvhd:mp4lib.MovieHeaderBox = cast boxes.findBoxByType("mvhd");
                             if(mvhd != null){
                                 trace('MovieHeaderBox.duration/timescale: ${mvhd.duration / mvhd.timescale}'); 
                             }
-                            var sidx:mp4lib.SegmentIndexBox = cast boxes.findBoxByType("sidx");
-                            if(sidx != null){
-                                trace('SegmentIndexBox.earliest_presentation_time/timescale: ${sidx.earliest_presentation_time / sidx.timescale}');
-                            }
+
+                            segments.push(segment);
+                            trace(segment);
+                            
+                            
 
                             //js.Browser.console.log(boxes.findBoxByType("mdhd"));
                             //js.Browser.console.log(boxes.findBoxByType("tfhd"));

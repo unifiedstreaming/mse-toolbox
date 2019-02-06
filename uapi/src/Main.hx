@@ -139,7 +139,7 @@ for(var c in {0}){
 			}else{
 				var srcs = playerSrcOverride == null ? haxe.Json.parse(haxe.Resource.getString('${player}-src')) : playerSrcOverride;
 				//load from json '${player}-src'
-				for(s in version == null ? Reflect.fields(srcs) : [ version ]){
+				for(s in (version == null ? Reflect.fields(srcs) : [ version ])){
 					version = s;
 					if(Reflect.hasField(srcs, s)){
 						var list:Array<String> = Reflect.field(srcs, s);
@@ -393,7 +393,7 @@ for(var c in {0}){
 
 	@:keep
 	public static function Version()
-		return Macros.GetLastGitTag();
+		return Macros.GetVersion();
 
 	@:keep	
 	public static function write(str)

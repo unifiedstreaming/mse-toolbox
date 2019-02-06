@@ -87,30 +87,31 @@ class Macros
 		if(version == null)
 			version = GetLastGitTag();
 		if(version == "unknown")
-		 version = "1.0";
+			version = "1.0";
+		var arr = [];
+		if(name != "")
+			arr.push(name);
+		arr.push(version);
 
-		var output = '$name $version, $date';
+		var output = '${arr.join(" ")}, $date';
 
 		return { expr : EConst(CString(output)), pos : haxe.macro.Context.currentPos() };
 	}
-	macro public static function GetGitShortHead()
+	#if macro
+	public static function GetGitShortHead()
 	{
-		var pos = haxe.macro.Context.currentPos();
-		var p = try new sys.io.Process("git", ["rev-parse" ,"--short", "HEAD"]) catch ( e : Dynamic ) { trace("no git command found: " +  e); return { expr : EConst(CString("")), pos : pos }; };
+		var p = try new sys.io.Process("git", ["rev-parse" ,"--short", "HEAD"]) catch ( e : Dynamic ) { trace("no git command found: " +  e); return ""; };
 		var output = 'Git short SHA1:' + p.stderr.readAll().toString() + p.stdout.readAll().toString();
-		//Sys.command("git rev-parse --short HEAD > gitversion.txt");
-		//var output = sys.io.File.read("svnversion.txt").readLine();
-		output = output.split("\r").join("").split("\n").join("");
-		return { expr : EConst(CString(output)), pos : pos };
+		return output.split("\r").join("").split("\n").join("");
 	}
-	macro public static function GetLastGitTag()
+	
+	public static function GetLastGitTag()
 	{
-		var pos = haxe.macro.Context.currentPos();
-		var p = try new sys.io.Process("git", ["describe" ,"--tags"]) catch ( e : Dynamic ) { trace("no git command found: " +  e); return { expr : EConst(CString("")), pos : pos }; };
+		var p = try new sys.io.Process("git", ["describe" ,"--tags"]) catch ( e : Dynamic ) { trace("no git command found: " +  e); return ""; };
 		var output = p.stdout.readAll().toString();
-		output = output.split("\r").join("").split("\n").join("");
-		return { expr : EConst(CString(output)), pos : pos };
+		return output.split("\r").join("").split("\n").join("");	
 	}
+	#end
 	macro public static function GetNPMPackageVersion()
 	{
 		var pos = haxe.macro.Context.currentPos();

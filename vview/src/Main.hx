@@ -1,4 +1,7 @@
 package ;
+import mp4lib.TrackFragmentHeaderBox;
+import mp4lib.HintMediaHeaderBox;
+import mp4lib.MPEG4BitRateBox;
 import js.Browser;
 import haxe.io.UInt8Array;
 import js.html.XMLHttpRequest;
@@ -20,8 +23,11 @@ typedef StreamingVideoSegment = {
     ?duration:Float,
     ?data:Void->haxe.io.Bytes,
     ?init:Void->haxe.io.Bytes,
-    ?type:VideoType
+    ?type:VideoType,
+    ?avgbitrate:Int,
+    ?dimensions:String
 }
+
 class Main {
     var shell:ui.Shell;
     var segments:Array<StreamingVideoSegment> = [];
@@ -55,7 +61,7 @@ class Main {
             default: false;
         }
 
-    function setCachePropery(obj:Dynamic, key:String, value:Dynamic, ?cache_id = "_vview"){
+    function setCachePropery(obj:Dynamic, key:String, value:Dynamic, ?cache_id = "_vview_cache"){
         var cache = if(Reflect.hasField(obj, cache_id))
             try{ haxe.Unserializer.run( Reflect.field(obj, cache_id)); } catch(e:Dynamic){ {}; };
         else
@@ -64,7 +70,7 @@ class Main {
         Reflect.setField(obj, cache_id, haxe.Serializer.run(cache));
     }
 
-    function getCachePropery(obj:Dynamic, key:String, ?cache_id = "_vview")
+    function getCachePropery(obj:Dynamic, key:String, ?cache_id = "_vview_cache")
         return if(Reflect.hasField(obj, cache_id)){
             try{ Reflect.field(haxe.Unserializer.run( Reflect.field(obj, cache_id)), key); } catch(e:Dynamic){ null; };
         }else{
@@ -90,25 +96,43 @@ class Main {
                     xmlhttpRequest.addEventListener("load", function(){
                         if(xmlhttpRequest.responseType == XMLHttpRequestResponseType.ARRAYBUFFER){
                             setCachePropery(xmlhttpRequest.response, "url", url);
-                            
-                            var boxes = Mp4lib.deserialize(new UInt8Array(xmlhttpRequest.response));
+                            var bytes = new UInt8Array(xmlhttpRequest.response);
+                            var boxes = Mp4lib.deserialize(bytes);
+                            trace(boxes);
+                            //trace(boxes.findBoxByType("avcC"));
+                            //trace(boxes.findBoxByType("avc1"));
+                            //trace(boxes.findBoxByType("btrt"));
                             var moov = boxes.findBoxByType("moov");
                             if(moov != null){
                                 //init segment
                                 segment.init = xmlhttpRequest.response;
-                                trace('init segment $url');
+                                //trace('init segment $url');
                                 initSegments.set(url, cast(boxes.findBoxByType("mdhd"),mp4lib.MediaHeaderBox));
                                 js.Browser.console.log('mdhd.duration: ${initSegments.get(url).duration} mdhd.timescale: ${initSegments.get(url).timescale}');
                             }
                             var sidx:mp4lib.SegmentIndexBox = cast boxes.findBoxByType("sidx");
                             if(sidx != null){
-                                trace('SegmentIndexBox.earliest_presentation_time/timescale: ${sidx.earliest_presentation_time / sidx.timescale}');
+                                //trace('SegmentIndexBox.earliest_presentation_time/timescale: ${sidx.earliest_presentation_time / sidx.timescale}');
                                 segment.start = sidx.earliest_presentation_time / sidx.timescale;
+                            }
+                            var tkhd:mp4lib.TrackHeaderBox = cast boxes.findBoxByType("tkhd");
+                            if(tkhd != null){
+                                var width = tkhd.width / tkhd.matrix[0];
+                                var height = tkhd.height / tkhd.matrix[4];
+                                segment.dimensions = '${width}x${height}';
+                            }
+                            var btrt:mp4lib.MPEG4BitRateBox = cast boxes.findBoxByType("btrt");
+                            if(btrt != null){
+                                segment.avgbitrate = btrt.avgBitrate;
+                            }
+                            var hmhd:mp4lib.HintMediaHeaderBox = cast boxes.findBoxByType("hmhd");
+                            if(hmhd != null){
+                                segment.avgbitrate = hmhd.avgbitrate;
                             }
 
                             var moof = boxes.findBoxByType("moof");
                             if(moof != null){
-                                trace(boxes);
+                                //trace(boxes);
                                 var sample_duration = cast(boxes.findBoxByType("tfhd"), mp4lib.TrackFragmentHeaderBox).default_sample_duration;
                                 var sample_count = cast(boxes.findBoxByType("trun"), mp4lib.TrackFragmentRunBox).sample_count;
                                 for(k in initSegments.keys()){
@@ -118,21 +142,21 @@ class Main {
                                         var duration = sample_duration * sample_count / initSegments.get(k).timescale;
                                         segment.end = segment.start + duration;
                                         segment.duration = duration;
+                                        segment.avgbitrate = Math.round(((bytes.length/128) / duration));
                                         break;
                                     }
                                 }
                             }
-                            
-                            var mvhd:mp4lib.MovieHeaderBox = cast boxes.findBoxByType("mvhd");
-                            if(mvhd != null){
-                                trace('MovieHeaderBox.duration/timescale: ${mvhd.duration / mvhd.timescale}'); 
-                            }
-
                             segments.push(segment);
+                            if(url.file.indexOf("video") > -1){
+                                var el = shell.mal.addTemplate("segments_cell", ["label"=>'${segment.duration}']);
+                                JsUtils.setCSSStyles(el.style, [
+                                    "left" => '${(segment.start * 10)}px',
+                                    "width" => '${(segment.duration * 10)-4.5}px' // padding 2*1px border 2*1px
+                                ]);
+                            }
+                            
                             trace(segment);
-                            
-                            
-
                             //js.Browser.console.log(boxes.findBoxByType("mdhd"));
                             //js.Browser.console.log(boxes.findBoxByType("tfhd"));
                             //js.Browser.console.log(boxes.findBoxByType("trun"));

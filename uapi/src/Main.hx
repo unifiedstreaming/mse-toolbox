@@ -329,7 +329,7 @@ for(var c in {0}){
 			//iframe.src = 'javascript:unescape(`${StringTools.urlEncode(ticks)}`);';
 			//html.split("\n")
 
-			if(Reflect.hasField(Browser.window, "Blob")){
+			if(!JsUtils.isIE() && Reflect.hasField(Browser.window, "Blob")){
 				iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-modals");
 				iframe.src = js.html.URL.createObjectURL(
 					new js.html.Blob([haxe.io.Bytes.ofString(html).getData()], {type: 'text/html'})

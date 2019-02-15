@@ -116,7 +116,7 @@ for(var c in {0}){
 			throw 'unknown player "$player", please select any of ${haxe.Resource.listNames()}.';
 
 		var playerBody = haxe.Resource.getString('${player}');
-		if(playerBody != null && !JsUtils.isIE() && Reflect.hasField(Browser.window, "Blob")){
+		if(playerBody != null && Reflect.hasField(Browser.window, "Blob")){
 			var split = playerBody.split(",");
 			playerBody = js.html.URL.createObjectURL(
 				new js.html.Blob([haxe.crypto.Base64.decode(split[1]).getData()], {type: split[0].split(";")[0]})
@@ -329,7 +329,7 @@ for(var c in {0}){
 			//iframe.src = 'javascript:unescape(`${StringTools.urlEncode(ticks)}`);';
 			//html.split("\n")
 
-			if(!JsUtils.isIE() && Reflect.hasField(Browser.window, "Blob")){
+			if(Reflect.hasField(Browser.window, "Blob")){
 				iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-modals");
 				iframe.src = js.html.URL.createObjectURL(
 					new js.html.Blob([haxe.io.Bytes.ofString(html).getData()], {type: 'text/html'})

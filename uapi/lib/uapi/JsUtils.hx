@@ -117,4 +117,9 @@ class JsUtils {
 				Reflect.setField(style, s, css[s]);
 		return style;
 	}
+
+    public static function isIE():Bool {
+        var ua = Browser.navigator.userAgent;
+        return ua.indexOf("Trident/") > -1 || ua.indexOf("Edge/") > -1;
+    }
 }

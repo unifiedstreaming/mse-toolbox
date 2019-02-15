@@ -6,10 +6,9 @@
     "configurations": [
 
         {
-            "name": "uapi/ build.hxml",
+            "name": "--cwd uapi/ build.hxml",
             "type": "haxe-eval",
-            "request": "launch",
-            "args": ["--cwd", "uapi/", "build.hxml"]
+            "request": "launch"
         }
     ]
 }

@@ -36,7 +36,7 @@
             ]
         },
         {
-            "taskName": "uapi build.hxml",
+            "label": "uapi build.hxml",
             "command": "haxe",
             "args": ["--cwd", "uapi/", "build.hxml"],
             "problemMatcher": "$haxe",
@@ -44,7 +44,7 @@
             //"type": "shell"
         }
         {
-            "taskName": "vview build.hxml",
+            "label": "vview build.hxml",
             "command": "haxe",
             "args": ["--cwd", "vview/", "build.hxml"],
             "problemMatcher": "$haxe",

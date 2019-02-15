@@ -22,7 +22,7 @@ class HasPlayer {
                 url: uri,
                 protData: {
                     "com.widevine.alpha":       {"laURL": Argan.getDefault("drm_server_widevine","com.widevine.alpha", "https://widevine-proxy.appspot.com/proxy")},
-                    "com.microsoft.playready":  {"laURL": Argan.getDefault("drm_server_playready","com.widevine.alpha", 'https://playready.directtaps.net/pr/svc/rightsmanager.asmx?PlayRight=1&UseSimpleNonPersistentLicense=1&PlayEnablers=786627D8-C2A6-44BE-8F88-08AE255B01A7')}
+                    "com.microsoft.playready":  {"laURL": Argan.getDefault("drm_server_playready","com.microsoft.playready", 'https://playready.directtaps.net/pr/svc/rightsmanager.asmx?PlayRight=1&UseSimpleNonPersistentLicense=1&PlayEnablers=786627D8-C2A6-44BE-8F88-08AE255B01A7')}
                 }
             }
             player.load(stream);

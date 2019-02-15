@@ -8,20 +8,21 @@ class DashJs {
         var title:String = Reflect.field(Browser.window, "title");
         if(title.indexOf(untyped dashjs.Version) == -1)
             Browser.console.warn('Loaded DashJs version "${untyped dashjs.Version}" not matching player title "${title}"');
-        var player = expose_player(untyped dashjs.MediaPlayer().create());
-        player.getDebug().setLogLevel(dashjs.Debug.LOG_LEVEL_INFO);
-        player.initialize();
         window.help = function(){
             return Argan.help(true);
         }
         Argan.start(window.config);
+        var player = expose_player(untyped dashjs.MediaPlayer().create());
+        player.getDebug().setLogLevel(Argan.getDefault("dashjs_loglevel", "0 == none to 5 == debug", dashjs.Debug.LOG_LEVEL_INFO));
+        player.initialize();
+        
         try{
             var video_element = document.getElementById("video");
             player.setAutoPlay(video_element.hasAttribute("autoplay"));
             player.attachView(video_element);
             player.setProtectionData({  
                                         "com.widevine.alpha":       {"serverURL": Argan.getDefault("drm_server_widevine","com.widevine.alpha", "https://widevine-proxy.appspot.com/proxy")},
-                                        "com.microsoft.playready":  {"serverURL": Argan.getDefault("drm_server_playready","com.widevine.alpha", 'https://playready.directtaps.net/pr/svc/rightsmanager.asmx?PlayRight=1&UseSimpleNonPersistentLicense=1&PlayEnablers=786627D8-C2A6-44BE-8F88-08AE255B01A7')}
+                                        "com.microsoft.playready":  {"serverURL": Argan.getDefault("drm_server_playready","com.microsoft.playready", 'https://playready.directtaps.net/pr/svc/rightsmanager.asmx?PlayRight=1&UseSimpleNonPersistentLicense=1&PlayEnablers=786627D8-C2A6-44BE-8F88-08AE255B01A7')}
                                      });
             //player.setSegmentOverlapToleranceTime(Argan.getDefault("setSegmentOverlapToleranceTime","Segment overlap tolorance threshold", 4));
             player.attachTTMLRenderingDiv(document.getElementById("ttml"));

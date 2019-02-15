@@ -300,14 +300,14 @@ for(var c in {0}){
 				});
 			}
 		});
-		#if documentwrite
+		if(JsUtils.isIE()){
 			var doc:Dynamic = iframe.contentWindow != null ? iframe.contentWindow : iframe.contentDocument;
 			if (doc.document)
 				doc = doc.document;
 			doc.open();
 			doc.write(html);
 			doc.close();
-		#else
+		}else{
 			/*	
 				☝ multiple options to try and make any browser show the generated source in the debug inspector
 				only data: url seems to work, but data: runs in a new, empty, security context. sandbox attribute "allow-same-origin" does not enable it.
@@ -337,7 +337,7 @@ for(var c in {0}){
 			}else{
 				iframe.src = 'javascript:atob("${haxe.crypto.Base64.encode(haxe.io.Bytes.ofString(html))}");';
 			}
-		#end
+		} // isIE()
 
 		return retval;
 	}

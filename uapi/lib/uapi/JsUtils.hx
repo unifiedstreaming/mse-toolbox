@@ -118,12 +118,10 @@ class JsUtils {
 		return style;
 	}
 
-    #if false
     public static function isIE():Bool {
         var ua = Browser.navigator.userAgent;
         return 
         ua.indexOf("Trident/") > -1 || // IE 11
         ua.indexOf("Edge/") > -1; // Edge
     }
-    #end
 }

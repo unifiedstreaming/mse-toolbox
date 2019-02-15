@@ -43,5 +43,13 @@
             "isBuildCommand": true
             //"type": "shell"
         }
+        {
+            "taskName": "vview build.hxml",
+            "command": "haxe",
+            "args": ["--cwd", "vview/", "build.hxml"],
+            "problemMatcher": "$haxe",
+            "isBuildCommand": true
+            //"type": "shell"
+        }
     ]
 }

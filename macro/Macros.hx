@@ -175,21 +175,6 @@ class Macros
 		return macro null;
 	}
 
-	macro public static function GetPlayersCDNJS(player:String)
-	{
-		var data = haxe.Json.parse(haxe.Http.requestUrl('https://api.cdnjs.com/libraries/${player}/'));
-		if(data != null){
-			var assets:Array<Dynamic> = data.assets;
-			for(a in assets){
-				trace('https://cdnjs.cloudflare.com/ajax/libs/dashjs/${a.version}/${a.files[0]}');
-			}
-		}
-
-		//sys.io.File.saveContent('my_folder/my_file.json',content);
-
-		return { expr : EConst(CString(sys.net.Host.localhost())), pos : haxe.macro.Context.currentPos() };
-	}
-
 	macro public static function saveScope(?file:String = "scope.txt"){
 		var buf:StringBuf = new StringBuf();
 		
@@ -256,5 +241,46 @@ class Macros
         });
         return macro null;
     }
+	#if macro
+	public static function updateJson(file, type, url){
+		trace(haxe.Http.requestUrl(url));
+	}
+	public static function GetPlayersCDNJS(player:String)
+	{
+		var data = haxe.Json.parse(haxe.Http.requestUrl('http://api.cdnjs.com/libraries/${player}/'));
+		var result = {};
+		if(data != null){
+			var assets:Array<Dynamic> = data.assets;
+			for(a in assets){
+				var arr = [];
+				for(f in cast(a.files, Array<Dynamic>))
+					if(!StringTools.endsWith(f, ".map"))
+						arr.push('http://cdnjs.cloudflare.com/ajax/libs/dashjs/${a.version}/${f}');
+				Reflect.setField(result, a.version, arr);
+			}
+		}
+		trace(result);
+
+		//sys.io.File.saveContent('my_folder/my_file.json',content);
+
+	}
+	public static function buildObject(){
+		var fields = Context.getBuildFields();
+		for( f in fields ){
+			trace(f.name);
+			if( f.name == "TEST" ) {
+				switch( f.kind ) {
+					case FVar(_,{ expr : EMeta({ name : ":markup" },{ expr : EConst(CString(str)) }), pos : pos }):
+						trace(str);
+						fields.remove(f);
+						break;
+					default: 
+				}
+				
+			}
+		}
+		return fields;
+	}
+	#end
 
 }

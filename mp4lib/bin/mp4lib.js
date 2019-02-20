@@ -2012,8 +2012,10 @@ mp4lib_ProtectionSystemSpecificHeaderBox.prototype = $extend(mp4lib_FullBox.prot
 	computeLength: function() {
 		mp4lib_FullBox.prototype.computeLength.call(this);
 		this.size += mp4lib_Fields.FIELD_UINT8.getLength() * 16;
-		this.size += mp4lib_Fields.FIELD_UINT32.getLength();
-		this.size += mp4lib_Fields.FIELD_UINT8.getLength() * this.KID_count * 16;
+		if(this.version == 1) {
+			this.size += mp4lib_Fields.FIELD_UINT32.getLength();
+			this.size += mp4lib_Fields.FIELD_UINT8.getLength() * this.KID_count * 16;
+		}
 		var a = this.size += mp4lib_Fields.FIELD_UINT32.getLength();
 		var a1 = mp4lib_Fields.FIELD_UINT8.getLength();
 		this.size = a + haxe__$Int32_Int32_$Impl_$._mul(a1,this.DataSize) | 0;
@@ -2021,12 +2023,14 @@ mp4lib_ProtectionSystemSpecificHeaderBox.prototype = $extend(mp4lib_FullBox.prot
 	,read: function(data,pos,end) {
 		mp4lib_FullBox.prototype.read.call(this,data,pos,end);
 		this.SystemID = this._readArrayFieldData(data,mp4lib_Fields.FIELD_UINT8,16);
-		this.KID_count = this._readData(data,mp4lib_Fields.FIELD_UINT32);
-		var _g = 0;
-		var _g1 = this.KID_count;
-		while(_g < _g1) {
-			var i = _g++;
-			this.KIDS[i] = this._readArrayFieldData(data,mp4lib_Fields.FIELD_UINT8,16);
+		if(this.version == 1) {
+			this.KID_count = this._readData(data,mp4lib_Fields.FIELD_UINT32);
+			var _g = 0;
+			var _g1 = this.KID_count;
+			while(_g < _g1) {
+				var i = _g++;
+				this.KIDS[i] = this._readArrayFieldData(data,mp4lib_Fields.FIELD_UINT8,16);
+			}
 		}
 		this.DataSize = this._readData(data,mp4lib_Fields.FIELD_UINT32);
 		this.Data = this._readArrayFieldData(data,mp4lib_Fields.FIELD_UINT8,this.DataSize);
@@ -2034,35 +2038,37 @@ mp4lib_ProtectionSystemSpecificHeaderBox.prototype = $extend(mp4lib_FullBox.prot
 	}
 	,write: function(data,pos) {
 		mp4lib_FullBox.prototype.write.call(this,data,pos);
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[0],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[1],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[2],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[3],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[4],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[5],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[6],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[7],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[8],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[9],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[10],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[11],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[12],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[13],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[14],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[15],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 41, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		this._writeData(data,mp4lib_Fields.FIELD_UINT32,this.KID_count,{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 44, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
-		var _g = 0;
-		var _g1 = this.KID_count;
-		while(_g < _g1) {
-			var i = _g++;
-			this._writeArrayData(data,mp4lib_Fields.FIELD_UINT8,this.KIDS[i]);
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[0],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[1],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[2],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[3],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[4],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[5],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[6],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[7],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[8],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[9],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[10],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[11],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[12],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[13],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[14],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.SystemID[15],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 43, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		if(this.version == 1) {
+			this._writeData(data,mp4lib_Fields.FIELD_UINT32,this.KID_count,{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 46, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+			var _g = 0;
+			var _g1 = this.KID_count;
+			while(_g < _g1) {
+				var i = _g++;
+				this._writeArrayData(data,mp4lib_Fields.FIELD_UINT8,this.KIDS[i]);
+			}
 		}
-		this._writeData(data,mp4lib_Fields.FIELD_UINT32,this.DataSize,{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 49, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+		this._writeData(data,mp4lib_Fields.FIELD_UINT32,this.DataSize,{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 51, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
 		var _g2 = 0;
-		var _g3 = this.DataSize;
-		while(_g2 < _g3) {
+		var _g11 = this.DataSize;
+		while(_g2 < _g11) {
 			var i1 = _g2++;
-			this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.Data[i1],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 51, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
+			this._writeData(data,mp4lib_Fields.FIELD_UINT8,this.Data[i1],{ fileName : "./src/mp4lib/ProtectionSystemSpecificHeaderBox.hx", lineNumber : 53, className : "mp4lib.ProtectionSystemSpecificHeaderBox", methodName : "write"});
 		}
 		return this.localPos;
 	}
@@ -2770,7 +2776,7 @@ var Mp4lib = $hx_exports["mp4lib"] = function() {
 };
 Mp4lib.__name__ = true;
 Mp4lib.Version = function() {
-	return "stable-35-g9ce71e0, 2019-02-06 13:37:01";
+	return "stable-53-g99f1347, 2019-02-20 11:12:31";
 };
 Mp4lib.doGenerateInitSegment = function(tracks) {
 	var moov_file = new mp4lib_File();

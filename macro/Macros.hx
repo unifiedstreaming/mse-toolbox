@@ -1,4 +1,5 @@
 package ;
+import haxe.crypto.Base64;
 import haxe.io.Path;
 #if macro
 import haxe.macro.Compiler;
@@ -264,15 +265,32 @@ class Macros
 		//sys.io.File.saveContent('my_folder/my_file.json',content);
 
 	}
-	public static function buildObject(){
+	
+	/**
+	 * Converts inline markup to embedded base64 returning function
+	 * static var AAP = <aap></aap>
+	 */
+	public static function buildInlineMarkup(processFields:Array<String> = null){
 		var fields = Context.getBuildFields();
+		processFields = processFields == null ? ["SRC"] : processFields;
 		for( f in fields ){
-			trace(f.name);
-			if( f.name == "TEST" ) {
+			var name = f.name;
+			if( processFields.indexOf(name) >= 0 ) {
 				switch( f.kind ) {
 					case FVar(_,{ expr : EMeta({ name : ":markup" },{ expr : EConst(CString(str)) }), pos : pos }):
-						trace(str);
 						fields.remove(f);
+						var encoded = Base64.encode(haxe.io.Bytes.ofString(str));
+						var c = macro : {
+							function $name() {
+								return Xml.parse(haxe.crypto.Base64.decode($v{encoded}).toString());
+							}
+						};
+						switch(c){
+							case TAnonymous(ffields):
+								return fields.concat(ffields);
+							default:
+								throw 'unreachable';
+						}
 						break;
 					default: 
 				}

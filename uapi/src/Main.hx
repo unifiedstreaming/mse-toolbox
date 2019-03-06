@@ -3,6 +3,7 @@ import js.Browser;
 import uapi.Hooks;
 import uapi.Utils;
 import uapi.JsUtils;
+import uapi.ui.Timeline;
 
 typedef InjectRaw = haxe.extern.EitherType<String, Array<{index:Int, content:String}>>;
 typedef PlayerOptions = Dynamic;
@@ -25,7 +26,6 @@ class Main {
 		//Macros.saveScope();
 	};
     static function main(){};
-
 	/*
 	@:keep
 	static function getScope(){

@@ -29,6 +29,9 @@
 # explicitly expose uuid function
 --macro haxe.macro.Compiler.addGlobalMetadata("uapi.Utils.GenerateUUID", '@:keep', false, false, true)
 --macro haxe.macro.Compiler.addGlobalMetadata("uapi.Utils.GenerateUUID", '@:expose("uapi.uuid")',false, false, true)
+# explicitly expose ui function
+--macro haxe.macro.Compiler.addGlobalMetadata("uapi.ui.Timeline", '@:keep')
+--macro haxe.macro.Compiler.addGlobalMetadata("uapi.ui.Timeline", '@:expose("uapi.timeline")')
 
 -dce full
 #--times

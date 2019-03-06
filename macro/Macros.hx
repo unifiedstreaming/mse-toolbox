@@ -1,4 +1,7 @@
 package ;
+import haxe.io.Bytes;
+import haxe.io.BytesOutput;
+import haxe.io.BytesInput;
 import haxe.crypto.Base64;
 import haxe.io.Path;
 #if macro
@@ -270,7 +273,7 @@ class Macros
 	 * Converts inline markup to embedded base64 returning function
 	 * static var AAP = <aap></aap>
 	 */
-	public static function buildInlineMarkup(processFields:Array<String> = null){
+	public static function buildInlineMarkup(processFields:Array<String> = null, condensed:Bool = true){
 		var fields = Context.getBuildFields();
 		processFields = processFields == null ? ["SRC"] : processFields;
 		for( f in fields ){
@@ -279,7 +282,16 @@ class Macros
 				switch( f.kind ) {
 					case FVar(_,{ expr : EMeta({ name : ":markup" },{ expr : EConst(CString(str)) }), pos : pos }):
 						fields.remove(f);
-						var encoded = Base64.encode(haxe.io.Bytes.ofString(str));
+						var encoded = Base64.encode(
+							if(condensed){
+								var buf = new BytesOutput();
+								for(line in str.split("\n"))
+									buf.writeString(StringTools.trim(line));
+								buf.getBytes();
+							}else{
+								Bytes.ofString(str);
+							}
+						);
 						var c = macro : {
 							function $name() {
 								return Xml.parse(haxe.crypto.Base64.decode($v{encoded}).toString());

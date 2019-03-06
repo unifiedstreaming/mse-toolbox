@@ -357,9 +357,10 @@
         </footer>
             <script type="text/javascript">
             !function(){
-                var hash = uapi.KeyValueStringParserJs(null, false);
-                if('custom_manifest' in hash)
-                    document.getElementById('custom_manifest').value = hash['custom_manifest'];
+                var hash = uapi.HashPipe(true).pipe(function(hash){
+                    if('custom_manifest' in hash.args)
+                        document.getElementById('custom_manifest').value = hash.args['custom_manifest'];
+                });
 
                 var cachestr = window.localStorage.getItem('setting-cache');
                 cache = null;
@@ -402,8 +403,8 @@
                             input['data-ufp-setting'] = k;
                             if(cache !== null && cache[k])
                                 input.value = cache[k];
-                            if(k in hash)
-                                input.value = hash[k];
+                            if(k in hash.args)
+                                input.value = hash.args[k];
 
                             settings_elements.push(input);
                             p.title = k + "; " + settings[k].default_;
@@ -429,7 +430,7 @@
                         o.value = p;
                         o.innerText = p;
                         s_version.appendChild(o);
-                        if('version' in hash && p == hash['version'])
+                        if('version' in hash.args && p == hash.args['version'])
                             o.selected = true;
                     }
 
@@ -465,7 +466,12 @@
                         options.autoplay = false;
                     
                     //update settings in hash
-                    location.hash = "!/custom_manifest=" + encodeURIComponent(manifest) +"/player=" + encodeURIComponent(s_player.value) + "/version=" + encodeURIComponent(s_version.value);
+                    hash.update({
+                        custom_manifest : encodeURIComponent(manifest),
+                        player          : encodeURIComponent(s_player.value),
+                        version         : encodeURIComponent(s_version.value)
+                    });
+                    
                     
                     if(document.getElementById('open_blank').checked){
                         if(Object.keys(player_options).length > 0 || Object.keys(options).length > 1)

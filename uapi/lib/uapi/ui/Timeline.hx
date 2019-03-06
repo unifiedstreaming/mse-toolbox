@@ -68,7 +68,7 @@ class Timeline {
                 border: 0;
             }
         </style>
-        <div template="timeline_base" style="width: 500px; position:relative; padding-top: 22px;">
+        <div template="timeline_base" style="width: 100%; position:relative; padding-top: 22px;">
             <div class="timeline">
                 <div id="timeline"></div>
             </div>
@@ -86,7 +86,7 @@ class Timeline {
             }
         });
     }
-    public function createGrabbable(el:js.html.DOMElement, callback:js.html.MouseEvent->Bool){
+    function createGrabbable(el:js.html.DOMElement, callback:js.html.MouseEvent->Bool){
         var window = Browser.window;
         el.addEventListener("mousedown", function(e){
             el.style.cursor = "grabbing";

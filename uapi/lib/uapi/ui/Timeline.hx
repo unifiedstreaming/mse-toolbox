@@ -2,9 +2,14 @@ package uapi.ui;
 
 import js.Browser;
 
+typedef TimeRange = {
+    start:Float,
+    end:Float
+}
 //macro replace the internal markup SRC by function SRC(), returning data
 @:build(Macros.buildInlineMarkup(["SRC"]))
 class Timeline {
+    var timepoints:Array<TimeRange> = [];
     var innerOffsetX:Float = 25;
     var tl:js.html.DOMElement = null;
     static var SRC = 
@@ -12,6 +17,12 @@ class Timeline {
         <style>
             .timeline {
                 border: 1px solid black;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;        
             }
             .timeline #timeline {
                 background:lightgrey;
@@ -33,6 +44,7 @@ class Timeline {
                 border-left: 1px solid black;
                 border-right: 1px solid black;
                 transition: opacity 100ms ease;
+                overflow:hidden;
             }
             .point .grabber {
                 position:absolute;
@@ -77,12 +89,14 @@ class Timeline {
         </div>
     </div>;
     
-    public function new(parent:js.html.Element){
+    public function new(parent:js.html.Element, maxSelectors:Int = null, fixedLength:Float = .2){
         var mal = new Mal(parent, SRC().firstChild());
+        if(maxSelectors == null)
+            maxSelectors = 6;
         tl = mal.addTemplate("timeline_base").getElementsByClassName("timeline")[0].firstElementChild;
         tl.addEventListener("click", function(e:js.html.MouseEvent) {
-            if(e.target == tl){
-                createTimePoint(tl, e);
+            if(e.target == tl && timepoints.length < maxSelectors){
+                createTimePoint(tl, e, fixedLength);
             }
         });
     }
@@ -101,7 +115,7 @@ class Timeline {
             return false;
         });
     }
-    function updateTimePoint(tp:js.html.DOMElement, e:js.html.MouseEvent):Bool{
+    function updateTimePoint(tp:js.html.DOMElement, pos:TimeRange, allowOverlap:Bool, e:js.html.MouseEvent):Bool{
         switch(e.type){
             case "mousedown":   innerOffsetX = e.clientX - tp.getBoundingClientRect().left;
                                 return false;
@@ -109,72 +123,93 @@ class Timeline {
                                 return false;
         }
         {
-            var rect = tl.getBoundingClientRect();
-            var offsetX = e.clientX - rect.left - innerOffsetX;
+            var tlrect = tl.getBoundingClientRect();
+            var tprect = tp.getBoundingClientRect();
+            var offsetX = e.clientX - tlrect.left - innerOffsetX;
             
-            if(offsetX <= 0)
-                offsetX = 0;
-            if(offsetX + tp.offsetWidth >= tl.offsetWidth)
-                offsetX = tl.offsetWidth - tp.offsetWidth;
+            var lowerLimit = 0;
+            var upperLimit = tlrect.width;
+            
+            if(!allowOverlap)
+                for(t in timepoints)
+                    if(t != pos){
+                        if(offsetX/tlrect.width < t.end && offsetX/tlrect.width > t.start)
+                            offsetX = t.end * tl.offsetWidth;
+                        if((offsetX + tprect.width)/tlrect.width > t.start && (offsetX + tprect.width)/tlrect.width < t.end)
+                            offsetX = (t.start * tlrect.width) - tprect.width;
+                    }
+
+            if(offsetX < lowerLimit)
+                offsetX = lowerLimit;
+            if(offsetX + tprect.width > upperLimit){
+                offsetX = upperLimit - tprect.width;
+            }
+            
             tp.style.marginLeft = '${offsetX}px';
         }
-        updateTimePointText(tp);
+        updateTimePointText(tp, pos);
         return false;
     }
 
-    function updateTimePointText(tp:js.html.DOMElement){
+    function updateTimePointText(tp:js.html.DOMElement, tr:TimeRange){
         var label = tp.getElementsByTagName("span")[0];
         var rect = tp.getBoundingClientRect();
         var tlrect = tl.getBoundingClientRect();
-        var perc = ((rect.left-tlrect.left) / tl.offsetWidth)*100;
-        if(perc < 0)
-            perc = 0;
-        label.innerHTML = untyped perc.toFixed(2) + "<br>";
-
-        var perc = ((rect.right-tlrect.left) / tl.offsetWidth)*100;
-        if(perc < 0)
-            perc = 0;
         
-        label.innerHTML += untyped perc.toFixed(2);
+        tr.start = ((rect.left-tlrect.left) / tlrect.width);
+        label.innerHTML = untyped (tr.start * 100).toFixed(2) + "<br>";
+        
+        tr.end = ((rect.right-tlrect.left) / tlrect.width);
+        label.innerHTML += untyped (tr.end * 100).toFixed(2);
+        
         return false;
     }
 
-    public function createTimePoint(parent:js.html.DOMElement, e:js.html.MouseEvent){
+    public function createTimePoint(parent:js.html.DOMElement,
+                                    e:js.html.MouseEvent,
+                                    length:Float = null,
+                                    overlap:Bool = false){
         var tp = Browser.document.createElement("div");
+        var pos:TimeRange = { start:0, end:0 };
+        var tlrect = tl.getBoundingClientRect();
         tp.className = "point";
         tp.tabIndex = 0;
-
-        // resize handle for the time point
-        var hndl_r = Browser.document.createElement("div");
-        hndl_r.className = "grabber";
-        createGrabbable(hndl_r, e -> {
-            if(e.type == "mousemove"){
-                var rect = tp.getBoundingClientRect();
-                var size = rect.right + (e.clientX-rect.right + 2);
-                if(size <= tl.getBoundingClientRect().right)
-                    tp.style.width = (e.clientX-rect.left + 2) + "px";
-                else
-                    tp.style.width = (tl.getBoundingClientRect().right - rect.left) + "px";
-                updateTimePointText(tp);
-            }
-            e.stopImmediatePropagation();
-            return false;
-        });
-
-        // append it
-        tp.appendChild(hndl_r);
-
+        
+        timepoints.push(pos);
+        if(length != null){
+            tp.style.width = '${tlrect.width * length}px';
+        }else{
+            // resize handle for the time point
+            var hndl_r = Browser.document.createElement("div");
+            hndl_r.className = "grabber";
+            createGrabbable(hndl_r, e -> {
+                if(e.type == "mousemove"){
+                    var tprect = tp.getBoundingClientRect();
+                    var size = tprect.right + (e.clientX-tprect.right + 2);
+                    if(size <= tlrect.right)
+                        tp.style.width = (e.clientX-tprect.left + 2) + "px";
+                    else
+                        tp.style.width = (tlrect.right - tprect.left) + "px";
+                    updateTimePointText(tp, pos);
+                }
+                e.stopImmediatePropagation();
+                return false;
+            });
+            // append it
+            tp.appendChild(hndl_r);
+        }
+        
         // add a label to the timepoint
         var label = Browser.document.createElement("span");
         tp.appendChild(label);
         
         // make timepoint movable
-        createGrabbable(tp, updateTimePoint.bind(tp));
+        createGrabbable(tp, updateTimePoint.bind(tp, pos, overlap));
 
         // append it
         parent.appendChild(tp);
-        parent.addEventListener("resize", updateTimePoint.bind(tp));
-        updateTimePoint(tp, e);
+        parent.addEventListener("resize", updateTimePoint.bind(tp, pos, overlap));
+        updateTimePoint(tp, pos, overlap, e);
     }
 
 }

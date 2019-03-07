@@ -40,17 +40,21 @@ class Timeline {
                 height: inherit;
                 background: whitesmoke;
                 opacity: .86;
-                overflow:hidden;
                 border-left: 1px solid black;
                 border-right: 1px solid black;
                 transition: opacity 100ms ease;
-                overflow:hidden;
             }
             .point .grabber {
                 position:absolute;
                 right:0px;
                 width:9px;
                 height:100%;
+            }
+            .point::after{
+                content:"▼";
+                position:absolute;
+                left: -7px;
+    top: -17px;
             }
             .point:hover {
                 opacity: 1.0;
@@ -96,10 +100,12 @@ class Timeline {
         tl = mal.addTemplate("timeline_base").getElementsByClassName("timeline")[0].firstElementChild;
         tl.addEventListener("click", function(e:js.html.MouseEvent) {
             if(e.target == tl && timepoints.length < maxSelectors){
-                createTimePoint(e, fixedLength);
+                var tlrect = tl.getBoundingClientRect();
+                createTimePoint(e.clientX - tlrect.left - innerOffsetX, fixedLength);
             }
         });
     }
+
     function createGrabbable(el:js.html.DOMElement, callback:js.html.MouseEvent->Bool){
         var window = Browser.window;
         el.addEventListener("mousedown", function(e){
@@ -115,40 +121,32 @@ class Timeline {
             return false;
         });
     }
-    function updateTimePoint(tp:js.html.DOMElement, pos:TimeRange, allowOverlap:Bool, e:js.html.MouseEvent):Bool{
-        switch(e.type){
-            case "mousedown":   innerOffsetX = e.clientX - tp.getBoundingClientRect().left;
-                                return false;
-            case "mouseup":     innerOffsetX = 0; 
-                                return false;
-        }
-        {
-            var tlrect = tl.getBoundingClientRect();
-            var tprect = tp.getBoundingClientRect();
-            var offsetX = e.clientX - tlrect.left - innerOffsetX;
-            
-            var lowerLimit = 0;
-            var upperLimit = tlrect.width;
-            
-            if(!allowOverlap)
-                for(t in timepoints)
-                    if(t != pos){
-                        if(offsetX/tlrect.width < t.end && offsetX/tlrect.width > t.start)
-                            offsetX = t.end * tl.offsetWidth;
-                        if((offsetX + tprect.width)/tlrect.width > t.start && (offsetX + tprect.width)/tlrect.width < t.end)
-                            offsetX = (t.start * tlrect.width) - tprect.width;
-                    }
 
-            if(offsetX < lowerLimit)
-                offsetX = lowerLimit;
-            if(offsetX + tprect.width > upperLimit){
-                offsetX = upperLimit - tprect.width;
-            }
-            
-            tp.style.marginLeft = '${offsetX}px';
+    function updateTimePoint(tp:js.html.DOMElement, pos:TimeRange, allowOverlap:Bool, offsetX:Float) {
+        var tlrect = tl.getBoundingClientRect();
+        var tprect = tp.getBoundingClientRect();
+        
+        var lowerLimit = 0;
+        var upperLimit = tlrect.width;
+        
+        if(!allowOverlap)
+            for(t in timepoints)
+                if(t != pos){
+                    if(offsetX/tlrect.width < t.end && offsetX/tlrect.width > t.start)
+                        offsetX = t.end * tl.offsetWidth;
+                    if((offsetX + tprect.width)/tlrect.width > t.start && (offsetX + tprect.width)/tlrect.width < t.end)
+                        offsetX = (t.start * tlrect.width) - tprect.width;
+                }
+
+        if(offsetX < lowerLimit)
+            offsetX = lowerLimit;
+        if(offsetX + tprect.width > upperLimit){
+            offsetX = upperLimit - tprect.width;
         }
+        
+        tp.style.marginLeft = '${offsetX}px';
+        
         updateTimePointText(tp, pos);
-        return false;
     }
 
     function updateTimePointText(tp:js.html.DOMElement, tr:TimeRange){
@@ -164,8 +162,13 @@ class Timeline {
         
         return false;
     }
+    
+    public function createTimePointPercent(xpos:Float){
+        var tlrect = tl.getBoundingClientRect();
+        createTimePoint((tlrect.width / 100) * xpos);
+    }
 
-    public function createTimePoint(e:js.html.MouseEvent,
+    public function createTimePoint(xpos:Float,
                                     length:Float = null,
                                     overlap:Bool = false){
         var tp = Browser.document.createElement("div");
@@ -203,12 +206,22 @@ class Timeline {
         tp.appendChild(label);
         
         // make timepoint movable
-        createGrabbable(tp, updateTimePoint.bind(tp, pos, overlap));
+        createGrabbable(tp, function(e){
+            var tlrect = tl.getBoundingClientRect();
+            switch(e.type){
+                case "mousedown":   innerOffsetX = e.clientX - tp.getBoundingClientRect().left;
+                                    return false;
+                case "mouseup":     innerOffsetX = 0; 
+                                    return false;
+            }
+            updateTimePoint(tp, pos, overlap, e.clientX - tlrect.left - innerOffsetX);
+            return false;
+        });
 
         // append it
         tl.appendChild(tp);
-        tl.addEventListener("resize", updateTimePoint.bind(tp, pos, overlap));
-        updateTimePoint(tp, pos, overlap, e);
+        
+        updateTimePoint(tp, pos, overlap, xpos);
     }
 
 }

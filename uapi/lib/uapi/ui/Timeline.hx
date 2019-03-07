@@ -89,14 +89,14 @@ class Timeline {
         </div>
     </div>;
     
-    public function new(parent:js.html.Element, maxSelectors:Int = null, fixedLength:Float = .2){
+    public function new(parent:js.html.Element, maxSelectors:Int = null, fixedLength:Float = null){
         var mal = new Mal(parent, SRC().firstChild());
         if(maxSelectors == null)
             maxSelectors = 6;
         tl = mal.addTemplate("timeline_base").getElementsByClassName("timeline")[0].firstElementChild;
         tl.addEventListener("click", function(e:js.html.MouseEvent) {
             if(e.target == tl && timepoints.length < maxSelectors){
-                createTimePoint(tl, e, fixedLength);
+                createTimePoint(e, fixedLength);
             }
         });
     }
@@ -165,8 +165,7 @@ class Timeline {
         return false;
     }
 
-    public function createTimePoint(parent:js.html.DOMElement,
-                                    e:js.html.MouseEvent,
+    public function createTimePoint(e:js.html.MouseEvent,
                                     length:Float = null,
                                     overlap:Bool = false){
         var tp = Browser.document.createElement("div");
@@ -207,8 +206,8 @@ class Timeline {
         createGrabbable(tp, updateTimePoint.bind(tp, pos, overlap));
 
         // append it
-        parent.appendChild(tp);
-        parent.addEventListener("resize", updateTimePoint.bind(tp, pos, overlap));
+        tl.appendChild(tp);
+        tl.addEventListener("resize", updateTimePoint.bind(tp, pos, overlap));
         updateTimePoint(tp, pos, overlap, e);
     }
 

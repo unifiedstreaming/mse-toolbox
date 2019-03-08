@@ -257,7 +257,7 @@ for(var c in {0}){
 			//use fixed hook callback from player_page_template.html to be able to add event listeners _before_ page load
 			var iframe:Dynamic = iframe;
 			iframe.hook = function(contentWindow:Dynamic){
-				contentWindow.config = Reflect.field(player_config, player);
+				contentWindow.config = player_config != null ? Reflect.field(player_config, player) : player_config;
 				contentWindow.addEventListener("error", function(e:js.html.ErrorEvent){
 					if(e.message != "ResizeObserver loop limit exceeded"){
 						reject(e);

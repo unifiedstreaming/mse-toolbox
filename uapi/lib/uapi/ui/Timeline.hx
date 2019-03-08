@@ -2,6 +2,12 @@ package uapi.ui;
 
 import js.Browser;
 
+typedef TimePoint = {
+    updateTimePoint:Float->Void,
+    updateTimePointPercent:Float->Void,
+    pos:TimeRange
+}
+
 typedef TimeRange = {
     start:Float,
     end:Float
@@ -9,7 +15,7 @@ typedef TimeRange = {
 //macro replace the internal markup SRC by function SRC(), returning data
 @:build(Macros.buildInlineMarkup(["SRC"]))
 class Timeline {
-    var timepoints:Array<TimeRange> = [];
+    var timepoints:Array<TimePoint> = [];
     var innerOffsetX:Float = 25;
     var updateTextCb:TimeRange->String = null;
     var fixedLength:Float = null;
@@ -140,11 +146,11 @@ class Timeline {
         
         if(!allowOverlap)
             for(t in timepoints)
-                if(t != pos){
-                    if(offsetX/tlrect.width < t.end && offsetX/tlrect.width > t.start)
-                        offsetX = t.end * tl.offsetWidth;
-                    if((offsetX + tprect.width)/tlrect.width > t.start && (offsetX + tprect.width)/tlrect.width < t.end)
-                        offsetX = (t.start * tlrect.width) - tprect.width;
+                if(t.pos != pos){
+                    if(offsetX/tlrect.width < t.pos.end && offsetX/tlrect.width > t.pos.start)
+                        offsetX = t.pos.end * tl.offsetWidth;
+                    if((offsetX + tprect.width)/tlrect.width > t.pos.start && (offsetX + tprect.width)/tlrect.width < t.pos.end)
+                        offsetX = (t.pos.start * tlrect.width) - tprect.width;
                 }
 
         if(offsetX < lowerLimit)
@@ -175,9 +181,9 @@ class Timeline {
         return false;
     }
     
-    public function createTimePointPercent(xpos:Float){
+    public function createTimePointPercent(percent:Float){
         var tlrect = tl.getBoundingClientRect();
-        createTimePoint((tlrect.width / 100) * xpos, fixedLength);
+        createTimePoint((tlrect.width / 100) * percent, fixedLength);
     }
 
     public function createTimePoint(xpos:Float,
@@ -189,7 +195,13 @@ class Timeline {
         tp.className = "point";
         tp.tabIndex = 0;
         
-        timepoints.push(pos);
+        timepoints.push({ pos:pos,
+                          updateTimePoint:updateTimePoint.bind(tp, pos, overlap),
+                          updateTimePointPercent: function(percent){
+                              var tlrect = tl.getBoundingClientRect();
+                              updateTimePoint(tp, pos, overlap, (tlrect.width / 100) * percent);
+                          }  
+                        });
         if(length != null){
             tp.style.width = '${tlrect.width * length}px';
         }else{
@@ -234,6 +246,8 @@ class Timeline {
         tl.appendChild(tp);
         
         updateTimePoint(tp, pos, overlap, xpos);
+
+        return updateTimePoint.bind(tp, pos, overlap);
     }
 
     @:keep

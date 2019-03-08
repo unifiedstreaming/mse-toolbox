@@ -88,7 +88,7 @@ class Timeline {
                 position:absolute;
             }
         </style>
-        <div template="timeline_base" style="width: 100%; position:relative; padding-top: 22px;">
+        <div template="timeline_base" style="width:100%;position:relative;padding-top: 24px;padding-bottom: 24px;">
             <div class="timeline">
                 <div id="timeline"></div>
             </div>

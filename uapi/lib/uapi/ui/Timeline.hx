@@ -11,6 +11,7 @@ typedef TimeRange = {
 class Timeline {
     var timepoints:Array<TimeRange> = [];
     var innerOffsetX:Float = 25;
+    var updateTextCb:TimeRange->String = null;
     var tl:js.html.DOMElement = null;
     static var SRC = 
     <div>
@@ -83,6 +84,9 @@ class Timeline {
                 margin: 0;
                 border: 0;
             }
+            .tfield{
+                position:absolute;
+            }
         </style>
         <div template="timeline_base" style="width: 100%; position:relative; padding-top: 22px;">
             <div class="timeline">
@@ -90,11 +94,14 @@ class Timeline {
             </div>
             <div class="caret" style="left:0;"></div>
             <div class="caret" style="right:0;"></div>
+            <div class="tfield" style="left:5px;">00:00:00</div>
+            <div class="tfield" style="right:5px;">00:00:00</div>
         </div>
     </div>;
     
-    public function new(parent:js.html.Element, maxSelectors:Int = null, fixedLength:Float = null){
+    public function new(parent:js.html.Element, maxSelectors:Int = null, fixedLength:Float = null, updateTextCb:TimeRange->String = null){
         var mal = new Mal(parent, SRC().firstChild());
+        this.updateTextCb = updateTextCb;
         if(maxSelectors == null)
             maxSelectors = 6;
         tl = mal.addTemplate("timeline_base").getElementsByClassName("timeline")[0].firstElementChild;
@@ -155,11 +162,14 @@ class Timeline {
         var tlrect = tl.getBoundingClientRect();
         
         tr.start = ((rect.left-tlrect.left) / tlrect.width);
-        label.innerHTML = untyped (tr.start * 100).toFixed(2) + "<br>";
-        
         tr.end = ((rect.right-tlrect.left) / tlrect.width);
-        label.innerHTML += untyped (tr.end * 100).toFixed(2);
-        
+
+        if(updateTextCb != null)
+            label.innerHTML = updateTextCb(tr);
+        else{
+            label.innerHTML = untyped (tr.start * 100).toFixed(2) + "<br>";
+            label.innerHTML += untyped (tr.end * 100).toFixed(2);
+        }
         return false;
     }
     
@@ -224,4 +234,9 @@ class Timeline {
         updateTimePoint(tp, pos, overlap, xpos);
     }
 
+    @:keep
+    public function updateLabel(text:String, left_right:String = "right"){
+        var field = tl.parentElement.parentElement.getElementsByClassName("tfield")[left_right == "right" ? 1 : 0];
+        field.innerHTML = text;
+    }
 }

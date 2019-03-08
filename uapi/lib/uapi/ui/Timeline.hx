@@ -12,6 +12,7 @@ class Timeline {
     var timepoints:Array<TimeRange> = [];
     var innerOffsetX:Float = 25;
     var updateTextCb:TimeRange->String = null;
+    var fixedLength:Float = null;
     var tl:js.html.DOMElement = null;
     static var SRC = 
     <div>
@@ -102,6 +103,7 @@ class Timeline {
     public function new(parent:js.html.Element, maxSelectors:Int = null, fixedLength:Float = null, updateTextCb:TimeRange->String = null){
         var mal = new Mal(parent, SRC().firstChild());
         this.updateTextCb = updateTextCb;
+        this.fixedLength = fixedLength;
         if(maxSelectors == null)
             maxSelectors = 6;
         tl = mal.addTemplate("timeline_base").getElementsByClassName("timeline")[0].firstElementChild;
@@ -175,7 +177,7 @@ class Timeline {
     
     public function createTimePointPercent(xpos:Float){
         var tlrect = tl.getBoundingClientRect();
-        createTimePoint((tlrect.width / 100) * xpos);
+        createTimePoint((tlrect.width / 100) * xpos, fixedLength);
     }
 
     public function createTimePoint(xpos:Float,

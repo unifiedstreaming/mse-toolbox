@@ -72,10 +72,10 @@ class Hooks {
                         _values = values;
                 }else{
                     for(k in args.keys())
-                        if(!_args.exists(k))
-                            _args.set(k, args.get(k));
-                        else if(toggle && args.get(k) == "") //toggle
+                        if(toggle && args.get(k) == "") //toggle
                             args.remove(k);
+                        else 
+                            _args.set(k, args.get(k));
                     if(values != null)
                         for(v in values){
                             var str = Std.string(v);

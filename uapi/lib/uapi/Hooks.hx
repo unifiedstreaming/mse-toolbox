@@ -99,7 +99,7 @@ class Hooks {
             var hash = js.Browser.window.location.hash;
             var toggle_arguments = [];
             if(pipe != null)
-                _args = Utils.KeyValueStringParser(hash, false); 
+                _args = Utils.KeyValueStringParser(hash, false, false); 
                 for(k in _args.keys()){ 
                     if(_args.get(k) == null){ 
                         _args.remove(k); 

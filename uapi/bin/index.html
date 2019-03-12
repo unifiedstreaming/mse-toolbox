@@ -359,7 +359,7 @@
             !function(){
                 var hash = uapi.HashPipe(true).pipe(function(hash){
                     if('custom_manifest' in hash.args)
-                        document.getElementById('custom_manifest').value = hash.args['custom_manifest'];
+                        document.getElementById('custom_manifest').value = decodeURIComponent(hash.args['custom_manifest']);
                 });
 
                 var cachestr = window.localStorage.getItem('setting-cache');

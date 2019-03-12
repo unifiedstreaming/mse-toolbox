@@ -1,10 +1,9 @@
 package uapi;
 
-import haxe.io.BytesBuffer;
 import haxe.io.Bytes;
 
 class Utils {
-	public static function KeyValueStringParser(location:String = null, QueryString:Bool = true, urlDecode:Bool = true):Map<String, String> {
+	public static function KeyValueStringParser(location:String = null, QueryString:Bool = true):Map<String, String> {
 		
 		if(location == null){ 
 		#if js
@@ -27,7 +26,7 @@ class Utils {
 				}else{
 					t[0] = h[l];
 				}
-				retval.set(t[0], t.length > 1 ? (urlDecode ? StringTools.urlDecode(t[1]) : t[1]) : null);
+				retval.set(t[0], t.length > 1 ? StringTools.urlDecode(t[1]) : null);
 			}
 		return retval;
 	}

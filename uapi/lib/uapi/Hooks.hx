@@ -85,8 +85,11 @@ class Hooks {
                                 _values.splice(_values.indexOf(str), 1); //toggle
                         }
                 }
+                for(v in _values)
+                    v = StringTools.urlEncode(v);
+                
                 for(k in _args.keys())
-                    _values.push('$k=${_args.get(k)}');
+                    _values.push('$k=${StringTools.urlEncode(_args.get(k))}');
 
                 var updated_hash = "!/"+_values.join("/");
                 if(replacestate)
@@ -99,7 +102,7 @@ class Hooks {
             var hash = js.Browser.window.location.hash;
             var toggle_arguments = [];
             if(pipe != null)
-                _args = Utils.KeyValueStringParser(hash, false, false); 
+                _args = Utils.KeyValueStringParser(hash, false); 
                 for(k in _args.keys()){ 
                     if(_args.get(k) == null){ 
                         _args.remove(k); 

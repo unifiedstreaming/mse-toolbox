@@ -359,7 +359,7 @@
             !function(){
                 var hash = uapi.HashPipe(true).pipe(function(hash){
                     if('custom_manifest' in hash.args)
-                        document.getElementById('custom_manifest').value = decodeURIComponent(hash.args['custom_manifest']);
+                        document.getElementById('custom_manifest').value = hash.args['custom_manifest'];
                 });
 
                 var cachestr = window.localStorage.getItem('setting-cache');
@@ -467,9 +467,9 @@
                     
                     //update settings in hash
                     hash.update({
-                        custom_manifest : encodeURIComponent(manifest),
-                        player          : encodeURIComponent(s_player.value),
-                        version         : encodeURIComponent(s_version.value)
+                        custom_manifest : manifest,
+                        player          : s_player.value,
+                        version         : s_version.value
                     });
                     
                     

@@ -310,20 +310,18 @@
                                     <select class="w-100 input-sm" id="selector_player">
                                         
                                     </select>
-                                </p>
-                                <p>
                                     <label>Version:</label>
                                     <select class="w-100 input-sm" id="selector_player_version">
                                         
                                     </select>
                                 </p>
-                                <div class="checkbox">
+                                <p>
+                                    
+                                </p>
+                                <div id="uapi_options_ui" class="checkbox">
                                     <label>
-                                        <input checked type="checkbox" id="enable_autoplay"/> Autoplay
+                                        <input type="checkbox" title="open popup in new window" id="open_blank"/> new_window
                                     </label><br>
-                                    <label>
-                                        <input type="checkbox" id="open_blank"/> Open in new window
-                                    </label>
                                 </div>
                                 <input class="btn-default pull-right input-sm" type="submit" value="Play">
                             </div>
@@ -361,6 +359,20 @@
                     if('custom_manifest' in hash.args)
                         document.getElementById('custom_manifest').value = hash.args['custom_manifest'];
                 });
+                var uapi_options = uapi.getHelp();
+                for(var option in uapi_options){
+                    var l = document.createElement("label");
+                    var input = document.createElement("input");
+                    if(uapi_options[option].default_.indexOf("true") > -1)
+                        input.setAttribute("checked", true);
+                    input.type = "checkbox";
+                    input.id = `option_${option}`;
+                    l.appendChild(input);
+                    l.title = `(${uapi_options[option].help} ${uapi_options[option].default_})`;
+                    l.innerHTML += `uapi_options.${option}`;
+                    uapi_options_ui.appendChild(l);
+                    uapi_options_ui.appendChild(document.createElement("br"));
+                }
 
                 var cachestr = window.localStorage.getItem('setting-cache');
                 cache = null;
@@ -430,7 +442,7 @@
                         o.value = p;
                         o.innerText = p;
                         s_version.appendChild(o);
-                        if('version' in hash.args && p == hash.args['version'])
+                        if('version' in hash.args() && p == hash.args()['version'])
                             o.selected = true;
                     }
 
@@ -462,8 +474,9 @@
                             manifest = location.protocol + manifest;
                     }
 
-                    if(!document.getElementById('enable_autoplay').checked)
-                        options.autoplay = false;
+                    for(var option in uapi_options){
+                        options[option] = document.getElementById(`option_${option}`).checked ? true : false;
+                    }
                     
                     //update settings in hash
                     hash.update({
@@ -517,9 +530,8 @@ uapi.writePlayer(DOMElement, "${manifest}", "${s_player.value}:${s_version.value
                     o.value = p;
                     o.innerText = p;
                     s_player.appendChild(o);
-                    if('player' in hash && p == hash['player'])
+                    if('player' in hash.args() && p == hash.args()['player'])
                         o.selected = true;
-                        
                 }
                 s_player.addEventListener('change', function(e){
                     updateSettings(s_player.value);

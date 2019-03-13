@@ -1,4 +1,5 @@
 {
+    "1.15.1": ["https://orange-opensource.github.io/hasplayer.js/1.15.1/dist/hasplayer.js"],
     "1.15.0": ["https://orange-opensource.github.io/hasplayer.js/1.15.0/dist/hasplayer.js"],
     "1.14.2": ["https://cdn.jsdelivr.net/npm/hasplayer.js@1.14.2/dist/hasplayer.min.js"]
 }

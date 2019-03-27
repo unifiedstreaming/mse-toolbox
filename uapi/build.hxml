@@ -32,7 +32,7 @@
 # explicitly expose ui function
 --macro haxe.macro.Compiler.addGlobalMetadata("uapi.ui.Timeline", '@:keep')
 --macro haxe.macro.Compiler.addGlobalMetadata("uapi.ui.Timeline", '@:expose("uapi.timeline")')
-
+#-D ARGAN_SMARTCAST
 -dce full
 #--times
 #-D documentwrite

@@ -17,6 +17,10 @@ class Shaka {
             if (shaka.Player.isBrowserSupported()) {
                 var player = expose_player(untyped __js__('new shaka.Player(document.getElementById("video"))'));
                 player.configure({
+                    streaming: {
+                        smallGapLimit: Argan.getDefault("smallGapLimit","config.streaming.smallGapLimit", .5),
+                        jumpLargeGaps: Argan.getDefault("jumpLargeGaps","config.streaming.jumpLargeGaps", false) != "false"
+                    },
                     drm: {
                         servers: {
                             'com.widevine.alpha'        : Argan.getDefault("drm_server_widevine","com.widevine.alpha", 'https://widevine-proxy.appspot.com/proxy'),

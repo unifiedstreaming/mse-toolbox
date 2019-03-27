@@ -1,16 +1,18 @@
 package uapi.ui;
 
+import js.html.DivElement;
 import js.Browser;
 
 typedef TimePoint = {
     updateTimePoint:Float->Void,
-    updateTimePointPercent:Float->Void,
-    pos:TimeRange
+    pos:TimeRange,
+    el:DivElement
 }
 
 typedef TimeRange = {
     start:Float,
-    end:Float
+    end:Float,
+    duration:Float
 }
 //macro replace the internal markup SRC by function SRC(), returning data
 @:build(Macros.buildInlineMarkup(["SRC"]))
@@ -18,7 +20,9 @@ class Timeline {
     var timepoints:Array<TimePoint> = [];
     var innerOffsetX:Float = 25;
     var updateTextCb:TimeRange->String = null;
-    var fixedLength:Float = null;
+    var resizable:Bool = null;
+    var defaultLength:Float = null;
+    var timelineLength:Float = null;
     var tl:js.html.DOMElement = null;
     static var SRC = 
     <div>
@@ -106,17 +110,19 @@ class Timeline {
         </div>
     </div>;
     
-    public function new(parent:js.html.Element, maxSelectors:Int = null, fixedLength:Float = null, updateTextCb:TimeRange->String = null){
+    public function new(parent:js.html.Element, timelineLength:Float, maxSelectors:Int = null, updateTextCb:TimeRange->String = null, resizable:Bool = false, defaultLength:Int = 15){
         var mal = new Mal(parent, SRC().firstChild());
         this.updateTextCb = updateTextCb;
-        this.fixedLength = fixedLength;
+        this.resizable = resizable;
+        this.defaultLength = defaultLength;
+        this.timelineLength = timelineLength;
         if(maxSelectors == null)
             maxSelectors = 6;
         tl = mal.addTemplate("timeline_base").getElementsByClassName("timeline")[0].firstElementChild;
         tl.addEventListener("click", function(e:js.html.MouseEvent) {
             if(e.target == tl && timepoints.length < maxSelectors){
                 var tlrect = tl.getBoundingClientRect();
-                createTimePoint(e.clientX - tlrect.left - innerOffsetX, fixedLength);
+                createTimePoint(e.clientX - tlrect.left - innerOffsetX, defaultLength);
             }
         });
     }
@@ -143,14 +149,18 @@ class Timeline {
         
         var lowerLimit = 0;
         var upperLimit = tlrect.width;
-        
         if(!allowOverlap)
             for(t in timepoints)
                 if(t.pos != pos){
-                    if(offsetX/tlrect.width < t.pos.end && offsetX/tlrect.width > t.pos.start)
-                        offsetX = t.pos.end * tl.offsetWidth;
-                    if((offsetX + tprect.width)/tlrect.width > t.pos.start && (offsetX + tprect.width)/tlrect.width < t.pos.end)
-                        offsetX = (t.pos.start * tlrect.width) - tprect.width;
+                    var trect = t.el.getBoundingClientRect();
+                    if(offsetX < trect.right && offsetX > trect.left){
+                        offsetX = trect.right - tlrect.left;
+                        break;
+                    }
+                    if((offsetX + innerOffsetX + tprect.width) > trect.left && (offsetX + innerOffsetX  + tprect.width) < trect.right){
+                        offsetX = trect.left - tprect.width - tlrect.left;
+                        break;
+                    }
                 }
 
         if(offsetX < lowerLimit)
@@ -169,53 +179,50 @@ class Timeline {
         var rect = tp.getBoundingClientRect();
         var tlrect = tl.getBoundingClientRect();
         
-        tr.start = ((rect.left-tlrect.left) / tlrect.width);
-        tr.end = ((rect.right-tlrect.left) / tlrect.width);
-
+        tr.start = ((rect.left-tlrect.left) / tlrect.width) * timelineLength;
+        tr.end = tr.start + tr.duration;
         if(updateTextCb != null)
             label.innerHTML = updateTextCb(tr);
         else{
-            label.innerHTML = untyped (tr.start * 100).toFixed(2) + "<br>";
-            label.innerHTML += untyped (tr.end * 100).toFixed(2);
+            label.innerHTML = untyped (tr.start).toFixed(2) + "<br>";
+            label.innerHTML += untyped (tr.end).toFixed(2);
         }
+        Browser.console.log(tr);
         return false;
     }
     
-    public function createTimePointPercent(percent:Float){
-        var tlrect = tl.getBoundingClientRect();
-        createTimePoint((tlrect.width / 100) * percent, fixedLength);
-    }
-
     public function createTimePoint(xpos:Float,
                                     length:Float = null,
                                     overlap:Bool = false){
-        var tp = Browser.document.createElement("div");
-        var pos:TimeRange = { start:0, end:0 };
+        var tp = Browser.document.createDivElement();
+        var pos:TimeRange = { start:0, end: length, duration: length };
         var tlrect = tl.getBoundingClientRect();
         tp.className = "point";
         tp.tabIndex = 0;
         
         timepoints.push({ pos:pos,
-                          updateTimePoint:updateTimePoint.bind(tp, pos, overlap),
-                          updateTimePointPercent: function(percent){
-                              var tlrect = tl.getBoundingClientRect();
-                              updateTimePoint(tp, pos, overlap, (tlrect.width / 100) * percent);
-                          }  
+                          el: tp,
+                          updateTimePoint:updateTimePoint.bind(tp, pos, overlap)
                         });
-        if(length != null){
-            tp.style.width = '${tlrect.width * length}px';
-        }else{
+        //if(length != null){
+            tp.style.width = '${tlrect.width/timelineLength * length}px';
+        //}else{
             // resize handle for the time point
             var hndl_r = Browser.document.createElement("div");
             hndl_r.className = "grabber";
             createGrabbable(hndl_r, e -> {
                 if(e.type == "mousemove"){
                     var tprect = tp.getBoundingClientRect();
-                    var size = tprect.right + (e.clientX-tprect.right + 2);
-                    if(size <= tlrect.right)
-                        tp.style.width = (e.clientX-tprect.left + 2) + "px";
-                    else
+                    var size = tprect.right + (e.clientX-tprect.right);
+                    if(size <= tlrect.right){
+                        tp.style.width = (e.clientX-tprect.left) + "px";
+                        pos.end = (e.clientX / tlrect.width) * timelineLength;
+                        pos.duration = pos.end - pos.start;
+                    }else{
                         tp.style.width = (tlrect.right - tprect.left) + "px";
+                        pos.end = ((tlrect.right - tprect.left) / tlrect.width) * timelineLength;
+                        pos.duration = pos.end - pos.start;
+                    }
                     updateTimePointText(tp, pos);
                 }
                 e.stopImmediatePropagation();
@@ -223,7 +230,7 @@ class Timeline {
             });
             // append it
             tp.appendChild(hndl_r);
-        }
+       // }
         
         // add a label to the timepoint
         var label = Browser.document.createElement("span");

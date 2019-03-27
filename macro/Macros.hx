@@ -27,7 +27,7 @@ class Macros
 		var path = new haxe.io.Path(filePath);
 		var resourceName = arr.length > 1 ? arr[1] : path.file;
 
-		var isInitMacro = haxe.macro.PositionTools.getInfos(haxe.macro.Context.currentPos()).file == "--macro";
+		var isInitMacro = StringTools.startsWith(haxe.macro.PositionTools.getInfos(haxe.macro.Context.currentPos()).file, "--macro");
 		trace("Compiling inline, initiated from " + haxe.macro.PositionTools.getInfos(haxe.macro.Context.currentPos()).file + ", environment:\n\n\tCwd: " + Sys.getCwd() +"\n");
 
 		if (FileSystem.exists(filePath)) {

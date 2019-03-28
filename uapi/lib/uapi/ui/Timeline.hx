@@ -56,6 +56,7 @@ class Timeline {
                 border-left: 1px solid black;
                 border-right: 1px solid black;
                 transition: opacity 100ms ease;
+                z-index: 1;
             }
             .point .grabber {
                 position:absolute;

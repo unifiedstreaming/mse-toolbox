@@ -19,7 +19,7 @@ typedef TimeRange = {
 @:build(Macros.buildInlineMarkup(["SRC"]))
 class Timeline {
     var timepoints:Array<TimePoint> = [];
-    var innerOffsetX:Float = 25;
+    var innerOffsetX:Float = null;
     var updateTextCb:TimeRange->String = null;
     var resizable:Bool = null;
     var defaultLength:Float = null;
@@ -118,6 +118,7 @@ class Timeline {
         this.resizable = resizable;
         this.defaultLength = defaultLength;
         this.timelineLength = timelineLength;
+        this.innerOffsetX = this.defaultLength / 2;
         if(maxSelectors == null)
             maxSelectors = 6;
         tl = mal.addTemplate("timeline_base").getElementsByClassName("timeline")[0].firstElementChild;

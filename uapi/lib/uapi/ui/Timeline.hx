@@ -6,7 +6,8 @@ import js.Browser;
 typedef TimePoint = {
     updateTimePoint:Float->Void,
     pos:TimeRange,
-    el:DivElement
+    el:DivElement,
+    delete:Void->Void
 }
 
 typedef TimeRange = {
@@ -203,7 +204,8 @@ class Timeline {
         
         timepoints.push({ pos:pos,
                           el: tp,
-                          updateTimePoint:updateTimePoint.bind(tp, pos, overlap)
+                          updateTimePoint:updateTimePoint.bind(tp, pos, overlap),
+                          delete: deleteTimePoint.bind(pos)
                         });
 
         tp.style.width = '${tlrect.width/timelineLength * length}px';
@@ -256,6 +258,16 @@ class Timeline {
         updateTimePoint(tp, pos, overlap, xpos);
 
         return updateTimePoint.bind(tp, pos, overlap);
+    }
+
+    private function deleteTimePoint(pos){
+        for(o in timepoints){
+            if(o.pos == pos){
+                timepoints.remove(o);
+                o.el.parentElement.removeChild(o.el);
+                break;
+            }
+        }
     }
 
     @:keep

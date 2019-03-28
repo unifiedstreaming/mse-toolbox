@@ -187,7 +187,6 @@ class Timeline {
             label.innerHTML = untyped (tr.start).toFixed(2) + "<br>";
             label.innerHTML += untyped (tr.end).toFixed(2);
         }
-        Browser.console.log(tr);
         return false;
     }
     
@@ -208,7 +207,7 @@ class Timeline {
                         });
 
         tp.style.width = '${tlrect.width/timelineLength * length}px';
-        
+
         if(resizable){
             var hndl_r = Browser.document.createElement("div");
             hndl_r.className = "grabber";

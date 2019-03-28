@@ -129,7 +129,6 @@ class Timeline {
         });
         var tlrect = tl.getBoundingClientRect();
         this.innerOffsetX = ((this.defaultLength/timelineLength) * tlrect.width)/2;
-        Browser.console.log(this.innerOffsetX);
     }
 
     function createGrabbable(el:js.html.DOMElement, callback:js.html.MouseEvent->Bool){

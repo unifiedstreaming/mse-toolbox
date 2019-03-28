@@ -155,11 +155,11 @@ class Timeline {
             for(t in timepoints)
                 if(t.pos != pos){
                     var trect = t.el.getBoundingClientRect();
-                    if(offsetX < trect.right && offsetX > trect.left){
+                    if(offsetX < trect.right - tlrect.left && offsetX > trect.left - tlrect.left){
                         offsetX = trect.right - tlrect.left;
                         break;
                     }
-                    if((offsetX + innerOffsetX + tprect.width) > trect.left && (offsetX + innerOffsetX  + tprect.width) < trect.right){
+                    if((offsetX + innerOffsetX + tprect.width) > trect.left - tlrect.left && (offsetX + innerOffsetX  + tprect.width) < trect.right - tlrect.left){
                         offsetX = trect.left - tprect.width - tlrect.left;
                         break;
                     }

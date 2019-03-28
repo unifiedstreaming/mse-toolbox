@@ -107,8 +107,8 @@ class Timeline {
             </div>
             <div class="caret" style="left:0;"></div>
             <div class="caret" style="right:0;"></div>
-            <div class="tfield" style="left:5px;">00:00:00</div>
-            <div class="tfield" style="right:5px;">00:00:00</div>
+            <div class="tfield" style="left:6px;">00:00:00</div>
+            <div class="tfield" style="right:6px;">00:00:00</div>
         </div>
     </div>;
     

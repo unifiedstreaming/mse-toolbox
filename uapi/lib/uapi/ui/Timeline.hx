@@ -118,7 +118,6 @@ class Timeline {
         this.resizable = resizable;
         this.defaultLength = defaultLength;
         this.timelineLength = timelineLength;
-        this.innerOffsetX = this.defaultLength / 2;
         if(maxSelectors == null)
             maxSelectors = 6;
         tl = mal.addTemplate("timeline_base").getElementsByClassName("timeline")[0].firstElementChild;
@@ -128,6 +127,9 @@ class Timeline {
                 createTimePoint(e.clientX - tlrect.left - innerOffsetX, defaultLength);
             }
         });
+        var tlrect = tl.getBoundingClientRect();
+        this.innerOffsetX = ((this.defaultLength/timelineLength) * tlrect.width)/2;
+        Browser.console.log(this.innerOffsetX);
     }
 
     function createGrabbable(el:js.html.DOMElement, callback:js.html.MouseEvent->Bool){

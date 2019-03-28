@@ -194,6 +194,8 @@ class Timeline {
     public function createTimePoint(xpos:Float,
                                     length:Float = null,
                                     overlap:Bool = false){
+        if(length == null)
+            length = defaultLength;
         var tp = Browser.document.createDivElement();
         var pos:TimeRange = { start:0, end: length, duration: length };
         var tlrect = tl.getBoundingClientRect();
@@ -204,10 +206,10 @@ class Timeline {
                           el: tp,
                           updateTimePoint:updateTimePoint.bind(tp, pos, overlap)
                         });
-        //if(length != null){
-            tp.style.width = '${tlrect.width/timelineLength * length}px';
-        //}else{
-            // resize handle for the time point
+
+        tp.style.width = '${tlrect.width/timelineLength * length}px';
+        
+        if(resizable){
             var hndl_r = Browser.document.createElement("div");
             hndl_r.className = "grabber";
             createGrabbable(hndl_r, e -> {
@@ -230,7 +232,7 @@ class Timeline {
             });
             // append it
             tp.appendChild(hndl_r);
-       // }
+        }
         
         // add a label to the timepoint
         var label = Browser.document.createElement("span");

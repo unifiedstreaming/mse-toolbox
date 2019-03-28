@@ -68,7 +68,7 @@ class Timeline {
                 content:"▼";
                 position:absolute;
                 left: -7px;
-    top: -17px;
+                top: -17px;
             }
             .point:hover {
                 opacity: 1.0;
@@ -252,6 +252,7 @@ class Timeline {
                                     return false;
             }
             updateTimePoint(tp, pos, overlap, e.clientX - tlrect.left - innerOffsetX);
+            e.stopImmediatePropagation();
             return false;
         });
 

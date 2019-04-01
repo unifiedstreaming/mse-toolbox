@@ -3,11 +3,12 @@ import js.Browser;
 import Argan;
 
 class HlsJs {
-    var hlsConfig = {
+    static var hlsConfig = {
         debug:false,
         widevineLicenseUrl:Argan.getDefault("drm_server_widevine","com.widevine.alpha", "https://widevine-proxy.appspot.com/proxy"),
-        emeEnabled: true
-        //enableWorker: true
+        emeEnabled: true,
+        stretchShortVideoTrack: true,
+        enableWorker: true
         //defaultAudioCodec: ""
     }
     //static function __init__() untyped {}
@@ -20,7 +21,7 @@ class HlsJs {
         }
         Argan.start(window.config);
         if(Hls != null && Hls.isSupported()) {
-            var player = expose_player(untyped __js__("new Hls(HlsJs.hlsConfig)"));
+            var player = expose_player(Type.createInstance(untyped Hls, [hlsConfig]));
             player.loadSource(uri);
             player.attachMedia(video);
             player.on(Hls.Events.MANIFEST_PARSED, function() {

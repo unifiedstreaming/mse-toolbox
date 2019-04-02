@@ -7,8 +7,8 @@ class HlsJs {
         debug:false,
         widevineLicenseUrl:Argan.getDefault("drm_server_widevine","com.widevine.alpha", "https://widevine-proxy.appspot.com/proxy"),
         emeEnabled: true,
-        stretchShortVideoTrack: true,
-        enableWorker: true
+        stretchShortVideoTrack: Argan.getDefault("stretchShortVideoTrack","stretchShortVideoTrack", "false") != "false",
+        enableWorker: Argan.getDefault("enableWorker","enableWorker", "true") == "true"
         //defaultAudioCodec: ""
     }
     //static function __init__() untyped {}

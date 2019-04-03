@@ -220,7 +220,9 @@ for(var c in {0}){
 									hndl.frame = e.target.frameElement;
 									return hndl;
 								}).then(function(nframe:PlayerHandle){
-									hndl = nframe;
+									//update the old handle
+									for(k in Reflect.fields(nframe))
+										Reflect.setField(hndl, k, Reflect.field(nframe, k));
 									return nframe;
 								});
 							},

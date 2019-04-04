@@ -16,6 +16,15 @@ typedef TimeRange = {
     duration:Float
 }
 //macro replace the internal markup SRC by function SRC(), returning data
+/**
+ * Usage from javascript:
+ * 
+ * window.tl = new uapi.timeline(timelinecontainer, 230, 3, function(){
+ *     console.dir(arguments); return JSON.stringify(arguments);
+ * }, true, 15);
+ * tl.createTimePoint(0);
+ * 
+ */
 @:build(Macros.buildInlineMarkup(["SRC"]))
 class Timeline {
     var timepoints:Array<TimePoint> = [];

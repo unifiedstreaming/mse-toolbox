@@ -24,8 +24,11 @@ typedef PlayerHandle = {
 class Main {
     public function new(){
 		//Macros.saveScope();
+		
 	};
-    static function main(){};
+    static function main(){
+		//new uapi.ui.Tree({});
+	};
 	/*
 	@:keep
 	static function getScope(){

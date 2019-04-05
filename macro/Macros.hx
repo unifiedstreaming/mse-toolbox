@@ -1,4 +1,5 @@
 package ;
+import Xml.XmlType;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 import haxe.io.BytesInput;
@@ -273,15 +274,17 @@ class Macros
 	 * Converts inline markup to embedded base64 returning function
 	 * static var AAP = <aap></aap>
 	 */
-	public static function buildInlineMarkup(processFields:Array<String> = null, condensed:Bool = true){
+	public static function buildInlineMarkup(fieldsToProcess:Array<String> = null, condensed:Bool = true){
 		var fields = Context.getBuildFields();
-		processFields = processFields == null ? ["SRC"] : processFields;
+		var newFields:Array<Field> = [];
+		var remove:Array<Field> = [];
+		fieldsToProcess = fieldsToProcess == null ? ["SRC"] : fieldsToProcess;
 		for( f in fields ){
 			var name = f.name;
-			if( processFields.indexOf(name) >= 0 ) {
+			if( fieldsToProcess.indexOf(name) >= 0 ) {
 				switch( f.kind ) {
 					case FVar(_,{ expr : EMeta({ name : ":markup" },{ expr : EConst(CString(str)) }), pos : pos }):
-						fields.remove(f);
+						remove.push(f);
 						var encoded = Base64.encode(
 							if(condensed){
 								var buf = new BytesOutput();
@@ -299,70 +302,82 @@ class Macros
 						};
 						switch(c){
 							case TAnonymous(ffields):
-								return fields.concat(ffields);
+								for(f in ffields)
+									newFields.push(f);
 							default:
 								throw 'unreachable';
 						}
-						break;
 					default: 
 				}
 				
 			}
 		}
-		return fields;
+		for(f in remove)
+			fields.remove(f);
+		return fields.concat(newFields);
 	}
-	public static function buildInlineDom(processFields:Array<String> = null, condensed:Bool = true){
+	public static function buildInlineDom(fieldsToProcess:Array<String> = null, condensed:Bool = true){
 		var fields = Context.getBuildFields();
-		processFields = processFields == null ? ["SRC"] : processFields;
+		var newFields:Array<Field> = [];
+		var remove:Array<Field> = [];
+		fieldsToProcess = fieldsToProcess == null ? ["SRC"] : fieldsToProcess;
 		for( f in fields ){
 			var name = f.name;
-			if( processFields.indexOf(name) >= 0 ) {
+			if( fieldsToProcess.indexOf(name) >= 0 ) {
 				switch( f.kind ) {
 					case FVar(_,{ expr : EMeta({ name : ":markup" },{ expr : EConst(CString(str)) }), pos : pos }):
-						fields.remove(f);
-						var encoded = Base64.encode(
-							if(condensed){
-								var buf = new BytesOutput();
-								for(line in str.split("\n"))
-									buf.writeString(StringTools.trim(line));
-								buf.getBytes();
-							}else{
-								Bytes.ofString(str);
-							}
-						);
+						remove.push(f);
+						
 						var xml = Xml.parse(str).firstElement();
-						var ca = [haxe.macro.Context.parseInlineString('var base = Browser.document.createElement("${xml.nodeName}")', haxe.macro.Context.currentPos())];
-						for(att in xml.attributes())
-							ca.push(haxe.macro.Context.parseInlineString('Reflect.setProperty(base, "${att}", "${xml.get(att)}")', haxe.macro.Context.currentPos()));
-						var parsel = null;
-						parsel = function(base:Xml){
-							for(el in base.elements()){
-								ca.push(haxe.macro.Context.parseInlineString('var el = Browser.document.createElement("${el.nodeName}")', haxe.macro.Context.currentPos()));
-								for(att in el.attributes())
-									ca.push(haxe.macro.Context.parseInlineString('Reflect.setProperty(el, "${att}", "${el.get(att)}")', haxe.macro.Context.currentPos()));
-								ca.push(haxe.macro.Context.parseInlineString('base.appendChild(el)', haxe.macro.Context.currentPos()));
-								parsel(el);
+						
+						var ca = [];
+						var parsel:Xml->?Int->Void = null;
+						parsel = function(node:Xml, ?level:Int = 0){
+							ca.push(haxe.macro.Context.parseInlineString('var el_${level} = Browser.document.createElement("${node.nodeName}")', haxe.macro.Context.currentPos()));
+							for(att in node.attributes()){
+								var js_name = switch(att){
+									case "class": "className";
+									default: att;
+								}
+								ca.push(haxe.macro.Context.parseInlineString('Reflect.setProperty(el_${level}, "${js_name}", "${node.get(att)}")', haxe.macro.Context.currentPos()));
 							}
+							for(child in node)
+								if(child.nodeType != XmlType.Element && StringTools.trim(child.nodeValue).length > 0){
+									var buf = new StringBuf();
+									if(condensed)
+										for(line in child.nodeValue.split("\n"))
+											buf.add(StringTools.trim(line));
+									else
+										buf.add(child.nodeValue);
+									ca.push(haxe.macro.Context.parseInlineString('el_${level}.innerText = "${buf.toString()}"', haxe.macro.Context.currentPos()));
+								}
+							if(level > 0)
+								ca.push(haxe.macro.Context.parseInlineString('el_${level-1}.appendChild(el_${level})', haxe.macro.Context.currentPos()));
+							for(el in node.elements())
+								parsel(el, level+1);
 						}
 						parsel(xml);
+						ca.push(haxe.macro.Context.parseInlineString('return el_0', haxe.macro.Context.currentPos()));
 						var c = macro : {
-							function $name() {
+							function $name():js.html.DOMElement {
 								return $b{ca}
 							}
 						};
 						switch(c){
 							case TAnonymous(ffields):
-								return fields.concat(ffields);
+								for(f in ffields)
+									newFields.push(f);
 							default:
 								throw 'unreachable';
 						}
-						break;
 					default: 
 				}
 				
 			}
 		}
-		return fields;
+		for(f in remove)
+			fields.remove(f);
+		return fields.concat(newFields);
 	}
 	#end
 

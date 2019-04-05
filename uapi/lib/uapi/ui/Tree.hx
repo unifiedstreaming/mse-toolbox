@@ -3,12 +3,18 @@ import js.html.DOMElement;
 import js.Browser;
 @:keep
 @:expose("Tree")
-@:build(Macros.buildInlineDom(["SRC"]))
+@:build(Macros.buildInlineDom(["src", "styles"]))
 class Tree {
-
-    static var SRC = <div style="height: 10px; width: 100px;">
-        <style></style>
+    static var src = <div class="treenode" style="height: 10px; width: 100px;">        
+        <section><div></div>test bla bla<div></div></section>
     </div>;
+    static var styles = <style>
+         .treenode {
+             background:pink;
+             width: 10px;
+             height: 10px;
+         }
+        </style>;
 
     private static inline var ID = "mse-toolbox-tree-";
     public function new(data:Dynamic):Void {
@@ -23,8 +29,8 @@ class Tree {
             }
         }
         var xml:Xml = Xml.parse("");
-        
-        trace(test(obj));
+        Browser.document.body.appendChild(styles());
+        Browser.document.body.appendChild(src());
     }
     static function test(data:Dynamic):js.html.DOMElement{
         var base = Browser.document.createDivElement();

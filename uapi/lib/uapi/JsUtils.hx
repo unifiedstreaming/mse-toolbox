@@ -1,9 +1,13 @@
 package uapi;
+import js.html.EventTarget;
 import js.Browser;
 import js.html.RequestCredentials;
 import js.html.ReferrerPolicy;
 import js.html.RequestMode;
 import js.html.Response;
+import js.html.EventListener;
+import js.html.AddEventListenerOptions;
+
 import js.Promise;
 import uapi.Hooks;
 class JsUtils {
@@ -77,29 +81,11 @@ class JsUtils {
         return styleElement;
     }
 	
-	/**
-	 * Binds the given function to as event handler to the given fields (if they exist) of the given target.
-	 * 
-	 * @param	target - The target to look for the fields in.
-	 * @param	fields - The fields we want to bind to.
-	 * @param	func - The function that should be bound.
-	 */
-	public static function BindEventHandler(target:Dynamic, fields:Array<String>, func:Dynamic) : Void
-	{
-		// Go through all the given fields.
+	public static function AddEventListeners(target:EventTarget, fields:Array<String>, func:haxe.Constraints.Function, ?opt:AddEventListenerOptions = null) : Void
 		for (field in fields)
-		{
-			// Use reflect to see whether we have the field.
-			var hasField : Bool = untyped __js__("typeof(target[field]) != 'undefined'");
-			
-			// Set the field.
-			if (hasField)
-			{
-				Reflect.setField(target, field, func);
-				return;
-			}
-		}
-	}
+			target.addEventListener(field, func, opt);
+		
+	
 	
 	/**
 	* set css styles to element.style, js style attribute names, supports multiple with ","

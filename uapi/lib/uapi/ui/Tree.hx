@@ -1,10 +1,17 @@
 package uapi.ui;
+import js.html.DOMElement;
 import js.Browser;
 @:keep
 @:expose("Tree")
+@:build(Macros.buildInlineDom(["SRC"]))
 class Tree {
+
+    static var SRC = <div style="height: 10px; width: 100px;">
+        <style></style>
+    </div>;
+
     private static inline var ID = "mse-toolbox-tree-";
-    function new(data:Dynamic):Void {
+    public function new(data:Dynamic):Void {
         var obj = {
             aa: 1,
             bb: [ 2,3,4 ],
@@ -15,6 +22,8 @@ class Tree {
                 }
             }
         }
+        var xml:Xml = Xml.parse("");
+        
         trace(test(obj));
     }
     static function test(data:Dynamic):js.html.DOMElement{

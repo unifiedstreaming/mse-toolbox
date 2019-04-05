@@ -311,6 +311,59 @@ class Macros
 		}
 		return fields;
 	}
+	public static function buildInlineDom(processFields:Array<String> = null, condensed:Bool = true){
+		var fields = Context.getBuildFields();
+		processFields = processFields == null ? ["SRC"] : processFields;
+		for( f in fields ){
+			var name = f.name;
+			if( processFields.indexOf(name) >= 0 ) {
+				switch( f.kind ) {
+					case FVar(_,{ expr : EMeta({ name : ":markup" },{ expr : EConst(CString(str)) }), pos : pos }):
+						fields.remove(f);
+						var encoded = Base64.encode(
+							if(condensed){
+								var buf = new BytesOutput();
+								for(line in str.split("\n"))
+									buf.writeString(StringTools.trim(line));
+								buf.getBytes();
+							}else{
+								Bytes.ofString(str);
+							}
+						);
+						var xml = Xml.parse(str).firstElement();
+						var ca = [haxe.macro.Context.parseInlineString('var base = Browser.document.createElement("${xml.nodeName}")', haxe.macro.Context.currentPos())];
+						for(att in xml.attributes())
+							ca.push(haxe.macro.Context.parseInlineString('Reflect.setProperty(base, "${att}", "${xml.get(att)}")', haxe.macro.Context.currentPos()));
+						var parsel = null;
+						parsel = function(base:Xml){
+							for(el in base.elements()){
+								ca.push(haxe.macro.Context.parseInlineString('var el = Browser.document.createElement("${el.nodeName}")', haxe.macro.Context.currentPos()));
+								for(att in el.attributes())
+									ca.push(haxe.macro.Context.parseInlineString('Reflect.setProperty(el, "${att}", "${el.get(att)}")', haxe.macro.Context.currentPos()));
+								ca.push(haxe.macro.Context.parseInlineString('base.appendChild(el)', haxe.macro.Context.currentPos()));
+								parsel(el);
+							}
+						}
+						parsel(xml);
+						var c = macro : {
+							function $name() {
+								return $b{ca}
+							}
+						};
+						switch(c){
+							case TAnonymous(ffields):
+								return fields.concat(ffields);
+							default:
+								throw 'unreachable';
+						}
+						break;
+					default: 
+				}
+				
+			}
+		}
+		return fields;
+	}
 	#end
 
 }

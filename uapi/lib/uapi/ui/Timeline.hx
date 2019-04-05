@@ -27,6 +27,7 @@ typedef TimeRange = {
  */
 @:build(Macros.buildInlineMarkup(["SRC"]))
 class Timeline {
+    static var dragging = false;
     var timepoints:Array<TimePoint> = [];
     var innerOffsetX:Float = null;
     var updateTextCb:TimeRange->String = null;
@@ -131,7 +132,7 @@ class Timeline {
             maxSelectors = 6;
         tl = mal.addTemplate("timeline_base").getElementsByClassName("timeline")[0].firstElementChild;
         tl.addEventListener("click", function(e:js.html.MouseEvent) {
-            if(e.target == tl && timepoints.length < maxSelectors){
+            if(!dragging && e.target == tl && timepoints.length < maxSelectors){
                 var tlrect = tl.getBoundingClientRect();
                 createTimePoint(e.clientX - tlrect.left - innerOffsetX, defaultLength);
             }
@@ -142,8 +143,9 @@ class Timeline {
 
     function createGrabbable(el:js.html.DOMElement, callback:js.html.MouseEvent->Bool){
         var window = Browser.window;
-        uapi.JsUtils.AddEventListeners(el, ["mouseleave", "mouseover", "mousedown"], function(e:js.html.MouseEvent){
+        uapi.JsUtils.AddEventListeners(el, ["mouseleave", "mouseover", "mousedown", "mouseup"], function(e:js.html.MouseEvent){
             if(e.type == "mousedown"){
+                dragging = true;
                 el.style.cursor = "grabbing";
                 window.addEventListener("mouseup", function(e){
                     el.style.cursor = "grab";
@@ -152,6 +154,10 @@ class Timeline {
                     return false;
                 }, { once:true });
                 window.addEventListener("mousemove", callback);
+            }
+            if(e.type == "mouseup"){
+                dragging = false;
+                return false;
             }
             callback(e);
             return false;
@@ -273,7 +279,6 @@ class Timeline {
         // make timepoint movable
         createGrabbable(tp, function(e){
             var tlrect = tl.getBoundingClientRect();
-            Browser.console.log(e.type);
             switch(e.type){
                 case "mousedown":   innerOffsetX = e.clientX - tp.getBoundingClientRect().left;
                                     return false;

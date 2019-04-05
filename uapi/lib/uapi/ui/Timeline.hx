@@ -87,7 +87,7 @@ class Timeline {
                 outline-style: dashed;
                 outline-color: red;
             }
-            .grabber:hover {
+            .grabber_active {
                 background:crimson;
                 opacity: .8;
             }
@@ -142,15 +142,17 @@ class Timeline {
 
     function createGrabbable(el:js.html.DOMElement, callback:js.html.MouseEvent->Bool){
         var window = Browser.window;
-        el.addEventListener("mousedown", function(e){
-            el.style.cursor = "grabbing";
-            window.addEventListener("mouseup", function(e){
-                el.style.cursor = "grab";
-                window.removeEventListener("mousemove", callback);
-                callback(e);
-                return false;
-            }, { once:true });
-            window.addEventListener("mousemove", callback);
+        uapi.JsUtils.AddEventListeners(el, ["mouseleave", "mouseover", "mousedown"], function(e:js.html.MouseEvent){
+            if(e.type == "mousedown"){
+                el.style.cursor = "grabbing";
+                window.addEventListener("mouseup", function(e){
+                    el.style.cursor = "grab";
+                    window.removeEventListener("mousemove", callback);
+                    callback(e);
+                    return false;
+                }, { once:true });
+                window.addEventListener("mousemove", callback);
+            }
             callback(e);
             return false;
         });
@@ -224,8 +226,25 @@ class Timeline {
 
         if(resizable){
             var hndl_r = Browser.document.createElement("div");
+            var grabbing = false;
+            var over = false;
             hndl_r.className = "grabber";
             createGrabbable(hndl_r, e -> {
+                if(e.type == "mouseleave"){
+                    over = false;
+                }
+                if(e.type == "mouseover"){
+                    over = true;
+                    hndl_r.classList.add("grabber_active");
+                }
+                if(e.type == "mousedown"){
+                    grabbing = true;
+                    hndl_r.classList.add("grabber_active");
+                }
+                if((!over && e.type == "mouseup") || (!grabbing && e.type == "mouseleave")){
+                    grabbing = false;
+                    hndl_r.classList.remove("grabber_active");
+                }
                 if(e.type == "mousemove"){
                     var tprect = tp.getBoundingClientRect();
                     var size = tprect.right + (e.clientX-tprect.right);
@@ -254,13 +273,15 @@ class Timeline {
         // make timepoint movable
         createGrabbable(tp, function(e){
             var tlrect = tl.getBoundingClientRect();
+            Browser.console.log(e.type);
             switch(e.type){
                 case "mousedown":   innerOffsetX = e.clientX - tp.getBoundingClientRect().left;
                                     return false;
                 case "mouseup":     innerOffsetX = 0; 
                                     return false;
+                case "mousemove":   updateTimePoint(tp, pos, overlap, e.clientX - tlrect.left - innerOffsetX);
             }
-            updateTimePoint(tp, pos, overlap, e.clientX - tlrect.left - innerOffsetX);
+            
             e.stopImmediatePropagation();
             return false;
         });

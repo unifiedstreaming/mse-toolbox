@@ -1,18 +1,19 @@
 package uapi.ui;
+import haxe.Json;
+import haxe.macro.Format;
 import js.html.DOMElement;
 import js.Browser;
 @:keep
 @:expose("Tree")
-@:build(Macros.buildInlineDom(["src", "styles"]))
+@:build(Macros.buildInlineDom(["node", "styles"]))
 class Tree {
-    static var src = <div class="treenode" style="height: 10px; width: 100px;">        
-        <section><div></div>test bla bla<div></div></section>
+    static var node = <div class="::_class::" style="width: 100px;">        
+        <section>::value::</section>
     </div>;
     static var styles = <style>
          .treenode {
              background:pink;
              width: 10px;
-             height: 10px;
          }
         </style>;
 
@@ -28,9 +29,26 @@ class Tree {
                 }
             }
         }
+        var base = Browser.document.createDivElement();
+        var walk:Dynamic->Dynamic->Void = null;
+        walk =  function(obj, base) {
+            for(o in Reflect.fields(obj)){
+                var field = Reflect.field(obj, o);
+                var subfields = Reflect.fields(field);
+                
+                if(!Std.is(field, Array) && !Std.is(field, String) && !Std.is(field, Bool) && !Std.is(field, Int) && !Std.is(field, Float)){
+                    walk(Reflect.field(obj, o), base.appendChild(node({ _class: "treenode", value: ''})));
+                }else{
+                    base.appendChild(node({ _class: "treenode", value: '${o} : ${Json.stringify(field)}'}));
+                }
+            }
+        }
+        walk(obj, base);
+
+
         var xml:Xml = Xml.parse("");
-        Browser.document.body.appendChild(styles());
-        Browser.document.body.appendChild(src());
+        Browser.document.body.appendChild(styles({}));
+        Browser.document.body.appendChild(base);
     }
     static function test(data:Dynamic):js.html.DOMElement{
         var base = Browser.document.createDivElement();

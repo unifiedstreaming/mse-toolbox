@@ -15,9 +15,8 @@ class Tree {
          .collapsed {
              height: 0px;
          }
-         .treenode {
+         .treenode section {
              background:pink;
-             width: 10px;
              overflow:hidden;
          }
         </style>;

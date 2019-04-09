@@ -7,13 +7,17 @@ import js.Browser;
 @:expose("Tree")
 @:build(Macros.buildInlineDom(["node", "styles"]))
 class Tree {
-    static var node = <div class="::_class::" style="width: 100px;">        
+    static var node = <div onclick="this.classList.toggle('collapsed');" class="::_class::" style="width: 100px;">        
         <section>::value::</section>
     </div>;
     static var styles = <style>
+         .collapsed {
+             height: 0px;
+         }
          .treenode {
              background:pink;
              width: 10px;
+             overflow:hidden;
          }
         </style>;
 
@@ -37,7 +41,7 @@ class Tree {
                 var subfields = Reflect.fields(field);
                 
                 if(!Std.is(field, Array) && !Std.is(field, String) && !Std.is(field, Bool) && !Std.is(field, Int) && !Std.is(field, Float)){
-                    walk(Reflect.field(obj, o), base.appendChild(node({ _class: "treenode", value: ''})));
+                    walk(Reflect.field(obj, o), base.appendChild(node({ _class: "treenode", value: '${o}'})));
                 }else{
                     base.appendChild(node({ _class: "treenode", value: '${o} : ${Json.stringify(field)}'}));
                 }

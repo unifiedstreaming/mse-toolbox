@@ -335,11 +335,15 @@ class Macros
 						parsel = function(node:Xml, ?level:Int = 0){
 							ca.push(haxe.macro.Context.parseInlineString('var el_${level} = Browser.document.createElement("${node.nodeName}")', haxe.macro.Context.currentPos()));
 							for(att in node.attributes()){
+								var js_value = 'new haxe.Template("${node.get(att)}").execute(obj)';
 								var js_name = switch(att){
 									case "class": "className";
+									case "onclick": js_value = 'new js.Function(${js_value})'; "onclick";
 									default: att;
 								}
-								ca.push(haxe.macro.Context.parseInlineString('Reflect.setProperty(el_${level}, "${js_name}", new haxe.Template("${node.get(att)}").execute(obj))', haxe.macro.Context.currentPos()));
+								
+								
+								ca.push(haxe.macro.Context.parseInlineString('Reflect.setProperty(el_${level}, "${js_name}", ${js_value})', haxe.macro.Context.currentPos()));
 							}
 							for(child in node)
 								if(child.nodeType != XmlType.Element && StringTools.trim(child.nodeValue).length > 0){

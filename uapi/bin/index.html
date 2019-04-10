@@ -153,26 +153,23 @@
             user-select: none;
             margin: 0;
         }
+        /* fix menu: */
+        .container>.navbar-header {
+            margin-right: 0;
+            margin-left: 0;
+            float:left;
+        }
+        .navbar-right {
+            float: right!important;
+            margin-right: -15px;
+        }
+        /* logo */
         .navbar-brand svg {
             height: 80%;
             margin-top: 5px;
             margin-left:5px;
         }
-        .navbar-brand div {
-            float:right;
-            height: 25px;
-            margin-top: 12.5px;
-        }
-        .navbar-brand p {
-            margin-top: 0;
-            margin-bottom: 0;
-            margin-left: 5px;
-            height: 50%;
-            text-align: left;
-            line-height: 20px;
-            -webkit-font-smoothing: auto;
-        }
-
+        /* logo anim */
         svg .line line {
             animation: dash .24s ease-in-out forwards;
             stroke-dashoffset: -4;
@@ -215,6 +212,7 @@
             vertical-align: text-top !important;
             fill: currentColor;
         }
+        
     </style>
 </head>
 <body>

@@ -4,6 +4,7 @@ import uapi.Hooks;
 import uapi.Utils;
 import uapi.JsUtils;
 import uapi.ui.Timeline;
+import uapi.ui.Tree;
 
 typedef InjectRaw = haxe.extern.EitherType<String, Array<{index:Int, content:String}>>;
 typedef PlayerOptions = Dynamic;
@@ -27,7 +28,6 @@ class Main {
 		
 	};
     static function main(){
-		//new uapi.ui.Tree({});
 	};
 	/*
 	@:keep

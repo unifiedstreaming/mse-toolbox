@@ -66,7 +66,7 @@ class Tree extends js.html.DOMElement{
                 fields = fields.concat(Type.getInstanceFields(cls));
             for(o in fields){
                 var field = Reflect.field(obj, o);
-                if(!Std.is(field, Array) && !Std.is(field, String) && !Std.is(field, Bool) && !Std.is(field, Int) && !Std.is(field, Float)){
+                if(!Std.is(field, String) && !Std.is(field, Bool) && !Std.is(field, Int) && !Std.is(field, Float)){
                     
                     walk(Reflect.field(obj, o), cast
                          base.appendChild(
@@ -77,7 +77,7 @@ class Tree extends js.html.DOMElement{
                                                }
                                               )
                                           ),
-                        depth++);
+                        depth+1);
                 }else{
                     
                     base.appendChild(node({ _class: "treenode", key: '${o}', value:'${Json.stringify(field)}'}));

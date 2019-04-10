@@ -18,6 +18,7 @@ typedef GuiElement = {
 
 /**
  * XHTML and QuerySelector based template engine, using 'template' attributes to reserve elements for script invoking/creationg.
+ * todo: use real shadow dom, or template element
  **/
 class Mal {
   

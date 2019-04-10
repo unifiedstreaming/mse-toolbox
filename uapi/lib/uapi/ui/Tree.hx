@@ -1,7 +1,6 @@
 package uapi.ui;
 import js.html.HTMLCollection;
 import haxe.Json;
-import haxe.macro.Format;
 import js.html.DOMElement;
 import js.Browser;
 @:keep

@@ -40,7 +40,7 @@ class Tree extends js.html.DOMElement{
         </style>;
 
     private static inline var ID = "mse-toolbox-tree-";
-    public static function create(obj:Dynamic):js.html.DOMElement {
+    public static function create(obj:Dynamic, ?maxDepth:Int = 3):js.html.DOMElement {
         obj = obj == null ? {
             aa: 1,
             bb: [ 2,3,4 ],
@@ -53,7 +53,7 @@ class Tree extends js.html.DOMElement{
         } : obj;
         var base:js.html.DOMElement = cast Browser.document.createDivElement();
         var walk:Dynamic->js.html.DOMElement->?Int->Void = null;
-        var maxDepth = 3;
+        
         walk =  function(obj, base, ?depth=0) {
             var sections:js.html.HTMLCollection = base.getElementsByTagName("section");
             base = (sections.length > 0 ? sections.item(0) : base);

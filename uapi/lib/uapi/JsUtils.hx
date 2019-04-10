@@ -84,9 +84,7 @@ class JsUtils {
 	public static function AddEventListeners(target:EventTarget, fields:Array<String>, func:haxe.Constraints.Function, ?opt:AddEventListenerOptions = null) : Void
 		for (field in fields)
 			target.addEventListener(field, func, opt);
-		
-	
-	
+    
 	/**
 	* set css styles to element.style, js style attribute names, supports multiple with ","
 	* ```

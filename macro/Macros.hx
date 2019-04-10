@@ -363,7 +363,7 @@ class Macros
 						parsel(xml);
 						ca.push(haxe.macro.Context.parseInlineString('return el_0', haxe.macro.Context.currentPos()));
 						var c = macro : {
-							function $name(?obj:Dynamic = null):js.html.DOMElement {
+							static function $name(?obj:Dynamic = null):js.html.DOMElement {
 								return $b{ca}
 							}
 						};

@@ -1,4 +1,5 @@
 package uapi.ui;
+import js.html.HTMLCollection;
 import haxe.Json;
 import haxe.macro.Format;
 import js.html.DOMElement;
@@ -7,7 +8,7 @@ import js.Browser;
 @:expose("Tree")
 @:build(Macros.buildInlineDom(["node", "styles"]))
 class Tree {
-    static var node = <div onclick="this.firstElementChild.classList.toggle('collapsed');" class="::_class::" style="width: 100px;">        
+    static var node = <div onclick="if(event.target == this) this.firstElementChild.classList.toggle('collapsed'); return false;" class="::_class::" style="width: 100px;">        
         ::key::
         <section>::value::</section>
     </div>;
@@ -22,8 +23,8 @@ class Tree {
         </style>;
 
     private static inline var ID = "mse-toolbox-tree-";
-    public function new(data:Dynamic):Void {
-        var obj = {
+    public function new(obj:Dynamic):Void {
+        obj = obj == null ? {
             aa: 1,
             bb: [ 2,3,4 ],
             cc: { 
@@ -32,25 +33,33 @@ class Tree {
                     ff: "aa"
                 }
             }
-        }
-        var base = Browser.document.createDivElement();
-        var walk:Dynamic->Dynamic->Void = null;
+        } : obj;
+        var base:js.html.DOMElement = cast Browser.document.createDivElement();
+        var walk:Dynamic->js.html.DOMElement->Void = null;
         walk =  function(obj, base) {
+            var sections:js.html.HTMLCollection = base.getElementsByTagName("section");
+            base = (sections.length > 0 ? sections.item(0) : base);
             for(o in Reflect.fields(obj)){
                 var field = Reflect.field(obj, o);
-                var subfields = Reflect.fields(field);
-                
                 if(!Std.is(field, Array) && !Std.is(field, String) && !Std.is(field, Bool) && !Std.is(field, Int) && !Std.is(field, Float)){
-                    walk(Reflect.field(obj, o), base.firstElementChild.appendChild(node({ _class: "treenode", key: '${o}', value: ''})));
+                    
+                    walk(Reflect.field(obj, o), cast
+                         base.appendChild(
+                                          node(
+                                               { _class: "treenode", 
+                                                 key: '${o}',
+                                                 value: ''
+                                               }
+                                              )
+                                          )
+                        );
                 }else{
+                    
                     base.appendChild(node({ _class: "treenode", key: '${o}', value:'${Json.stringify(field)}'}));
                 }
             }
         }
         walk(obj, base);
-
-
-        var xml:Xml = Xml.parse("");
         Browser.document.body.appendChild(styles({}));
         Browser.document.body.appendChild(base);
     }

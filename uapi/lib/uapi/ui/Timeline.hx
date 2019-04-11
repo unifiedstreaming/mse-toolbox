@@ -137,6 +137,15 @@ class Timeline {
                 createTimePoint(e.clientX - tlrect.left - innerOffsetX, defaultLength);
             }
         });
+        
+        
+        js.Browser.window.addEventListener("resize", function(e:Dynamic){
+            var tlrect = tl.getBoundingClientRect();
+            for(t in timepoints){
+                t.el.style.width = '${tlrect.width/timelineLength * t.pos.duration}px';
+                updateTimePoint(t.el, t.pos, false, tlrect.width * (t.pos.start/timelineLength), false);
+            }
+        });
         var tlrect = tl.getBoundingClientRect();
         this.innerOffsetX = ((this.defaultLength/timelineLength) * tlrect.width)/2;
     }

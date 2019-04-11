@@ -164,7 +164,7 @@ class Timeline {
         });
     }
 
-    function updateTimePoint(tp:js.html.DOMElement, pos:TimeRange, allowOverlap:Bool, offsetX:Float) {
+    function updateTimePoint(tp:js.html.DOMElement, pos:TimeRange, allowOverlap:Bool, offsetX:Float, updateStart:Bool = true) {
         var tlrect = tl.getBoundingClientRect();
         var tprect = tp.getBoundingClientRect();
         
@@ -191,23 +191,28 @@ class Timeline {
         }
         if(pos.duration < timelineLength){
             tp.style.marginLeft = '${offsetX}px';
-        
-            updateTimePointText(tp, pos);
+            updateTimePointText(tp, pos, updateStart);
         }
     }
 
-    function updateTimePointText(tp:js.html.DOMElement, tr:TimeRange){
+    function updateTimePointText(tp:js.html.DOMElement, tr:TimeRange, updateStart:Bool = true){
         var label = tp.getElementsByTagName("span")[0];
         var rect = tp.getBoundingClientRect();
         var tlrect = tl.getBoundingClientRect();
         
-        tr.start = ((rect.left-tlrect.left) / tlrect.width) * timelineLength;
+        if(updateStart)
+            tr.start = ((rect.left-tlrect.left) / tlrect.width) * timelineLength;
+        
         tr.end = tr.start + tr.duration;
         //snapping output
         if(timelineLength - tr.end < .33){
-            tr.start = timelineLength - tr.duration;
+            if(updateStart)
+                tr.start = timelineLength - tr.duration;
+            
             tr.end = timelineLength;
+            tr.duration = tr.end - tr.start;
         }
+        
         if(updateTextCb != null)
             label.innerHTML = updateTextCb(tr);
         else{
@@ -217,13 +222,13 @@ class Timeline {
         return false;
     }
     
-    public function createTimePoint(xpos:Float,
+    public function createTimePoint(start:Float,
                                     length:Float = null,
                                     overlap:Bool = false){
         if(length == null)
             length = defaultLength;
         var tp = Browser.document.createDivElement();
-        var pos:TimeRange = { start:0, end: length, duration: length };
+        var pos:TimeRange = { start: start, end: length, duration: length };
         var tlrect = tl.getBoundingClientRect();
         tp.className = "point";
         tp.tabIndex = 0;
@@ -268,7 +273,7 @@ class Timeline {
                         
                         pos.duration = pos.end - pos.start;
                     }
-                    updateTimePointText(tp, pos);
+                    updateTimePointText(tp, pos, false);
                 }
                 e.stopImmediatePropagation();
                 return false;
@@ -300,7 +305,7 @@ class Timeline {
         // append it
         tl.appendChild(tp);
         
-        updateTimePoint(tp, pos, overlap, xpos);
+        updateTimePoint(tp, pos, overlap, (start / timelineLength) * tlrect.width, false);
 
         return updateTimePoint.bind(tp, pos, overlap);
     }

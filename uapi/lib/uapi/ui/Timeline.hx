@@ -254,6 +254,7 @@ class Timeline {
             var hndl_r = Browser.document.createElement("div");
             hndl_r.className = "grabber";
             createGrabbable(hndl_r, e -> {
+                var tlrect = tl.getBoundingClientRect();
                 if(e.type == "mousedown"){
                     var hndl_rect = hndl_r.getBoundingClientRect();
                     innerOffsetX = hndl_rect.width - (e.clientX - hndl_rect.left);

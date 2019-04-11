@@ -191,11 +191,11 @@ class Timeline {
         }
         if(pos.duration < timelineLength){
             tp.style.marginLeft = '${offsetX}px';
-            updateTimePointText(tp, pos, updateStart);
+            updateTimePointData(tp, pos, updateStart);
         }
     }
 
-    function updateTimePointText(tp:js.html.DOMElement, tr:TimeRange, updateStart:Bool = true){
+    function updateTimePointData(tp:js.html.DOMElement, tr:TimeRange, updateStart:Bool = true){
         var label = tp.getElementsByTagName("span")[0];
         var rect = tp.getBoundingClientRect();
         var tlrect = tl.getBoundingClientRect();
@@ -273,7 +273,7 @@ class Timeline {
                         
                         pos.duration = pos.end - pos.start;
                     }
-                    updateTimePointText(tp, pos, false);
+                    updateTimePointData(tp, pos, false);
                 }
                 e.stopImmediatePropagation();
                 return false;

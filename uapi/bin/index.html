@@ -635,16 +635,6 @@ uapi.writePlayer(DOMElement, "${manifest}", "${s_player.value}:${s_version.value
 
             }();   
             </script>
-            <div class="col-md-12 pb-3">
-                <div id="timelinecontainer"></div>
-                <div><ul class="list-group" id="timepoints"></ul></div>
-            </div>
-            <script>
-            window.tl = new uapi.timeline(timelinecontainer, 230, 3, function(){
-                console.dir(arguments); return JSON.stringify(arguments);
-            }, true, 15);
-            tl.createTimePoint(0);
-            </script>
         </body>
         </html>
         

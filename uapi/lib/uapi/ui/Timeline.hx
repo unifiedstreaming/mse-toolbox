@@ -189,10 +189,11 @@ class Timeline {
         if(offsetX + tprect.width > upperLimit){
             offsetX = upperLimit - tprect.width;
         }
+        if(pos.duration < timelineLength){
+            tp.style.marginLeft = '${offsetX}px';
         
-        tp.style.marginLeft = '${offsetX}px';
-        
-        updateTimePointText(tp, pos);
+            updateTimePointText(tp, pos);
+        }
     }
 
     function updateTimePointText(tp:js.html.DOMElement, tr:TimeRange){
@@ -202,6 +203,11 @@ class Timeline {
         
         tr.start = ((rect.left-tlrect.left) / tlrect.width) * timelineLength;
         tr.end = tr.start + tr.duration;
+        //snapping output
+        if(timelineLength - tr.end < .33){
+            tr.start = timelineLength - tr.duration;
+            tr.end = timelineLength;
+        }
         if(updateTextCb != null)
             label.innerHTML = updateTextCb(tr);
         else{
@@ -245,6 +251,8 @@ class Timeline {
                 }
                 if(e.type == "mousedown"){
                     grabbing = true;
+                    var hndl_rect = hndl_r.getBoundingClientRect();
+                    innerOffsetX = hndl_rect.width - (e.clientX - hndl_rect.left);
                     hndl_r.classList.add("grabber_active");
                 }
                 if((!over && e.type == "mouseup") || (!grabbing && e.type == "mouseleave")){
@@ -253,14 +261,11 @@ class Timeline {
                 }
                 if(e.type == "mousemove"){
                     var tprect = tp.getBoundingClientRect();
-                    var size = tprect.right + (e.clientX-tprect.right);
+                    var size = tprect.right + (e.clientX+innerOffsetX-tprect.right);
                     if(size <= tlrect.right){
-                        tp.style.width = (e.clientX-tprect.left) + "px";
-                        pos.end = (e.clientX / tlrect.width) * timelineLength;
-                        pos.duration = pos.end - pos.start;
-                    }else{
-                        tp.style.width = (tlrect.right - tprect.left) + "px";
-                        pos.end = ((tlrect.right - tprect.left) / tlrect.width) * timelineLength;
+                        tp.style.width = (e.clientX-tprect.left+innerOffsetX) + "px";
+                        pos.end = ((e.clientX-tlrect.left+innerOffsetX) / tlrect.width) * timelineLength;
+                        
                         pos.duration = pos.end - pos.start;
                     }
                     updateTimePointText(tp, pos);
@@ -284,7 +289,8 @@ class Timeline {
                                     return false;
                 case "mouseup":     innerOffsetX = 0; 
                                     return false;
-                case "mousemove":   updateTimePoint(tp, pos, overlap, e.clientX - tlrect.left - innerOffsetX);
+                case "mousemove":   var offsetX = e.clientX - tlrect.left - innerOffsetX;
+                                    updateTimePoint(tp, pos, overlap, offsetX);
             }
             
             e.stopImmediatePropagation();

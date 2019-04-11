@@ -80,7 +80,7 @@ class Timeline {
                 left: -7px;
                 top: -17px;
             }
-            .point:hover {
+            .point:hover .point{
                 opacity: 1.0;
             }
             .point:focus {
@@ -88,7 +88,7 @@ class Timeline {
                 outline-style: dashed;
                 outline-color: red;
             }
-            .grabber_active {
+            .grabber:hover {
                 background:crimson;
                 opacity: .8;
             }
@@ -243,26 +243,11 @@ class Timeline {
 
         if(resizable){
             var hndl_r = Browser.document.createElement("div");
-            var grabbing = false;
-            var over = false;
             hndl_r.className = "grabber";
             createGrabbable(hndl_r, e -> {
-                if(e.type == "mouseleave"){
-                    over = false;
-                }
-                if(e.type == "mouseover"){
-                    over = true;
-                    hndl_r.classList.add("grabber_active");
-                }
                 if(e.type == "mousedown"){
-                    grabbing = true;
                     var hndl_rect = hndl_r.getBoundingClientRect();
                     innerOffsetX = hndl_rect.width - (e.clientX - hndl_rect.left);
-                    hndl_r.classList.add("grabber_active");
-                }
-                if((!over && e.type == "mouseup") || (!grabbing && e.type == "mouseleave")){
-                    grabbing = false;
-                    hndl_r.classList.remove("grabber_active");
                 }
                 if(e.type == "mousemove"){
                     var tprect = tp.getBoundingClientRect();
@@ -270,7 +255,6 @@ class Timeline {
                     if(size <= tlrect.right){
                         tp.style.width = (e.clientX-tprect.left+innerOffsetX) + "px";
                         pos.end = ((e.clientX-tlrect.left+innerOffsetX) / tlrect.width) * timelineLength;
-                        
                         pos.duration = pos.end - pos.start;
                     }
                     updateTimePointData(tp, pos, false);

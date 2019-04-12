@@ -340,7 +340,6 @@
                             <div class="card-header">Asset<span class="big float-right" id="bullet"></a></div>
                             
                             <div class="card-body" >
-                                <form id="ufp-form">
                                 <div class="bs-callout bs-callout-info" id="callout-dropdown-positioning">
                                 <h4>Demo assets</h4>
                                 <p>
@@ -468,16 +467,19 @@
                     }else{
                         for(k in settings){
                             node.parentElement.classList.remove("hidden");
-                            var p = document.createElement('p');
-                            var label = document.createElement('label');
-                            label.innerText = k;
-                            label.classList.add("w-25");
 
-                            label.classList.add("input-sm");
-                            var input = document.createElement('input');
-                            input.classList.add("w-75");
-                            input.classList.add("input-sm");
-                            input.addEventListener('input', function(e){
+
+                            var div = document.createElement("div");
+                            div.className = "input-group mb-3";
+                            var label = document.createElement("div");
+                            label.className = "input-group-prepend";
+                            var slabel = document.createElement("span");
+                            slabel.className = "input-group-text";
+                            slabel.innerText = k;
+                            var sinput = document.createElement("input");
+                            sinput.type = "text";
+                            sinput.className = "form-control";
+                            sinput.addEventListener('input', function(e){
                                 var input = e.target;
                                 if(cache == null){
                                     cache = {};
@@ -485,20 +487,21 @@
                                 cache[input['data-ufp-setting']] = input.value;
                                 window.localStorage.setItem('setting-cache', JSON.stringify(cache));
                             });
-                            input['data-ufp-setting'] = k;
+                            sinput['data-ufp-setting'] = k;
                             if(cache !== null && cache[k])
-                                input.value = cache[k];
+                                sinput.value = cache[k];
                             if(k in hash.args)
-                                input.value = hash.args[k];
+                                sinput.value = hash.args[k];
 
-                            settings_elements.push(input);
-                            p.title = k + "; " + settings[k].default_;
-                            p.className = "settings_element";
-                            input.placeholder = settings[k].help + "; " + settings[k].default_;
-                            p.id = k;
-                            p.appendChild(label);
-                            p.appendChild(input);
-                            node.appendChild(p);
+                            settings_elements.push(sinput);
+                            div.title = k + "; " + settings[k].default_;
+                            sinput.placeholder = settings[k].help + "; " + settings[k].default_;
+                            div.id = k;
+
+                            label.appendChild(slabel);
+                            div.appendChild(label);
+                            div.appendChild(sinput);
+                            node.appendChild(div);
                         }
                     }
                     while(s_version.hasChildNodes())
@@ -526,7 +529,7 @@
                 s_media.addEventListener("change", function(e){
                     document.getElementById('custom_manifest').value = "";
                 });
-                var go = document.getElementById('ufp-form').onsubmit = function(){
+                window.go = function(){
                     var qs = [];
                     var options = {};
                     var player_options = options[s_player.value] = {};

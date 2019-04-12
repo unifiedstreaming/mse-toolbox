@@ -23,7 +23,7 @@
             'Sandwich\0//demo.unified-streaming.com/video/sandwich/sandwich.ism/.mpd',
             'Mart Visser Summer 2011\0//demo.unified-streaming.com/video/mart_visser_zomer_2011/mart_visser_zomer_2011.ism/.mpd'            
             ],
-            live: [ 'smptebitc\0//live.unified-streaming.com/smptebitc/smptebitc.isml/.mpd',
+            live: [ 'scte35.isml\0//live.unified-streaming.com/scte35/scte35.isml/.mpd',
             'Repo Men (24/7 Live)\0//live.unified-streaming.com/loop/loop.isml/.mpd'],
             examples: [ 'Accesibility - Hard of Hearing\0https://demo.unified-streaming.com/video/tears-of-steel/tears-of-steel-hoh-subs.ism/.mpd',
                         'metadata-remixed.mp4\0//test.unified-streaming.com/metadata/metadata-remixed.mp4/.mpd', 
@@ -484,7 +484,10 @@
                 var s_player = document.getElementById('selector_player');
                 var s_version = document.getElementById('selector_player_version');
                 s_media.addEventListener("change", function(e){
-                    document.getElementById('custom_manifest').value = "";
+                    manifest = mediaUrls[s_type.value][s_media.value].split('\0')[1];
+                    if(manifest.indexOf("//") == 0)
+                        manifest = location.protocol + manifest;
+                    document.getElementById('custom_manifest').value = manifest;
                 });
                 window.go = function(){
                     var qs = [];
@@ -497,12 +500,7 @@
                         }
                     }
                     var manifest = document.getElementById('custom_manifest').value;
-                    if(manifest == ""){
-                        manifest = mediaUrls[s_type.value][s_media.value].split('\0')[1];
-                        if(manifest.indexOf("//") == 0)
-                            manifest = location.protocol + manifest;
-                    }
-
+                    
                     for(var option in uapi_options){
                         options[option] = document.getElementById(`option_${option}`).checked ? true : false;
                     }

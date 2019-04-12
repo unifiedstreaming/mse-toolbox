@@ -32,6 +32,9 @@
 # explicitly expose ui function
 --macro haxe.macro.Compiler.addGlobalMetadata("uapi.ui.Timeline", '@:keep')
 --macro haxe.macro.Compiler.addGlobalMetadata("uapi.ui.Timeline", '@:expose("uapi.timeline")')
+# explicitly expose ui function
+--macro haxe.macro.Compiler.addGlobalMetadata("uapi.ui.Tree", '@:keep')
+--macro haxe.macro.Compiler.addGlobalMetadata("uapi.ui.Tree", '@:expose("uapi.tree")')
 #-D ARGAN_SMARTCAST
 -dce full
 #--times

@@ -2,6 +2,25 @@
     <head>
         <meta charset="utf-8"/>
         <style>
+            body, html {
+                color: grey;
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 0;
+                background:whitesmoke;
+            }
+            h5, h4 {
+                margin: 4px 0 5px 0;
+                text-align:center;
+                font-size: smaller;
+            }
+            h5 {
+                opacity: .66;
+            }
+            pre {
+                margin: 5px auto 0 auto;
+                max-width: 500px;
+            }
             #player {
                 width: 100%;
             }
@@ -10,16 +29,25 @@
     <body>
         <script src="uapi.js"></script>
         <div id="player"></div>
+        <h5>Player:</h5>
+        <h4 id="disp_player"></h4>
+        <h5>Manifest:</h5>
+        <h4 id="disp_manifest"></h4>
+        <h5>Options:</h5>
+        <pre id="disp_options"></pre>
         <script>
+        var _default = "https://demo.unified-streaming.com/video/tears-of-steel/tears-of-steel-ttml.ism/.mpd";
         var options = uapi.KeyValueStringParserJs()["o"];
         if(options)
         {
             options = JSON.parse(atob(options));
         }
-        var _default = "https://demo.unified-streaming.com/video/tears-of-steel/tears-of-steel-ttml.ism/.mpd";
-        //var _default = "https://demo.unified-streaming.com/video/tears-of-steel/tears-of-steel-ttml.ism/.m3u8"
-        uapi.writePlayer(player, uapi.KeyValueStringParserJs()["file"] ? uapi.KeyValueStringParserJs()["file"] : _default, 
-        uapi.KeyValueStringParserJs()["player"] ? uapi.KeyValueStringParserJs()["player"] : uapi.getPlayers()[0], options).then(function(frame){
+        var player_version = uapi.KeyValueStringParserJs()["player"] ? uapi.KeyValueStringParserJs()["player"] : uapi.getPlayers()[0];
+        var player_manifest = uapi.KeyValueStringParserJs()["file"] ? uapi.KeyValueStringParserJs()["file"] : _default
+        new uapi.tree(disp_options, options);
+        disp_manifest.innerText = player_manifest;
+        disp_player.innerText = player_version;
+        uapi.writePlayer(player, player_manifest, player_version, options).then(function(frame){
             console.dir(frame);
         });
         </script>

@@ -28,6 +28,7 @@ class Main {
 		
 	};
     static function main(){
+		
 	};
 	/*
 	@:keep

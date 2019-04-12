@@ -3,10 +3,9 @@ import js.html.HTMLCollection;
 import haxe.Json;
 import js.html.DOMElement;
 import js.Browser;
-@:keep
-@:expose("Tree")
+
 @:build(Macros.buildInlineDom(["node", "styles"]))
-class Tree extends js.html.DOMElement{
+class Tree {
     static var node = <div onclick="if(event.target == this) this.classList.toggle('collapsed'); return false;" 
                            class="::_class::">
         ::key::
@@ -40,7 +39,7 @@ class Tree extends js.html.DOMElement{
         </style>;
 
     private static inline var ID = "mse-toolbox-tree-";
-    public static function create(obj:Dynamic, ?maxDepth:Int = 3):js.html.DOMElement {
+    public function new(parent:js.html.DOMElement, obj:Dynamic, ?maxDepth:Int = 3):Void {
         obj = obj == null ? {
             aa: 1,
             bb: [ 2,3,4 ],
@@ -86,6 +85,6 @@ class Tree extends js.html.DOMElement{
         }
         walk(obj, base);
         Browser.document.body.appendChild(styles({}));
-        return base;
+        parent.appendChild(base);
     }
 }

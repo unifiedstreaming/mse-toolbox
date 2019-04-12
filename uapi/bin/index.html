@@ -47,42 +47,33 @@
             top: 0px; bottom: 0px; width: 100%; height: 100%; margin: 0px;
             background-color: whitesmoke;
         }
-        a{
-            color: #fff;
+        .card-header:hover {
+            text-decoration: underline;
         }
-        hr{
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-        .w-25 {
-            width: 25%;
-        }
-        .w-75 {
-            width: 75%;
-        }
-        .w-100 {
-            width: 100%;
-        }
-        .navbar{
-            margin-bottom: 5px;
-        }
-        .navbar-toggle {
-            display: none;
+        .card-body {
+            transition: padding 200ms ease;
         }
         .collapsed .card-body {
             height: 0;
             overflow: hidden;
-            padding: 0;
-            margin: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
         }
         .settings_element:target {
             border: 1.5px dotted red;
         }
         #bullet{
             margin-left: 5px;
+            transition: transform 200ms ease-out;
+            position:absolute;
+            right: 1rem;
+            transform: rotate(-90deg)
+            
         }
-        .collapsed #bullet::after {
-            content: '▼';
+        .collapsed #bullet {
+            transform: rotate(0deg)
         }
         #bullet::after {
             content: '▲';
@@ -354,7 +345,7 @@
                         <div id="panel_settings" class="card card-info mb-3 collapsed">
                                 <div class="card-header"><span id="ufp-settings-heading"></span> settings<span class="big float-right" id="bullet"></span></div>
                                 
-                                <div class="card-body" id="ufp-settings">
+                                <div class="card-body pb-0" id="ufp-settings">
                                 </div>
                                 <div class="card-body" >
                                     <button class="btn btn-outline-dark float-right input-sm" onclick="go()">Play</button>
@@ -365,7 +356,7 @@
                         <div id="panel_player" class="card card-info mb-3 collapsed hidden">
                             <div class="card-header">Player<span class="big float-right" id="bullet"></span></div>
                             
-                            <div class="card-body" id="player">
+                            <div class="card-body pb-0" id="player">
                             </div>
                             <div class="card-body" >
                                 <small>Embed script:</small>
@@ -596,7 +587,7 @@ uapi.writePlayer(DOMElement, "${manifest}", "${s_player.value}:${s_version.value
                     var header = infoelements[i];
                     header.style.cursor = "pointer";
                     header.onclick = function(e){
-                        var el = e.target.parentElement;
+                        var el = e.currentTarget.parentElement;
                         var prel = el.classList.length;
                         el.classList.remove("collapsed");
                         if(el.classList.length == prel)

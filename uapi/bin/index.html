@@ -115,25 +115,6 @@
             }
         }
 
-        #ufp-settings label {
-            margin: 0;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            float: left;
-        }
-        #ufp-settings-heading {
-            text-transform: capitalize;
-        }
-        #ufp-settings p {
-            margin-bottom: 1px;
-            margin-top: 1px;
-            padding-bottom: 1px;
-        }
-        
-        footer #version {
-            color: aliceblue;
-        }
-
         .octicon {
             display: inline-block;
             vertical-align: text-top !important;
@@ -157,6 +138,8 @@
         .hidden {
             display: none;
         }
+
+        /* align input-group-prepend things */
 
         #panel_settings .input-group>.input-group-prepend {
             flex: 0 0 50%;
@@ -345,11 +328,7 @@
                         <div id="panel_settings" class="card card-info mb-3 collapsed">
                                 <div class="card-header"><span id="ufp-settings-heading"></span> settings<span class="big float-right" id="bullet"></span></div>
                                 
-                                <div class="card-body pb-0" id="ufp-settings">
-                                </div>
-                                <div class="card-body" >
-                                    <button class="btn btn-outline-dark float-right input-sm" onclick="go()">Play</button>
-                                </div>
+                                <div class="card-body" id="ufp-settings"></div>
                         </div>
                     </div>
                     <div class="col-lg-12">

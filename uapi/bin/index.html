@@ -468,6 +468,8 @@
                         }
                     }
                     var manifest = document.getElementById('custom_manifest').value;
+                    if(manifest == "")
+                        manifest = location.protocol + mediaUrls["vod"][0].split('\0')[1];
                     
                     for(var option in uapi_options){
                         options[option] = document.getElementById(`option_${option}`).checked ? true : false;

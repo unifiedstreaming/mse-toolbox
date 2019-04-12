@@ -492,7 +492,7 @@
                             qs.push("o="+btoa(JSON.stringify(options)));
                         qs.push(`file=${manifest}`);
                         qs.push(`player=${s_player.value}`);
-                        window.location = `player.html?${qs.join("&")}`;
+                        window.location = `player/?${qs.join("&")}`;
                     }else{
                     
                         panel_player.classList.remove("collapsed");

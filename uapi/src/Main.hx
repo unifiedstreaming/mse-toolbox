@@ -404,6 +404,10 @@ for(var c in {0}){
 	public static function write(str)
 		JsUtils.write(str);
 
+	@:keep	
+	public static function loadScript(str)
+		JsUtils.loadScript(str);
+
 	@:keep
 	public static function absUrl(url:String){
 		var abs = Browser.document.createAnchorElement();

@@ -1,4 +1,5 @@
 package uapi;
+import js.html.Event;
 import js.html.EventTarget;
 import js.Browser;
 import js.html.RequestCredentials;
@@ -73,14 +74,30 @@ class JsUtils {
             style_el.textContent += cssText;
         }
     }
-
-
     static function createStyleElement() {
         var styleElement = Browser.document.createStyleElement();
         styleElement.type = 'text/css';
         return styleElement;
     }
-	
+    public static function loadScript(src){
+        var pipe:Dynamic->Void = null;
+        var retval:DeferredPipe = { pipe: function(func) {
+                pipe = func;
+            }
+        };
+        var script = Browser.document.createScriptElement();
+        script.type = 'text/javascript';
+        script.src = src;
+        script.defer = true;
+        // Setting async = false is important to make sure the script is imported
+        // before the 'load' event fires.
+        script.async = false;
+        script.addEventListener("load", (e:js.html.Event) -> {
+            if(pipe != null) pipe(script);
+        });
+        Browser.document.head.appendChild(script);
+        return retval;
+    }
 	public static function AddEventListeners(target:EventTarget, fields:Array<String>, func:haxe.Constraints.Function, ?opt:AddEventListenerOptions = null) : Void
 		for (field in fields)
 			target.addEventListener(field, func, opt);

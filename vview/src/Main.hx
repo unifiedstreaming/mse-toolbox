@@ -80,10 +80,21 @@ class Main {
     function hookWindow(window:js.html.Window) : Void {
         var initSegments:Map<Path, mp4lib.MediaHeaderBox> = new Map();
         Hooks.hookMethod(window, "URL.createObjectURL").pipe(function(args:Array<Dynamic>){
-            if(args.length > 0)
-                js.Browser.console.log(Std.is(args[0], js.html.MediaSource));
+            if(args.length > 0){
+                if(args[0].toString() == "[object MediaSource]"){ //Std.is(args[0], js.html.MediaSource)
+                    var source:js.html.MediaSource = cast args[0];
+                    Hooks.hookMethod(source, "addSourceBuffer").pipe((args, method_original) -> {
+                        var sourceBuf = Reflect.callMethod(js.Lib.nativeThis, method_original, args);
+                        Browser.console.log("created SourceBuffer ", args, sourceBuf);
+                        Hooks.hookMethod(sourceBuf, "appendBuffer").pipe((args, method_original) -> {
+                            Browser.console.log("appendBuffer", args, getCachePropery(args[0], "url"));
+                        });
+                        return sourceBuf;
+                    });
+                }
+            }   
         });
-        Hooks.hookMethods(Reflect.field(window, "XMLHttpRequest"), ["prototype.open", "prototype.send"]).pipe(function(method, args:Array<Dynamic>){
+        Hooks.hookMethods(Reflect.field(window, "XMLHttpRequest"), ["prototype.open", "prototype.send"]).pipe(function(method, args:Array<Dynamic>, test:Dynamic){
             var xmlhttpRequest:XMLHttpRequest = js.Lib.nativeThis;
             switch(method){
                 case "prototype.open":

@@ -166,7 +166,7 @@ class UIManager {
             Browser.document.removeEventListener("dragover", mmHandler);        
         });
 
-        if(windowType.match(WindowType.CLOSEABLE(title))){
+        if(windowType.equals(WindowType.CLOSEABLE(title))){
             var close:DivElement = Browser.document.createDivElement();
             close.classList.add("mse_frame_close");
             close.innerText = '\u{00d7}';

@@ -482,10 +482,7 @@
                         version         : s_version.value
                     });
                     
-                    if(document.getElementById('debugger').checked){
-                        console.log("enable debug mode");
-                        uapi.loadScript("vview.js");
-                    }
+                    
                     
                     if(document.getElementById('open_blank').checked){
                         if(Object.keys(player_options).length > 0 || Object.keys(options).length > 1)
@@ -504,7 +501,9 @@
                         }
                         uapi.writePlayer(player, manifest, 
                             `${s_player.value}:${s_version.value}`, options).then(function(frame){
-                                console.dir(frame);             
+                                console.dir(frame);
+                                if(document.getElementById('debugger').checked)
+                                    uapi.loadScript("vview.js");
                         });
                         player_script.innerText = `<scr`+`ipt src="uapi.js"></scr`+`ipt>
 <scr`+`ipt>

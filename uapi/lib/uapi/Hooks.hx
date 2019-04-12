@@ -21,7 +21,7 @@ class Hooks {
         
         if(null != method_original){
             var method_new = makeVarArgs(function(arguments:Array<Dynamic>){
-                var pipe_ret:Dynamic = pipe != null ? Reflect.callMethod(js.Lib.nativeThis, pipe, [arguments]) : null;
+                var pipe_ret:Dynamic = pipe != null ? Reflect.callMethod(js.Lib.nativeThis, pipe, [arguments, Reflect.callMethod.bind(js.Lib.nativeThis, method_original)]) : null;
                 if(pipe_ret != null)
                     return pipe_ret;
                 else
@@ -41,8 +41,8 @@ class Hooks {
             }
         };
         for(m in methods)
-            hookMethod(object, m).pipe(function(arguments){
-                return Reflect.callMethod(js.Lib.nativeThis, pipe, [m, arguments]);
+            hookMethod(object, m).pipe(function(arguments, method_original){
+                return Reflect.callMethod(js.Lib.nativeThis, pipe, [m, arguments, method_original]);
             });
 
         return retval;

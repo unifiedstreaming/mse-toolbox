@@ -92,68 +92,16 @@
             border: none;
             box-shadow: 0px 0px 13px grey;
         }
+        .card .card {
+            box-shadow: none;
+            border: 1px solid grey;
+        }
         .card-info > .card-header {
             color: #ffffff;
             background-color: #222222;
             border: 0;
         }
 
-        .bs-callout {
-            padding: 20px;
-            border: 1px solid #eee;
-            border-left-width: 5px;
-            border-radius: 3px
-        }
-
-        .bs-callout h4 {
-            margin-top: 0;
-            margin-bottom: 5px
-        }
-
-        .bs-callout p:last-child {
-            margin-bottom: 0
-        }
-
-        .bs-callout code {
-            border-radius: 3px
-        }
-
-        .bs-callout+.bs-callout {
-            margin-top: -5px
-        }
-
-        .bs-callout-danger {
-            border-left-color: #ce4844
-        }
-
-        .bs-callout-danger h4 {
-            color: #ce4844
-        }
-
-        .bs-callout-warning {
-            border-left-color: #aa6708
-        }
-
-        .bs-callout-warning h4 {
-            color: #aa6708
-        }
-
-        .bs-callout-info {
-            border-left-color: #222222
-        }
-
-        .bs-callout-info h4 {
-            color: #222222
-        }
-
-        .navbar-inverse .navbar-brand {
-            padding: 0;
-            color: #fefefe;
-            font-weight: 200;
-            font-size: 0.8em;
-            user-select: none;
-            margin: 0;
-        }
         .navbar-brand svg {
             height: 40px;
             margin-left:5px;
@@ -346,23 +294,6 @@
                             <div class="card-header">Asset<span class="big float-right" id="bullet"></a></div>
                             
                             <div class="card-body" >
-                                <div class="bs-callout bs-callout-info mb-3" id="callout-dropdown-positioning">
-                                <h4>Demo assets</h4>
-                                <p>
-                                        <label>Group:</label>
-                                        <select class="w-100 input-sm" id="selector_type">
-                                            
-                                        </select>
-                                    </p>
-                                    <p>
-                                        <label>Asset:</label>
-                                        <select class="w-100 input-sm" id="selector_media">
-                                            
-                                        </select>
-                                    </p>
-                                </div>
-                                
-                                
                                 <div class="input-group mb-1">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Custom Manifest</span>
@@ -381,6 +312,25 @@
                                     </div>
                                     <select class="custom-select" id="selector_player_version">
                                     </select>
+                                </div>
+                                <div class="card mb-3 collapsed" id="callout-dropdown-positioning">
+                                    <div class="card-header p-1 small bg-dark-usp text-light">Demo asset list <span class="big float-right" id="bullet"></span></div>
+                                    <div class="card-body p-0">
+                                        <div class="input-group p-1">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="selector_type">Group</label>
+                                            </div>
+                                            <select class="custom-select" id="selector_type">
+                                            </select>
+                                        </div>
+                                        <div class="input-group p-1">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="selector_type">Asset</label>
+                                            </div>
+                                            <select class="custom-select" id="selector_media">
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div id="uapi_options_ui" class="checkbox">

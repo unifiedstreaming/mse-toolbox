@@ -381,6 +381,9 @@
                                     <label>
                                         <input type="checkbox" title="open popup in new window" id="open_blank"/> new_window
                                     </label><br>
+                                    <label>
+                                        <input type="checkbox" title="enable mse-toolbox debugger" id="debugger"/> mse-toolbox debugger
+                                    </label><br>
                                 </div>
                                 <input class="btn-default pull-right input-sm" type="submit" value="Play">
                             </div>
@@ -546,6 +549,9 @@
                         version         : s_version.value
                     });
                     
+                    if(document.getElementById('debugger').checked){
+                        console.log("enable debug mode");
+                    }
                     
                     if(document.getElementById('open_blank').checked){
                         if(Object.keys(player_options).length > 0 || Object.keys(options).length > 1)
@@ -634,6 +640,16 @@ uapi.writePlayer(DOMElement, "${manifest}", "${s_player.value}:${s_version.value
                 }
 
             }();   
+            </script>
+            <div class="col-md-8 pb-3">
+                <div id="timelinecontainer"></div>
+                <div><ul class="list-group" id="timepoints"></ul></div>
+            </div>
+            <script>
+            window.tl = new uapi.timeline(timelinecontainer, 230, 3, function(){
+                console.dir(arguments); return JSON.stringify(arguments);
+            }, true, 15);
+            tl.createTimePoint(30, 60);
             </script>
         </body>
         </html>

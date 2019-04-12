@@ -100,7 +100,6 @@
 
         .bs-callout {
             padding: 20px;
-            margin: 20px 0;
             border: 1px solid #eee;
             border-left-width: 5px;
             border-radius: 3px
@@ -216,11 +215,18 @@
         .hidden {
             display: none;
         }
+
+        #panel_settings .input-group>.input-group-prepend {
+            flex: 0 0 50%;
+        }
+        #panel_settings .input-group .input-group-text {
+            width: 100%;
+        }
         
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-usp">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-usp mb-3">
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="http://www.unified-streaming.com">
@@ -340,7 +346,7 @@
                             <div class="card-header">Asset<span class="big float-right" id="bullet"></a></div>
                             
                             <div class="card-body" >
-                                <div class="bs-callout bs-callout-info" id="callout-dropdown-positioning">
+                                <div class="bs-callout bs-callout-info mb-3" id="callout-dropdown-positioning">
                                 <h4>Demo assets</h4>
                                 <p>
                                         <label>Group:</label>
@@ -356,31 +362,27 @@
                                     </p>
                                 </div>
                                 
-                                <p>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Custom Manifest</span>
-                                        </div>
-                                        <input type="text" placeholder="http://example.com/manifest.m3u8" class="form-control" id="custom_manifest">
+                                
+                                <div class="input-group mb-1">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Custom Manifest</span>
                                     </div>
-                                </p>
-                                <p>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text" for="selector_player">Player</label>
-                                        </div>
-                                        <select class="custom-select" id="selector_player">
-                                        </select>
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text" for="selector_player">Version</label>
-                                        </div>
-                                        <select class="custom-select" id="selector_player_version">
-                                        </select>
+                                    <input type="text" placeholder="http://example.com/manifest.m3u8" class="form-control" id="custom_manifest">
+                                </div>
+                            
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="selector_player">Player</label>
                                     </div>
-                                </p>
-                                <p>
-                                    
-                                </p>
+                                    <select class="custom-select" id="selector_player">
+                                    </select>
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="selector_player">Version</label>
+                                    </div>
+                                    <select class="custom-select" id="selector_player_version">
+                                    </select>
+                                </div>
+
                                 <div id="uapi_options_ui" class="checkbox">
                                     <label>
                                         <input type="checkbox" title="open popup in new window" id="open_blank"/>new_window
@@ -470,7 +472,7 @@
 
 
                             var div = document.createElement("div");
-                            div.className = "input-group mb-3";
+                            div.className = "input-group mb-1";
                             var label = document.createElement("div");
                             label.className = "input-group-prepend";
                             var slabel = document.createElement("span");

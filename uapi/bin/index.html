@@ -548,7 +548,7 @@
                         player          : s_player.value,
                         version         : s_version.value
                     });
-                    
+
                     if(document.getElementById('debugger').checked){
                         console.log("enable debug mode");
                     }
@@ -641,16 +641,6 @@ uapi.writePlayer(DOMElement, "${manifest}", "${s_player.value}:${s_version.value
 
             }();   
             </script>
-            <div class="col-md-8 pb-3">
-                <div id="timelinecontainer"></div>
-                <div><ul class="list-group" id="timepoints"></ul></div>
-            </div>
-            <script>
-            window.tl = new uapi.timeline(timelinecontainer, 230, 3, function(){
-                console.dir(arguments); return JSON.stringify(arguments);
-            }, true, 15);
-            tl.createTimePoint(30, 60);
-            </script>
         </body>
-        </html>
+</html>
         

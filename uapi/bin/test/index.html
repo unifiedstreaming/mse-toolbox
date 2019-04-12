@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>MSE-Toolbox</title>
+    <meta name="description" content="Player player" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#222">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <script src="../uapi.js"></script>
+</head>
+<body>
+    <div class="col-md-8 pb-3">
+        <div id="timelinecontainer"></div>
+        <div><ul class="list-group" id="timepoints"></ul></div>
+    </div>
+    <script>
+    window.tl = new uapi.timeline(timelinecontainer, 230, 3, function(){
+        console.dir(arguments); return JSON.stringify(arguments);
+    }, true, 15);
+    tl.createTimePoint(30, 60);
+    </script>
+</body>
+</html>

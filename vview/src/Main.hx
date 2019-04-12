@@ -87,7 +87,9 @@ class Main {
                         var sourceBuf = method_original(args);
                         Browser.console.log("created SourceBuffer ", args, sourceBuf);
                         Hooks.hookMethod(sourceBuf, "appendBuffer").pipe((args, method_original) -> {
-                            Browser.console.log("appendBuffer", args, getCachePropery(args[0], "url"));
+                            //if Uint8Array/TypedArray, the buffer property points back to ArrayBuffer
+                            var arrayBuffer = Reflect.field(args[0], "buffer") != null ? Reflect.field(args[0], "buffer") : args[0];
+                            Browser.console.log("appendBuffer", args, getCachePropery(arrayBuffer, "url"));
                         });
                         return sourceBuf;
                     });
@@ -106,7 +108,7 @@ class Main {
                     });
                     xmlhttpRequest.addEventListener("load", function(){
                         if(xmlhttpRequest.responseType == XMLHttpRequestResponseType.ARRAYBUFFER){
-                            setCachePropery(xmlhttpRequest.response, "url", url);
+                            setCachePropery(xmlhttpRequest.response, "url", url); //set fingerprint property on ArrayBuffer
                             var bytes = new UInt8Array(xmlhttpRequest.response);
                             var boxes = Mp4lib.deserialize(bytes);
                             trace(boxes);

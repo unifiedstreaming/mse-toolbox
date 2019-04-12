@@ -175,7 +175,8 @@ Main.prototype = {
 						var sourceBuf = method_original(args1);
 						window.console.log("created SourceBuffer ",args1,sourceBuf);
 						uapi_Hooks.hookMethod(sourceBuf,"appendBuffer").pipe(function(args2,method_original1) {
-							window.console.log("appendBuffer",args2,_gthis.getCachePropery(args2[0],"url"));
+							var arrayBuffer = Reflect.field(args2[0],"buffer") != null ? Reflect.field(args2[0],"buffer") : args2[0];
+							window.console.log("appendBuffer",args2,_gthis.getCachePropery(arrayBuffer,"url"));
 							return;
 						});
 						return sourceBuf;
@@ -191,7 +192,7 @@ Main.prototype = {
 				var url = args3[1].split("?");
 				var url1 = new haxe_io_Path(segment.url = url[0]);
 				xmlhttpRequest.addEventListener("error",function(e) {
-					console.log("src/Main.hx:105:",e);
+					console.log("src/Main.hx:107:",e);
 				});
 				xmlhttpRequest.addEventListener("load",function() {
 					if(xmlhttpRequest.responseType == "arraybuffer") {
@@ -199,7 +200,7 @@ Main.prototype = {
 						var this1 = new Uint8Array(xmlhttpRequest.response);
 						var bytes = this1;
 						var boxes = Mp4lib.deserialize(bytes);
-						console.log("src/Main.hx:112:",boxes);
+						console.log("src/Main.hx:114:",boxes);
 						var moov = boxes.findBoxByType("moov");
 						if(moov != null) {
 							segment.init = xmlhttpRequest.response;
@@ -269,7 +270,7 @@ Main.prototype = {
 							}
 							uapi_JsUtils.setCSSStyles(el1,_g1);
 						}
-						console.log("src/Main.hx:170:",segment);
+						console.log("src/Main.hx:172:",segment);
 					}
 				});
 				break;
@@ -1997,7 +1998,7 @@ var Mp4lib = function() { };
 $hxClasses["Mp4lib"] = Mp4lib;
 Mp4lib.__name__ = "Mp4lib";
 Mp4lib.Version = function() {
-	return "stable-4-g1115aa9, 2019-04-12 22:59:45";
+	return "stable-6-g228caa5, 2019-04-12 23:51:27";
 };
 Mp4lib.searchBox = function(boxtype,uuid) {
 	var boxType;
@@ -4991,7 +4992,7 @@ uapi_ui_UIManager.prototype = {
 			_g2.h["zIndex"] = "1";
 		}
 		uapi_JsUtils.setCSSStyles(topbar1,_g2);
-		topbar.innerText = null != title ? title : "USP MSE Debugger: " + "stable-4-g1115aa9, 2019-04-12 22:59:45";
+		topbar.innerText = null != title ? title : "USP MSE Debugger: " + "stable-6-g228caa5, 2019-04-12 23:51:27";
 		topbar.appendChild(image);
 		topbar.style.cursor = "pointer";
 		var toggle = false;

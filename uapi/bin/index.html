@@ -549,6 +549,10 @@ uapi.writePlayer(DOMElement, "${manifest}", "${s_player.value}:${s_version.value
                     while (s_media.hasChildNodes()) {
                         s_media.removeChild(s_media.lastChild);
                     }
+                    var o = document.createElement('option');
+                    o.innerText = `select your ${type} asset`;
+                    o.disabled = true;
+                    s_media.appendChild(o);
                     for(var i = 0; i < mediaUrls[type].length; i++){
                         var o = document.createElement('option');
                         o.value = i;

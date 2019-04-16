@@ -20,7 +20,7 @@
     -webkit-appearance: none;
     z-index: 1;
     position: relative;
-    float: right;
+    float: left;
     display: inline-block;
     margin: 0 0 0 5px;
     border: solid 5px transparent;
@@ -46,7 +46,7 @@
 .matter-switch > input + span::before {
     content: "";
     position: absolute;
-    right: 11px;
+    left: 0px;
     top: -8px;
     display: block;
     border-radius: 50%;
@@ -64,7 +64,7 @@
     z-index: 1;
     position: absolute;
     top: 2px;
-    right: 21px;
+    left: 10px;
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -78,7 +78,7 @@
     background-color: rgba(var(--matter-helper-theme), 0.6);
 }
 .matter-switch > input:checked + span::before {
-    right: -5px;
+    left: 16px;
     background-color: rgb(var(--matter-helper-theme));
 }
 .matter-switch > input:checked + span::after {

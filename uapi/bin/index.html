@@ -147,8 +147,8 @@
         #panel_settings .input-group .input-group-text {
             width: 100%;
         }
-        
     </style>
+    <link rel="stylesheet" href="matter.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark-usp mb-3">
@@ -310,12 +310,14 @@
                                     <div class="card-header p-1 small bg-dark-usp text-light">uapi.js session options <span class="big float-right" id="bullet"></span></div>
                                     <div class="card-body">
                                         <div id="uapi_options_ui" class="checkbox">
-                                            <label>
-                                                <input type="checkbox" title="open popup in new window" id="open_blank"/>new_window
-                                            </label><br>
-                                            <label>
-                                                <input type="checkbox" title="enable mse-toolbox debugger" id="debugger"/>mse-toolbox debugger
-                                            </label><br>
+                                            <label class="matter-switch">
+                                                <input title="open popup in new window" id="open_blank" type="checkbox">
+                                                <span>new_window</span>
+                                            </label><br/>
+                                            <label class="matter-switch">
+                                                <input type="checkbox" title="enable mse-toolbox debugger" id="debugger">
+                                                <span>mse-toolbox debugger</span>
+                                            </label><br/>
                                         </div>
                                     </div>
                                 </div>
@@ -359,14 +361,18 @@
                 var uapi_options = uapi.getHelp();
                 for(var option in uapi_options){
                     var l = document.createElement("label");
+                    l.className = "matter-switch";
                     var input = document.createElement("input");
                     if(uapi_options[option].default_.indexOf("true") > -1)
                         input.setAttribute("checked", true);
                     input.type = "checkbox";
                     input.id = `option_${option}`;
+                    
                     l.appendChild(input);
                     l.title = `(${uapi_options[option].help} ${uapi_options[option].default_})`;
-                    l.innerHTML += `uapi_options.${option}`;
+                    var span = document.createElement("span");
+                    span.innerHTML += `uapi_options.${option}`;
+                    l.appendChild(span);
                     uapi_options_ui.appendChild(l);
                     uapi_options_ui.appendChild(document.createElement("br"));
                 }

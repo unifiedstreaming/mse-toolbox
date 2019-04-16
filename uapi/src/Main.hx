@@ -133,10 +133,21 @@ for(var c in {0}){
 		var error = null;
 		var last_src = "#";
 
-		//load from overrides
+		//Fairplay: https://developer.apple.com/library/archive/technotes/tn2454/_index.html
 		if(player == "native"){
-			body = ['<script>video.src = uri;</script>'];
+			body = ['
+				<script>
+					video.src = uri;
+					if(!!window.ApplePaySession){ //safari
+						video.addEventListener("webkitneedkey", (e) => {});
+						video.addEventListener("webkitkeymessage", (e) => {});
+						video.addEventListener("webkitkeyadded", (e) => {});
+						video.addEventListener("webkitkeyerror", (e) => {});
+					}
+				</script>
+			'];
 		}else{
+			//load from overrides
 			if(playerSrcExtended.exists(player_version_string)){
 				for(src in playerSrcExtended.get(player_version_string))
 					head.push('<script crossorigin src="${last_src = src}"></script>');

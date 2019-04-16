@@ -134,6 +134,7 @@ for(var c in {0}){
 		var last_src = "#";
 
 		//Fairplay: https://developer.apple.com/library/archive/technotes/tn2454/_index.html
+		// https://github.com/videojs/videojs-contrib-eme#fairplay
 		if(player == "native"){
 			body = ['
 				<script>

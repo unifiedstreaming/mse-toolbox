@@ -11,7 +11,7 @@ class Shell {
         var uim = new UIManager();
         var window = uim.addWindow(WindowType.MAINWINDOW);
         
-        var window2 = uim.addWindow("aap");
+        //var window2 = uim.addWindow("aap");
         
         mal = new Mal(window, Xml.parse(Resource.getString("shell")).firstElement().firstElement());
         mal.addTemplate("tabs");
@@ -27,7 +27,7 @@ class Shell {
         mal.addTemplate("segments_cell", ["label"=>"blaap"]);
 
         Browser.document.body.appendChild(window);
-        Browser.document.body.appendChild(window2);
+        //Browser.document.body.appendChild(window2);
 
     }
     

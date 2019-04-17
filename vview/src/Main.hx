@@ -31,17 +31,24 @@ typedef StreamingVideoSegment = {
 class Main {
     var shell:ui.Shell;
     var segments:Array<StreamingVideoSegment> = [];
-    
+    static var instance:Main;
     static function __init__() untyped {
         
     }
     public function new() {
+        instance = this;
         shell = new ui.Shell();
         documentReady(js.Browser.window) ? 
             hookFrames() : 
             Browser.window.addEventListener("load", hookFrames);
         
         //Macros.reuseScope("../uapi/scope.txt", "uapi");
+    }
+
+    @:expose("vview.frameAdded")
+    static function frameAdded(){
+        if(instance != null)
+            instance.hookFrames();
     }
 
     function hookFrames(?e:js.html.Event){

@@ -248,6 +248,11 @@ for(var c in {0}){
 							video: Reflect.field(iframe.contentWindow, "video"),
 							controls_custom: Reflect.field(iframe.contentWindow, "controls_custom")
 						}
+				var vview = Reflect.field(Browser.window, "vview");
+				if(vview != null){
+					var h = Reflect.field(vview, "frameAdded");
+					Reflect.callMethod(vview, h, []);
+				}
 				resolve(hndl);
 			});
 			

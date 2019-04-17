@@ -1,6 +1,9 @@
 /**
     https://github.com/finnhvman/matter
 **/
+:root {
+    --matter-theme-rgb: 2,2,2; 
+}
 
 /* Switch */
 .matter-switch {

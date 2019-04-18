@@ -19,6 +19,18 @@ typedef GuiElement = {
 /**
  * XHTML and QuerySelector based template engine, using 'template' attributes to reserve elements for script invoking/creationg.
  * todo: use real shadow dom, or template element
+ * 
+ * Example template html input:
+ *  var mal = new Mal(parent, Xml.parse('
+ *  <p template="checkbox">
+ *    <input param="@checked:field,@id:id" type="checkbox" id="" value="second_checkbox" checked="checked" />
+ *    <label param="label,@for:for" for="for-attribute">This is the second checkbox, which is checked</label>
+ *  </p>
+ *  <div template="segments_row_label" param="label">[segments_row_label:label-str]</div>
+ *  '));
+ *  mal.addTemplate("checkbox", [ field => "bla", id => "id"]);
+ * 
+ * 
  **/
 class Mal {
   

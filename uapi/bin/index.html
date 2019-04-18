@@ -508,7 +508,7 @@
                         uapi.writePlayer(player, manifest, 
                             `${s_player.value}:${s_version.value}`, options).then(function(frame){
                                 console.dir(frame);
-                                if(document.getElementById('debugger').checked)
+                                if(!('vview' in window) && document.getElementById('debugger').checked)
                                     uapi.loadScript("vview.js");
                         });
                         player_script.innerText = `<scr`+`ipt src="uapi.js"></scr`+`ipt>

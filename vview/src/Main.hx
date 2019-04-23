@@ -28,12 +28,20 @@ typedef StreamingVideoSegment = {
     ?dimensions:String
 }
 
+typedef PlayerInfo = {
+    videoElement:js.html.VideoElement,
+    segments:Array<StreamingVideoSegment>
+}
+
 class Main {
     var shell:ui.Shell;
     var segments:Array<StreamingVideoSegment> = [];
     static var instance:Main;
     static function __init__() untyped {
         
+    }
+    static function main() {
+        new Main();
     }
     public function new() {
         instance = this;
@@ -186,8 +194,5 @@ class Main {
                     
             }
         });
-    }
-    static function main() {
-        new Main();
     }
 }

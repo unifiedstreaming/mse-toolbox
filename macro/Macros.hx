@@ -326,14 +326,14 @@ class Macros
 			if( fieldsToProcess.indexOf(name) >= 0 ) {
 				switch( f.kind ) {
 					case FVar(_,{ expr : EMeta({ name : ":markup" },{ expr : EConst(CString(str)) }), pos : pos }):
+						//remove original field
 						remove.push(f);
-						
+						//parse the field data
 						var xml = Xml.parse(str).firstElement();
-						
-						var ca = [];
+						var new_expr = [];
 						var parsel:Xml->?Int->Void = null;
 						parsel = function(node:Xml, ?level:Int = 0){
-							ca.push(haxe.macro.Context.parseInlineString('var el_${level} = Browser.document.createElement("${node.nodeName}")', haxe.macro.Context.currentPos()));
+							new_expr.push(haxe.macro.Context.parseInlineString('var el_${level} = Browser.document.createElement("${node.nodeName}")', haxe.macro.Context.currentPos()));
 							for(att in node.attributes()){
 								var js_value = 'new haxe.Template("${node.get(att)}").execute(obj)';
 								var js_name = switch(att){
@@ -341,9 +341,7 @@ class Macros
 									case "onclick": js_value = 'new js.Function(${js_value})'; "onclick";
 									default: att;
 								}
-								
-								
-								ca.push(haxe.macro.Context.parseInlineString('Reflect.setProperty(el_${level}, "${js_name}", ${js_value})', haxe.macro.Context.currentPos()));
+								new_expr.push(haxe.macro.Context.parseInlineString('Reflect.setProperty(el_${level}, "${js_name}", ${js_value})', haxe.macro.Context.currentPos()));
 							}
 							for(child in node)
 								if(child.nodeType != XmlType.Element && StringTools.trim(child.nodeValue).length > 0){
@@ -353,18 +351,18 @@ class Macros
 											buf.add(StringTools.trim(line));
 									else
 										buf.add(child.nodeValue);
-									ca.push(haxe.macro.Context.parseInlineString('el_${level}.innerText = new haxe.Template("${buf.toString()}").execute(obj)', haxe.macro.Context.currentPos()));
+									new_expr.push(haxe.macro.Context.parseInlineString('el_${level}.innerText = new haxe.Template("${buf.toString()}").execute(obj)', haxe.macro.Context.currentPos()));
 								}
 							if(level > 0)
-								ca.push(haxe.macro.Context.parseInlineString('el_${level-1}.appendChild(el_${level})', haxe.macro.Context.currentPos()));
+								new_expr.push(haxe.macro.Context.parseInlineString('el_${level-1}.appendChild(el_${level})', haxe.macro.Context.currentPos()));
 							for(el in node.elements())
 								parsel(el, level+1);
 						}
 						parsel(xml);
-						ca.push(haxe.macro.Context.parseInlineString('return el_0', haxe.macro.Context.currentPos()));
+						new_expr.push(haxe.macro.Context.parseInlineString('return el_0', haxe.macro.Context.currentPos()));
 						var c = macro : {
 							static function $name(?obj:Dynamic = null):js.html.DOMElement {
-								return $b{ca}
+								return $b{new_expr}
 							}
 						};
 						switch(c){

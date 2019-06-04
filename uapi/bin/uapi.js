@@ -538,7 +538,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "stable-17-gb4b59ab, 2019-06-04 14:57:51";
+	return "stable-17-gb4b59ab, 2019-06-04 14:58:12";
 };
 Main.write = function(str) {
 	uapi_JsUtils.write(str);

@@ -34,16 +34,16 @@ class Main {
 	@:keep
 	static function getScope(){
 		untyped __js__('var scope = {};
-for(var c in {0}){
-	var local = scope;
-	var arr = c.split(".");
-	for(var i = 0; i < arr.length-1; i++) {
-		if(!(arr[i] in local))
-			local[arr[i]] = {};
-		local = local[arr[i]];
-	};
-	local[arr[arr.length-1]] = {0}[c];
-}; scope.haxe.Json = window.JSON; return scope;', untyped $hxClasses);
+		for(var c in {0}){
+			var local = scope;
+			var arr = c.split(".");
+			for(var i = 0; i < arr.length-1; i++) {
+				if(!(arr[i] in local))
+					local[arr[i]] = {};
+				local = local[arr[i]];
+			};
+			local[arr[arr.length-1]] = {0}[c];
+		}; scope.haxe.Json = window.JSON; return scope;', untyped $hxClasses);
 	};
 	*/
 	@:keep
@@ -432,10 +432,12 @@ for(var c in {0}){
 		abs.href = url;
 		return abs.href;
 	}
+	
 	@:keep
-	public static function requestUrl(url, binary){
-		return uapi.JsUtils.HttpRequest(url,binary);
+	public static function requestUrl(url, binary, method, headers, body){
+		return uapi.JsUtils.HttpRequest(url, binary, method, headers, body);
 	}
+
 	private static function dynamicToMap(object:Dynamic):Map<String,Dynamic>{
 		var retval:Map<String,Dynamic> = new Map<String,Dynamic>();
 		for(f in Reflect.fields(object))

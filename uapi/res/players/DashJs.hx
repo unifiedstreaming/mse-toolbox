@@ -35,10 +35,15 @@ class DashJs {
         var onStreamInitialized = function (e) {
             player.setTrackSwitchModeFor('video', 'alwaysReplace');
             player.setTrackSwitchModeFor('audio', 'alwaysReplace');
-            player.setFastSwitchEnabled(true);
+            player.setFastSwitchEnabled(Argan.getDefault("setFastSwitchEnabled","setFastSwitchEnabled", true));
             //player.getLowLatencyEnabled();
             try{
-                player.setJumpGaps(true);
+                player.setJumpGaps(Argan.getDefault("setJumpGaps","setJumpGaps", true));
+                player.setLowLatencyEnabled(Argan.getDefault("setLowLatencyEnabled","setLowLatencyEnabled", false));
+                if(Argan.has("setLiveDelay","setLiveDelay", 10.0))
+                    player.setLiveDelay(Argan.get("setLiveDelay"));
+                if(Argan.has("setABRStrategy","abrDynamic / abrBola / abrThroughput", "abrDynamic"))
+                    player.setABRStrategy(Argan.get("setABRStrategy"));
             }catch(e:Dynamic){}
 
             clearMenu();

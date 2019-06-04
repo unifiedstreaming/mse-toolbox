@@ -19,10 +19,11 @@ import haxe.Utf8;
 
 class Macros
 {
-	public static macro function getPlayerCode(filePath:String, data_uri:Bool=false, delete_temp:Bool=#if debug false #else true #end):ExprOf<String> {
+	public static macro function getPlayerCode(filePath:String, data_uri:Bool=false, haxe_args:Array<String> = null, delete_temp:Bool=#if debug false #else true #end):ExprOf<String> {
 		//disable this macro in code completion mode
 		if(haxe.macro.Context.defined('display'))
 			return macro null;
+		
 		//haxe.macro.Compiler.getOutput();
 		var arr = filePath.split("@"); filePath = arr[0];
 		var path = new haxe.io.Path(filePath);
@@ -37,6 +38,8 @@ class Macros
 			var filename = filenameBase + ".js";
 			var argan_options = '${filenameBase}.json';
 			var command_args = ["-cp" , path.dir, "-main", path.file, "-lib", "argan", "-js", filename, '-D', 'argan_json_output=$argan_options']; //"-D=source-map-content"
+			if(haxe_args != null)
+				command_args = command_args.concat(haxe_args);
 			trace("Compiling...\nRunning: " + command + " " + command_args.join(" "));
 			var p = try new sys.io.Process(command, command_args) catch ( e : Dynamic ) { trace("getPlayerCode error: no haxe in path?:\n\n\t" +  e); return macro null; };
 			var output = p.stdout.readAll().toString();

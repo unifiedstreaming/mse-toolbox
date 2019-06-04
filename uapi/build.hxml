@@ -4,24 +4,23 @@
 -js bin/uapi.js
 -main Main
 -lib argan
-#-D EXPERIMENTAL
-#-lib format
+
 -resource res/logo.svg@logo
 -resource res/templates/player_page_template.html@template
 -resource res/templates/controls_template.html@controls_template
 
 #-macro Macros.GetPlayersCDNJS("dashjs")
 -resource res/players/dashjs.json@dashjs-src
---macro Macros.getPlayerCode("res/players/DashJs.hx@dashjs", true)
+--macro Macros.getPlayerCode("res/players/DashJs.hx@dashjs", true, ["-D", "ARGAN_SMARTCAST"])
 
 -resource res/players/shaka.json@shaka-src
---macro Macros.getPlayerCode("res/players/Shaka.hx@shaka", true)
+--macro Macros.getPlayerCode("res/players/Shaka.hx@shaka", true, ["-D", "ARGAN_SMARTCAST"])
 
 -resource res/players/hlsjs.json@hlsjs-src
---macro Macros.getPlayerCode("res/players/HlsJs.hx@hlsjs", true)
+--macro Macros.getPlayerCode("res/players/HlsJs.hx@hlsjs", true, ["-D", "ARGAN_SMARTCAST"])
 
 -resource res/players/hasplayer.json@hasplayer-src
---macro Macros.getPlayerCode("res/players/HasPlayer.hx@hasplayer", true)
+--macro Macros.getPlayerCode("res/players/HasPlayer.hx@hasplayer", true, ["-D", "ARGAN_SMARTCAST"])
 
 # explicitly expose Hooks library
 --macro haxe.macro.Compiler.addGlobalMetadata("uapi.Hooks", '@:keep')
@@ -37,11 +36,12 @@
 --macro haxe.macro.Compiler.addGlobalMetadata("uapi.ui.Tree", '@:expose("uapi.tree")')
 -D ARGAN_SMARTCAST
 -dce full
+#-debug
 #--times
 #-D documentwrite
-#-debug
 #-D check-macro
 #-D source-map
+#-D EXPERIMENTAL
 --next 
 -cp ../macro
 --macro Macros.PrependVersion("uapi.js 📺 ", "bin/uapi.js")

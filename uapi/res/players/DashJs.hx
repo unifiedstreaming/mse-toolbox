@@ -20,6 +20,7 @@ class DashJs {
         
         player.initialize();
         
+
         try{
             var video_element = document.getElementById("video");
             player.setAutoPlay(video_element.hasAttribute("autoplay"));
@@ -28,24 +29,28 @@ class DashJs {
                                         "com.widevine.alpha":       {"serverURL": Argan.getDefault("drm_server_widevine","com.widevine.alpha", "https://widevine-proxy.appspot.com/proxy")},
                                         "com.microsoft.playready":  {"serverURL": Argan.getDefault("drm_server_playready","com.microsoft.playready", 'https://playready.directtaps.net/pr/svc/rightsmanager.asmx?PlayRight=1&UseSimpleNonPersistentLicense=1&PlayEnablers=786627D8-C2A6-44BE-8F88-08AE255B01A7')}
                                      });
-            //player.setSegmentOverlapToleranceTime(Argan.getDefault("setSegmentOverlapToleranceTime","Segment overlap tolorance threshold", 4));
             player.attachTTMLRenderingDiv(document.getElementById("ttml"));
-        }catch(e:Dynamic){ Browser.console.log(e); }
+        }catch(e:Dynamic){ 
+            Browser.console.log('Error setting basic options:', e); 
+        }
 
+        try{
+            //player.setSegmentOverlapToleranceTime(Argan.getDefault("setSegmentOverlapToleranceTime","Segment overlap tolorance threshold", 4));
+            player.setJumpGaps(Argan.getDefault("setJumpGaps","setJumpGaps", true));
+            player.setLowLatencyEnabled(Argan.getDefault("setLowLatencyEnabled","setLowLatencyEnabled", false));
+            if(Argan.has("setLiveDelay","setLiveDelay", 10.0))
+                player.setLiveDelay(Argan.get("setLiveDelay"));
+            if(Argan.has("setABRStrategy","abrDynamic / abrBola / abrThroughput", "abrDynamic"))
+                player.setABRStrategy(Argan.get("setABRStrategy"));
+        }catch(e:Dynamic){
+            Browser.console.log('Error setting advanced options:', e); 
+        }
+        
         var onStreamInitialized = function (e) {
             player.setTrackSwitchModeFor('video', 'alwaysReplace');
             player.setTrackSwitchModeFor('audio', 'alwaysReplace');
             player.setFastSwitchEnabled(Argan.getDefault("setFastSwitchEnabled","setFastSwitchEnabled", true));
-            //player.getLowLatencyEnabled();
-            try{
-                player.setJumpGaps(Argan.getDefault("setJumpGaps","setJumpGaps", true));
-                player.setLowLatencyEnabled(Argan.getDefault("setLowLatencyEnabled","setLowLatencyEnabled", false));
-                if(Argan.has("setLiveDelay","setLiveDelay", 10.0))
-                    player.setLiveDelay(Argan.get("setLiveDelay"));
-                if(Argan.has("setABRStrategy","abrDynamic / abrBola / abrThroughput", "abrDynamic"))
-                    player.setABRStrategy(Argan.get("setABRStrategy"));
-            }catch(e:Dynamic){}
-
+            
             clearMenu();
 
             var handleBitrateSwitch = function(e){

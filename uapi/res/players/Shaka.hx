@@ -18,8 +18,8 @@ class Shaka {
                 var player = expose_player(untyped __js__('new shaka.Player(document.getElementById("video"))'));
                 player.configure({
                     streaming: {
-                        smallGapLimit: Std.parseFloat(Argan.getDefault("smallGapLimit","config.streaming.smallGapLimit", .5)),
-                        jumpLargeGaps: Argan.getDefault("jumpLargeGaps","config.streaming.jumpLargeGaps", false) != "false"
+                        smallGapLimit: Argan.getDefault("smallGapLimit","config.streaming.smallGapLimit", .5),
+                        jumpLargeGaps: Argan.getDefault("jumpLargeGaps","config.streaming.jumpLargeGaps", false)
                     },
                     drm: {
                         servers: {

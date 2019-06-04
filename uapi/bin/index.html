@@ -363,7 +363,7 @@
                     var l = document.createElement("label");
                     l.className = "matter-switch";
                     var input = document.createElement("input");
-                    if(uapi_options[option].default_.indexOf("true") > -1)
+                    if(uapi_options[option].default_ === true)
                         input.setAttribute("checked", true);
                     input.type = "checkbox";
                     input.id = `option_${option}`;
@@ -426,7 +426,7 @@
 
                             settings_elements.push(sinput);
                             div.title = k + "; " + settings[k].default_;
-                            sinput.placeholder = settings[k].help + "; " + settings[k].default_;
+                            sinput.placeholder = settings[k].help + "; [default value: '" + settings[k].default_ + "']";
                             div.id = k;
 
                             label.appendChild(slabel);

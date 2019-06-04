@@ -15,7 +15,7 @@ class HasPlayer {
             var video_element = document.getElementById("video");
             player.init(video_element);
             player.setAutoPlay(video_element.hasAttribute("autoplay"));
-            player.getDebug().setLevel(4);
+            player.getDebug().setLevel(Argan.getDefault("debug_level","set debug level", 4));
             //player.addEventListener("metricUpdated", metricUpdated.bind(this));
             //player.addEventListener("metricAdded", metricAdded.bind(this));
             var stream = {

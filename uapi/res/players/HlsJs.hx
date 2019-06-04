@@ -7,15 +7,19 @@ class HlsJs {
         debug:false,
         widevineLicenseUrl:Argan.getDefault("drm_server_widevine","com.widevine.alpha", "https://widevine-proxy.appspot.com/proxy"),
         emeEnabled: true,
-        stretchShortVideoTrack: Argan.getDefault("stretchShortVideoTrack","stretchShortVideoTrack", "false") != "false",
-        enableWorker: Argan.getDefault("enableWorker","enableWorker", "true") == "true"
+        stretchShortVideoTrack: Argan.getDefault("stretchShortVideoTrack","stretchShortVideoTrack", "false"),
+        enableWorker: Argan.getDefault("enableWorker","enableWorker", "true")
         //defaultAudioCodec: ""
-    }
+    };
+
+    
     //static function __init__() untyped {}
     static function main() untyped {
         var video:js.html.VideoElement = cast Browser.document.getElementById('video'); //untyped video
         var uri:String = Reflect.field(Browser.window, "uri");
         var Hls:Dynamic = Reflect.field(Browser.window, "Hls");
+        if(Argan.has("liveSyncDurationCount"))
+            Reflect.setField(hlsConfig, "liveSyncDurationCount", Argan.getDefault("liveSyncDurationCount","liveSyncDurationCount", "1"));
         window.help = function(){
             return Argan.help(true);
         }

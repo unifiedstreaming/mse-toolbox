@@ -178,6 +178,7 @@ class Main {
 			uri: StringTools.urlEncode(uri),
 			loading: haxe.Resource.getString("logo"),
 			title: player,
+			doc_title: 'uapi.js  ${Version()} | $player ($version) | $uri',
 			title_version: version,
 			title_href: last_src,
 			attr_autoplay: Argan.get("autoplay", "set videoelement autoplay state", true),
@@ -208,6 +209,7 @@ class Main {
 		//container.style.paddingBottom = "56.25%";
 		
 		iframe.id = iframe.name = 'uapi.js/${player}(${version})/${id++}';
+		iframe.title = "aap";
 		iframe.style.position = "absolute";
 		iframe.style.resize = "both";
 		iframe.style.top = iframe.style.left = "0";

@@ -209,7 +209,6 @@ class Main {
 		//container.style.paddingBottom = "56.25%";
 		
 		iframe.id = iframe.name = 'uapi.js/${player}(${version})/${id++}';
-		iframe.title = "aap";
 		iframe.style.position = "absolute";
 		iframe.style.resize = "both";
 		iframe.style.top = iframe.style.left = "0";

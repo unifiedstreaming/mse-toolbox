@@ -43,10 +43,19 @@
             }
         }        
         */
+
         html, body {
             top: 0px; bottom: 0px; width: 100%; height: 100%; margin: 0px;
             background-color: whitesmoke;
         }
+
+        @media (prefers-color-scheme: dark) {
+            html, body {
+                top: 0px; bottom: 0px; width: 100%; height: 100%; margin: 0px;
+                background-color: black;
+            }
+        }
+
         .card-header:hover {
             text-decoration: underline;
         }
@@ -352,7 +361,17 @@
         </div>
             <script type="text/javascript">
             //uapi.addPlayerSrc("hlsjs:0.12.3", ["hls.js"]);
-
+            function createSw(checked, id){
+                var l = document.createElement("label");
+                l.className = "matter-switch";
+                var input = document.createElement("input");
+                if(checked === true)
+                input.setAttribute("checked", "true");
+                input.type = "checkbox";
+                input.id = id;
+                l.appendChild(input);
+                return l;
+            }
             !function(){
                 var hash = uapi.HashPipe(true).pipe(function(hash){
                     if('custom_manifest' in hash.args)
@@ -360,15 +379,7 @@
                 });
                 var uapi_options = uapi.getHelp();
                 for(var option in uapi_options){
-                    var l = document.createElement("label");
-                    l.className = "matter-switch";
-                    var input = document.createElement("input");
-                    if(uapi_options[option].default_ === true)
-                        input.setAttribute("checked", true);
-                    input.type = "checkbox";
-                    input.id = `option_${option}`;
-                    
-                    l.appendChild(input);
+                    var l = createSw(uapi_options[option].default_, `option_${option}`);
                     l.title = `(${uapi_options[option].help} ${uapi_options[option].default_})`;
                     var span = document.createElement("span");
                     span.innerHTML += `uapi_options.${option}`;
@@ -432,6 +443,12 @@
                             label.appendChild(slabel);
                             div.appendChild(label);
                             div.appendChild(sinput);
+                            if(typeof(settings[k].default_) == "boolean"){
+                                var sw = createSw(settings[k].default_);
+                                var span = document.createElement("span");
+                                sw.appendChild(span);
+                                div.appendChild(sw);
+                            }
                             node.appendChild(div);
                         }
                     }

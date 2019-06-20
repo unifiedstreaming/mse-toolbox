@@ -360,6 +360,8 @@
         </div>
             <script type="text/javascript">
             //uapi.addPlayerSrc("hlsjs:0.12.3", ["hls.js"]);
+            if(location.search.length > 0)
+                document.getElementById('custom_manifest').value = location.search.substr(1);
             function createSw(checked, id){
                 var l = document.createElement("label");
                 l.className = "matter-switch";

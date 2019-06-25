@@ -22,10 +22,15 @@ class Hooks {
         if(null != method_original){
             var method_new = makeVarArgs(function(arguments:Array<Dynamic>){
                 var pipe_ret:Dynamic = pipe != null ? Reflect.callMethod(js.Lib.nativeThis, pipe, [arguments, Reflect.callMethod.bind(js.Lib.nativeThis, method_original)]) : null;
-                if(pipe_ret != null)
-                    return pipe_ret;
-                else
-                    return Reflect.callMethod(js.Lib.nativeThis, method_original, arguments);
+                if(pipe_ret != null){
+                    // if hook function returns { arguments: ... } object, call original function with these args
+                    if(Reflect.hasField(pipe_ret, "arguments")){
+                        arguments = Reflect.field(pipe_ret, "arguments");
+                    }else{
+                        return pipe_ret;
+                    }
+                }
+                return Reflect.callMethod(js.Lib.nativeThis, method_original, arguments);
             });
             Reflect.setProperty(object, methodName, method_new);
         }else{

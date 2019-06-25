@@ -30,7 +30,7 @@ class Shaka {
                 });
                 player.setTextTrackVisibility(Argan.getDefault("setTextTrackVisibility","Text Tracks visible", true));
                 player.addEventListener("error", onErrorEvent);
-                var promise:js.Promise<Void> = player.load(uri);
+                var promise:js.lib.Promise<Void> = player.load(uri);
                 promise.then(function(_) {
                     var addMenu = untyped window.addMenu;
                     var variantTracksList:Array<Dynamic> = player.getVariantTracks();

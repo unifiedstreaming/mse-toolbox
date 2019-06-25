@@ -8,8 +8,7 @@ import js.html.RequestMode;
 import js.html.Response;
 import js.html.EventListener;
 import js.html.AddEventListenerOptions;
-
-import js.Promise;
+import js.lib.Promise;
 import uapi.Hooks;
 class JsUtils {
 	public static function HttpRequest(url:String, binary:Bool = false, method:String = "GET", headers:Dynamic = null, body:Dynamic = null):DeferredPipe{

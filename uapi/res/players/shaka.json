@@ -1,4 +1,5 @@
 {
+    "2.5.1": ["https://cdnjs.cloudflare.com/ajax/libs/shaka-player/2.5.1/shaka-player.compiled.debug.js"],
     "2.4.7": ["https://cdnjs.cloudflare.com/ajax/libs/shaka-player/2.4.7/shaka-player.compiled.debug.js"],
     "2.4.6": ["https://cdnjs.cloudflare.com/ajax/libs/shaka-player/2.4.6/shaka-player.compiled.debug.js"],
     "2.4.5": ["https://cdnjs.cloudflare.com/ajax/libs/shaka-player/2.4.5/shaka-player.compiled.debug.js"],

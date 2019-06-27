@@ -91,6 +91,11 @@ class Macros
 	}
 	macro public static function GetVersion(?name:String = "", ?version:String = null)
 	{
+		return macro { $v{GetVersionString(name, version)}; };
+	}
+	#if macro
+	public static function GetVersionString(?name:String = "", ?version:String = null)
+	{
 		var date = Date.now().toString();
 		if(version == null)
 			version = GetLastGitTag();
@@ -101,11 +106,8 @@ class Macros
 			arr.push(name);
 		arr.push(version);
 
-		var output = '${arr.join(" ")}, $date';
-
-		return { expr : EConst(CString(output)), pos : haxe.macro.Context.currentPos() };
+		return '${arr.join(" ")}, $date';
 	}
-	#if macro
 	public static function GetGitShortHead()
 	{
 		var p = try new sys.io.Process("git", ["rev-parse" ,"--short", "HEAD"]) catch ( e : Dynamic ) { trace("no git command found: " +  e); return ""; };
@@ -178,7 +180,7 @@ class Macros
 	{
 		if(FileSystem.exists(file)) {
 			var fileContent = File.getContent(file);
-			File.saveContent(file, '/*\n *\t${name} ${GetLastGitTag()}\n */\n${fileContent}');
+			File.saveContent(file, '/*\n *\t${name}${GetVersionString()}\n */\n${fileContent}');
 		}
 		return macro null;
 	}

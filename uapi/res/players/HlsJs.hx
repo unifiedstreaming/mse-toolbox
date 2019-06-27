@@ -8,8 +8,17 @@ class HlsJs {
         widevineLicenseUrl:Argan.getDefault("drm_server_widevine","com.widevine.alpha", "https://widevine-proxy.appspot.com/proxy"),
         emeEnabled: true,
         stretchShortVideoTrack: Argan.getDefault("stretchShortVideoTrack","stretchShortVideoTrack", "false"),
-        enableWorker: Argan.getDefault("enableWorker","enableWorker", "true")
-        //defaultAudioCodec: ""
+        enableWorker: Argan.getDefault("enableWorker","enableWorker", "true"),
+        drmSystem: "WIDEVINE" 
+        /*,
+        requestMediaKeySystemAccessFunc: function(){ 
+            untyped {
+                arguments[1][0].initDataTypes = [ 'cenc' ];
+            }
+            Browser.alert(untyped arguments[1]);
+            return Reflect.callMethod(Browser.navigator, Browser.navigator.requestMediaKeySystemAccess, untyped arguments);
+        }
+        */
     };
 
     

@@ -343,7 +343,7 @@ class Macros
 								var js_value = 'new haxe.Template("${node.get(att)}").execute(obj)';
 								var js_name = switch(att){
 									case "class": "className";
-									case "onclick": js_value = 'new js.Function(${js_value})'; "onclick";
+									case "onclick": js_value = 'new js.lib.Function(${js_value})'; "onclick";
 									default: att;
 								}
 								new_expr.push(haxe.macro.Context.parseInlineString('Reflect.setProperty(el_${level}, "${js_name}", ${js_value})', haxe.macro.Context.currentPos()));

@@ -5,11 +5,11 @@ import uapi.Utils;
 import uapi.JsUtils;
 import uapi.ui.Timeline;
 import uapi.ui.Tree;
-
+import js.lib.Promise;
 typedef InjectRaw = haxe.extern.EitherType<String, Array<{index:Int, content:String}>>;
 typedef PlayerOptions = Dynamic;
 typedef PlayerHandle = {
-	reload:String->String->PlayerOptions->js.Promise<PlayerHandle>,
+	reload:String->String->PlayerOptions->Promise<PlayerHandle>,
 	destroy: Void->Void,
 	frame:js.html.IFrameElement,
 	player:Dynamic,
@@ -102,7 +102,7 @@ class Main {
 									   player_version_string:String = "dashjs", 
 									   player_config:PlayerOptions = null, 
 									   ?inject_head:InjectRaw = null, 
-									   ?inject_body:InjectRaw = null):js.Promise<PlayerHandle> {
+									   ?inject_body:InjectRaw = null):Promise<PlayerHandle> {
 		Argan.start(player_config);
 		
 		// https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-srcdoc
@@ -216,7 +216,7 @@ class Main {
 		container.appendChild(iframe);
 		parent.appendChild(container);
 
-		var retval:js.Promise<PlayerHandle> = new js.Promise(function(resolve, reject) {
+		var retval:Promise<PlayerHandle> = new Promise(function(resolve, reject) {
 			var iframe_loaded = false;
 			var delayed_errors = [];
 

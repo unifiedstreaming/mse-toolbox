@@ -30,7 +30,7 @@ class Macros
 		var resourceName = arr.length > 1 ? arr[1] : path.file;
 
 		var isInitMacro = StringTools.startsWith(haxe.macro.PositionTools.getInfos(haxe.macro.Context.currentPos()).file, "--macro");
-		trace("Compiling inline, initiated from " + haxe.macro.PositionTools.getInfos(haxe.macro.Context.currentPos()).file + ", environment:\n\n\tCwd: " + Sys.getCwd() +"\n");
+		Sys.println("Compiling inline, initiated from " + haxe.macro.PositionTools.getInfos(haxe.macro.Context.currentPos()).file + ", environment:\n\n\tCwd: " + Sys.getCwd() +"\n");
 
 		if (FileSystem.exists(filePath)) {
 			var command = "haxe";
@@ -41,7 +41,7 @@ class Macros
 			if(haxe_args != null)
 				command_args = command_args.concat(haxe_args);
 			trace("Compiling...\nRunning: " + command + " " + command_args.join(" "));
-			var p = try new sys.io.Process(command, command_args) catch ( e : Dynamic ) { trace("getPlayerCode error: no haxe in path?:\n\n\t" +  e); return macro null; };
+			var p = try new sys.io.Process(command, command_args) catch ( e : Dynamic ) { Sys.println("getPlayerCode error: no haxe in path?:\n\n\t" +  e); return macro null; };
 			var output = p.stdout.readAll().toString();
 			var error = p.stderr.readAll().toString();
 			Sys.println('----------------------------------------');
@@ -68,6 +68,7 @@ class Macros
 						haxe.macro.Context.addResource(resourceName, fileContent);
 
 					trace('added haxe.Resource["${resourceName}"]');
+					Sys.println('----------------------------------------');
 					return macro null;
 				}else{
 					// return as expression

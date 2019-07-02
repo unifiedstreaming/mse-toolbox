@@ -23,11 +23,14 @@ class DashJs {
         var player = expose_player(untyped dashjs.MediaPlayer().create());
         
         
-
-        var debug = player.getDebug();
-        if(debug != null && Reflect.field(debug, "setLogLevel") != null)
-            debug.setLogLevel(Argan.getDefault("dashjs_loglevel", "0 == none to 5 == debug", 4)); //dashjs.Debug.LOG_LEVEL_INFO
-        
+        var logLevel = Argan.getDefault("dashjs_loglevel", "0 == none to 5 == debug", 4);
+        if(v3){
+            player.updateSettings(cfg("debug.logLevel", logLevel));
+        }else{
+            var debug = player.getDebug();
+            if(debug != null && Reflect.field(debug, "setLogLevel") != null)
+                debug.setLogLevel(); //dashjs.Debug.LOG_LEVEL_INFO
+        }
         player.initialize();
         
 

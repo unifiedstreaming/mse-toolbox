@@ -48,24 +48,24 @@ class DashJs {
             //player.setSegmentOverlapToleranceTime(Argan.get("setSegmentOverlapToleranceTime","Segment overlap tolorance threshold", 4));
             var jumpGaps = Argan.get("setJumpGaps","setJumpGaps", true);
             v3 ?
-                player.updateSettings({ streaming: { jumpGaps: jumpGaps }}) :
+                player.updateSettings(cfg("streaming.jumpGaps", jumpGaps)) :
                 player.setJumpGaps(jumpGaps);
 
             var lowLatencyEnabled = Argan.get("setLowLatencyEnabled","setLowLatencyEnabled", false);
             v3 ?
-                player.updateSettings({ streaming: { lowLatencyEnabled: lowLatencyEnabled }}) :
+                player.updateSettings(cfg("streaming.lowLatencyEnabled", lowLatencyEnabled)) :
                 player.setLowLatencyEnabled(lowLatencyEnabled);
             
             if(Argan.has("setLiveDelay")){
                 var liveDelay = Argan.get("setLiveDelay", "setLiveDelay", 10.0);
                 v3 ? 
-                    player.updateSettings({ streaming: { liveDelay: liveDelay }}) :
+                    player.updateSettings(cfg("streaming.liveDelay", liveDelay)) :
                     player.setLiveDelay(Argan.get("setLiveDelay", "setLiveDelay", 10.0));
             }
             if(Argan.has("setABRStrategy")){
                 var ABRStrategy = Argan.get("setABRStrategy","abrDynamic / abrBola / abrThroughput", "abrDynamic");
                 v3 ?
-                    player.updateSettings({ streaming: { abr: { ABRStrategy: ABRStrategy } }}) :
+                    player.updateSettings(cfg("streaming.abr.ABRStrategy", ABRStrategy)) :
                     player.setABRStrategy(ABRStrategy);
             }
         }catch(e:Dynamic){
@@ -87,14 +87,9 @@ class DashJs {
                 var info:Dynamic = e.target.selectedOptions[0].info;
                 if (null != info.mediaType) {
                     if(v3){
-                        var settings:Dynamic = { 
-                            streaming: { 
-                                abr: { 
-                                    autoSwitchBitrate: { '${info.mediaType}': false } 
-                                }
-                            }
-                        }
-                        player.updateSettings(settings);
+                        player.updateSettings(
+                            cfg('streaming.abr.autoSwitchBitrate.${info.mediaType}', false)
+                        );
                     }else{
                         if (player.getAutoSwitchQualityFor(info.mediaType)) {
                             player.setAutoSwitchQualityFor(info.mediaType, false);
@@ -188,6 +183,16 @@ class DashJs {
     static function expose_player(p) untyped {
         window.player = p;
         return p;
+    }
+    static function cfg(str:String, value:Dynamic):Dynamic {
+        var ret = {}, path = str.split(".");
+        Reflect.setField(ret, path.pop(), value);
+        while(path.length > 0){
+            var parent = {};
+            Reflect.setField(parent, path.pop(), ret);
+            ret = parent;
+        }
+        return ret;
     }
 }
 

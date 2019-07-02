@@ -4,16 +4,26 @@ import Argan;
 
 class DashJs {
     //static function __init__() untyped {}
+    static var v3:Bool = false;
     static function main() untyped {
         var title:String = Reflect.field(Browser.window, "title");
         if(title.indexOf(untyped dashjs.Version) == -1)
             Browser.console.warn('Loaded DashJs version "${untyped dashjs.Version}" not matching player title "${title}"');
+        
+        // dash.js v3.0.0 has new configuration logic
+        // https://github.com/Dash-Industry-Forum/dash.js/blob/HEAD/docs/migration/Migration-3.0.md
+        v3 = untyped dashjs.Version == "3.0.0";
+
         window.help = function(){
             return Argan.help(true);
         }
+        
         Argan.start(window.config);
+        
         var player = expose_player(untyped dashjs.MediaPlayer().create());
         
+        
+
         var debug = player.getDebug();
         if(debug != null && Reflect.field(debug, "setLogLevel") != null)
             debug.setLogLevel(Argan.getDefault("dashjs_loglevel", "0 == none to 5 == debug", 4)); //dashjs.Debug.LOG_LEVEL_INFO
@@ -36,12 +46,28 @@ class DashJs {
 
         try{
             //player.setSegmentOverlapToleranceTime(Argan.get("setSegmentOverlapToleranceTime","Segment overlap tolorance threshold", 4));
-            player.setJumpGaps(Argan.get("setJumpGaps","setJumpGaps", true));
-            player.setLowLatencyEnabled(Argan.get("setLowLatencyEnabled","setLowLatencyEnabled", false));
-            if(Argan.has("setLiveDelay"))
-                player.setLiveDelay(Argan.get("setLiveDelay", "setLiveDelay", 10.0));
-            if(Argan.has("setABRStrategy"))
-                player.setABRStrategy(Argan.get("setABRStrategy","abrDynamic / abrBola / abrThroughput", "abrDynamic"));
+            var jumpGaps = Argan.get("setJumpGaps","setJumpGaps", true);
+            v3 ?
+                player.updateSettings({ streaming: { jumpGaps: jumpGaps }}) :
+                player.setJumpGaps(jumpGaps);
+
+            var lowLatencyEnabled = Argan.get("setLowLatencyEnabled","setLowLatencyEnabled", false);
+            v3 ?
+                player.updateSettings({ streaming: { lowLatencyEnabled: lowLatencyEnabled }}) :
+                player.setLowLatencyEnabled(lowLatencyEnabled);
+            
+            if(Argan.has("setLiveDelay")){
+                var liveDelay = Argan.get("setLiveDelay", "setLiveDelay", 10.0);
+                v3 ? 
+                    player.updateSettings({ streaming: { liveDelay: liveDelay }}) :
+                    player.setLiveDelay(Argan.get("setLiveDelay", "setLiveDelay", 10.0));
+            }
+            if(Argan.has("setABRStrategy")){
+                var ABRStrategy = Argan.get("setABRStrategy","abrDynamic / abrBola / abrThroughput", "abrDynamic");
+                v3 ?
+                    player.updateSettings({ streaming: { abr: { ABRStrategy: ABRStrategy } }}) :
+                    player.setABRStrategy(ABRStrategy);
+            }
         }catch(e:Dynamic){
             Browser.console.log('Error setting advanced options:', e); 
         }
@@ -49,17 +75,33 @@ class DashJs {
         var onStreamInitialized = function (e) {
             player.setTrackSwitchModeFor('video', 'alwaysReplace');
             player.setTrackSwitchModeFor('audio', 'alwaysReplace');
-            player.setFastSwitchEnabled(Argan.get("setFastSwitchEnabled","setFastSwitchEnabled", true));
+
+            var fastSwitch = Argan.get("setFastSwitchEnabled","setFastSwitchEnabled", true);
+            v3 ?
+                player.updateSettings({ streaming: {fastSwitchEnabled: fastSwitch}}) :
+                player.setFastSwitchEnabled(fastSwitch);
             
             clearMenu();
 
             var handleBitrateSwitch = function(e){
                 var info:Dynamic = e.target.selectedOptions[0].info;
                 if (null != info.mediaType) {
-                    if (player.getAutoSwitchQualityFor(info.mediaType)) {
-                        player.setAutoSwitchQualityFor(info.mediaType, false);
+                    if(v3){
+                        var settings:Dynamic = { 
+                            streaming: { 
+                                abr: { 
+                                    autoSwitchBitrate: { '${info.mediaType}': false } 
+                                }
+                            }
+                        }
+                        player.updateSettings(settings);
+                    }else{
+                        if (player.getAutoSwitchQualityFor(info.mediaType)) {
+                            player.setAutoSwitchQualityFor(info.mediaType, false);
+                        }
                     }
                     player.setQualityFor(info.mediaType, e.target.selectedIndex -1);
+                
                 } else {
                     player.setAutoSwitchQualityFor(info, true);
                 }
@@ -91,7 +133,7 @@ class DashJs {
                 for(info in AudioTrackInfoList){
                     audioTracks.push({title: '${info.type}:${info.lang}' , info: info });
                 }
-                addMenu("Audio tracks", audioTracks, handleTrackSwitch, player.getCurrentTrackFor("audio").index - 1);
+                addMenu("Audio tracks", audioTracks, handleTrackSwitch, player.getCurrentTrackFor("audio").index);
             }
             var videoTracks = [];
             var VideoTrackInfoList:Array<Dynamic> = player.getTracksFor("video");
@@ -99,7 +141,7 @@ class DashJs {
                 for(info in VideoTrackInfoList){
                     videoTracks.push({title: '${info.type}:${info.lang}' , info: info });
                 }
-                addMenu("Video tracks", videoTracks, handleTrackSwitch, player.getCurrentTrackFor("video").index - 1);
+                addMenu("Video tracks", videoTracks, handleTrackSwitch, player.getCurrentTrackFor("video").index);
             }
             if(textTracks.length > 0){
                 addMenu("Texttracks", textTracks, function(e){

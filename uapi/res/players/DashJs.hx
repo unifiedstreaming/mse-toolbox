@@ -183,11 +183,20 @@ class DashJs {
         
         player.attachSource(uri);
     }
-    static function expose_player(p) untyped {
+    static inline function expose_player(p) untyped {
         window.player = p;
         return p;
     }
-    static function cfg(str:String, value:Dynamic):Dynamic {
+
+    /**
+     * Creates Dynamic object from String "a.b.c" with c = value
+     * ie. cfg("a.b.c", value) returns
+     * { a : { b : { c = value }}}
+     * @param str 
+     * @param value 
+     * @return Dynamic
+     */
+    static inline function cfg(str:String, value:Dynamic):Dynamic {
         var ret = {}, path = str.split(".");
         Reflect.setField(ret, path.pop(), value);
         while(path.length > 0){

@@ -12,7 +12,7 @@ class DashJs {
         
         // dash.js v3.0.0 has new configuration logic
         // https://github.com/Dash-Industry-Forum/dash.js/blob/HEAD/docs/migration/Migration-3.0.md
-        v3 = untyped dashjs.Version == "3.0.0";
+        v3 = untyped StringTools.startsWith(dashjs.Version, "3.");
 
         window.help = function(){
             return Argan.help(true);

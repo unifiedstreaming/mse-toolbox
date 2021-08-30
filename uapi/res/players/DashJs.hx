@@ -5,6 +5,7 @@ import Argan;
 class DashJs {
     //static function __init__() untyped {}
     static var v3:Bool = false;
+    static var v4:Bool = false;
     static function main() untyped {
         var title:String = Reflect.field(Browser.window, "title");
         if(title.indexOf(untyped dashjs.Version) == -1)
@@ -13,6 +14,10 @@ class DashJs {
         // dash.js v3.0.0 has new configuration logic
         // https://github.com/Dash-Industry-Forum/dash.js/blob/HEAD/docs/migration/Migration-3.0.md
         v3 = untyped StringTools.startsWith(dashjs.Version, "3.");
+
+        // dash.js v4.0.0 has new configuration logic
+        // https://github.com/Dash-Industry-Forum/dash.js/wiki/Migration-to-dash.js-4.0
+        v4 = untyped StringTools.startsWith(dashjs.Version, "4.");
 
         window.help = function(){
             return Argan.help(true);
@@ -24,7 +29,7 @@ class DashJs {
         
         
         var logLevel = Argan.getDefault("dashjs_loglevel", "0 == none to 5 == debug", 4);
-        if(v3){
+        if(v3 || v4){
             player.updateSettings(cfg("debug.logLevel", logLevel));
         }else{
             var debug = player.getDebug();
@@ -55,7 +60,7 @@ class DashJs {
                 player.setJumpGaps(jumpGaps);
 
             var lowLatencyEnabled = Argan.get("setLowLatencyEnabled","setLowLatencyEnabled", false);
-            v3 ?
+            (v3 || v4) ?
                 player.updateSettings(cfg("streaming.lowLatencyEnabled", lowLatencyEnabled)) :
                 player.setLowLatencyEnabled(lowLatencyEnabled);
             
@@ -67,7 +72,7 @@ class DashJs {
             }
             if(Argan.has("setABRStrategy")){
                 var ABRStrategy = Argan.get("setABRStrategy","abrDynamic / abrBola / abrThroughput", "abrDynamic");
-                v3 ?
+                (v3 || v4) ?
                     player.updateSettings(cfg("streaming.abr.ABRStrategy", ABRStrategy)) :
                     player.setABRStrategy(ABRStrategy);
             }
@@ -76,20 +81,34 @@ class DashJs {
         }
         
         var onStreamInitialized = function (e) {
-            player.setTrackSwitchModeFor('video', 'alwaysReplace');
-            player.setTrackSwitchModeFor('audio', 'alwaysReplace');
-
-            var fastSwitch = Argan.get("setFastSwitchEnabled","setFastSwitchEnabled", true);
-            v3 ?
-                player.updateSettings({ streaming: {fastSwitchEnabled: fastSwitch}}) :
-                player.setFastSwitchEnabled(fastSwitch);
             
+            if (v4) {
+                player.updateSettings({ streaming: { trackSwitchMode: { 'video': 'alwaysReplace'}}});
+                player.updateSettings({ streaming: { trackSwitchMode: { 'audio': 'alwaysReplace'}}});
+            }
+            else {
+                player.setTrackSwitchModeFor('video', 'alwaysReplace');
+                player.setTrackSwitchModeFor('audio', 'alwaysReplace');
+            }
+            
+            var fastSwitch = Argan.get("setFastSwitchEnabled","setFastSwitchEnabled", true);
+
+            if (!v3 && !v4){
+                player.setFastSwitchEnabled(fastSwitch);
+            }
+            else if (v3){
+                player.updateSettings({ streaming: {fastSwitchEnabled: fastSwitch}});
+            }
+            else if (v4){
+                player.updateSettings({ streaming: { buffer: { fastSwitchEnabled: fastSwitch}}});
+            }
+
             clearMenu();
 
             var handleBitrateSwitch = function(e){
                 var info:Dynamic = e.target.selectedOptions[0].info;
                 if (null != info.mediaType) {
-                    if(v3){
+                    if(v3 || v4){
                         player.updateSettings(
                             cfg('streaming.abr.autoSwitchBitrate.${info.mediaType}', false)
                         );

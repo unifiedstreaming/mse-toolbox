@@ -1982,7 +1982,7 @@ var Mp4lib = function() { };
 $hxClasses["Mp4lib"] = Mp4lib;
 Mp4lib.__name__ = "Mp4lib";
 Mp4lib.Version = function() {
-	return "stable-56-gdd76abb, 2020-10-20 11:04:36";
+	return "stable-62-gcbc7c26, 2021-08-03 14:42:46";
 };
 Mp4lib.searchBox = function(boxtype,uuid) {
 	var boxType;
@@ -4897,7 +4897,7 @@ uapi_ui_UIManager.prototype = {
 		_g.h["minWidth"] = "200px";
 		_g.h["zIndex"] = "1";
 		uapi_JsUtils.setCSSStyles(topbar1,_g);
-		topbar.innerText = null != title ? title : "USP MSE Debugger: " + "stable-56-gdd76abb, 2020-10-20 11:04:36";
+		topbar.innerText = null != title ? title : "USP MSE Debugger: " + "stable-62-gcbc7c26, 2021-08-03 14:42:46";
 		topbar.appendChild(image);
 		topbar.style.cursor = "pointer";
 		var toggle = false;

@@ -8,11 +8,34 @@ Simple iframe page writer, used for injecting generated html5 player-page iframe
  - [hls.js](https://github.com/video-dev/hls.js)
  - [hasplayer.js](https://github.com/Orange-OpenSource/hasplayer.js)
 
+
 ## Building
+
+### On linux
+After downloading haxe from https://haxe.org/download/version/4.2.5 the
+following dependency is needed:
+
+    sudo apt-get install libneko2
+
+But then 'haxelib setup' gives:
+
+    Uncaught exception - load.c(237) : Failed to load library : std.ndll (std.ndll: cannot open shared object file: No such file or directory)
+
+### On macos
+After downloading haxe from https://haxe.org/download/version/4.2.5 do 
+
+    haxelib setup
+
+Installs into /usr/local/lib/haxe/lib, the do
+
+    haxelib install argan 
+
+After the depency is setup build as follows:
 
     haxe build.hxml
 
 See [build.hxml](./build.hxml) for inline documentatation describing the different steps in the build process.
+
 
 ## API documentation
 
@@ -86,13 +109,13 @@ Will return an object with all supported players and configuration options, that
 
 Writes player to target DOMElement
 
+
 ## Adding new player versions
 [res/players](res/players) contains json files with the supported versions and paths to each player
 - [res/players/dashjs.json](res/players/dashjs.json)
 - [res/players/shaka.json](res/players/shaka.json)
 - [res/players/hlsjs.json](res/players/hlsjs.json)
 - [res/players/hasplayer.json](res/players/hasplayer.json)
-
 
 
 ## [uapi demo page](https://unifiedstreaming.github.io/mse-toolbox/uapi/bin/index.html)

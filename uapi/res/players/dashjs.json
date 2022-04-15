@@ -1,4 +1,7 @@
 {
+    "4.3.0": ["https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.3.0/dash.all.debug.js"],
+    "4.2.0": ["https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.2.0/dash.all.debug.js"],
+    "4.1.0": ["https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.1.0/dash.all.debug.js"],
     "3.2.2": ["https://cdnjs.cloudflare.com/ajax/libs/dashjs/3.2.2/dash.all.debug.js"],
     "3.0.3": ["https://cdnjs.cloudflare.com/ajax/libs/dashjs/3.0.3/dash.all.debug.js"],
     "3.0.2": ["https://cdnjs.cloudflare.com/ajax/libs/dashjs/3.0.2/dash.all.debug.js"],

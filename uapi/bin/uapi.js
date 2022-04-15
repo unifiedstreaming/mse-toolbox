@@ -1,5 +1,5 @@
 /*
- *	uapi.js 📺 stable-64-g366a5c6, 2022-04-15 08:06:19
+ *	uapi.js 📺 stable-65-g6805715, 2022-04-15 08:28:48
  */
 (function ($hx_exports, $global) { "use strict";
 $hx_exports["uapi"] = $hx_exports["uapi"] || {};
@@ -500,7 +500,7 @@ Main.KeyValueStringParserJs = function(location,QueryString) {
 	return Main.mapToDynamic(uapi_Utils.KeyValueStringParser(location,QueryString));
 };
 Main.Version = function() {
-	return "stable-64-g366a5c6, 2022-04-15 08:06:19";
+	return "stable-65-g6805715, 2022-04-15 08:28:47";
 };
 Main.write = function(str) {
 	uapi_JsUtils.write(str);

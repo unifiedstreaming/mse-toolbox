@@ -24,7 +24,7 @@ Features:
 - Shorthands to hook builtin methods
 - Runs in sandboxed IFrames
 
-[Demo](https://github.com/unifiedstreaming/mse-toolbox/tree/dash4x/uapi/bin)
+[Demo](https://unifiedstreaming.github.io/mse-toolbox/uapi/bin/)
 
 [Documentation](uapi/)
 

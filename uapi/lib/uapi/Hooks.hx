@@ -59,7 +59,7 @@ class Hooks {
     @:overload(function( f : Array<Dynamic> -> Void ) : Dynamic {})
     public static function makeVarArgs( f : Array<Dynamic> -> Dynamic ) : Dynamic {
 		return function() {
-			var a = untyped Array.prototype.slice.call(__js__("arguments"));
+			var a = untyped Array.prototype.slice.call(js.Syntax.code("arguments"));
 			return Reflect.callMethod(js.Lib.nativeThis, f, [a]);
 		};
 	}

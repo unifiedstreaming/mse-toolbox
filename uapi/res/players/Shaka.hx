@@ -15,7 +15,7 @@ class Shaka {
         if(shaka != null){
             shaka.polyfill.installAll();
             if (shaka.Player.isBrowserSupported()) {
-                var player = expose_player(untyped __js__('new shaka.Player(document.getElementById("video"))'));
+                var player = expose_player(untyped js.Syntax.code('new shaka.Player(document.getElementById("video"))'));
                 player.configure({
                     streaming: {
                         smallGapLimit: Argan.getDefault("smallGapLimit","config.streaming.smallGapLimit", .5),

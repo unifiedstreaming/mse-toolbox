@@ -5,7 +5,7 @@ import Argan;
 class HasPlayer {
     //static function __init__() untyped {}
     static function main() untyped {
-        var player = expose_player(untyped __js__("new MediaPlayer()"));
+        var player = expose_player(untyped js.Syntax.code("new MediaPlayer()"));
         
         window.help = function(){
             return Argan.help(true);

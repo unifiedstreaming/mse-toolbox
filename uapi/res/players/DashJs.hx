@@ -5,6 +5,7 @@ import Argan;
 class DashJs {
     //static function __init__() untyped {}
     static var v3:Bool = false;
+    static var v4:Bool = false;
     static function main() untyped {
         var title:String = Reflect.field(Browser.window, "title");
         if(title.indexOf(untyped dashjs.Version) == -1)
@@ -13,6 +14,7 @@ class DashJs {
         // dash.js v3.0.0 has new configuration logic
         // https://github.com/Dash-Industry-Forum/dash.js/blob/HEAD/docs/migration/Migration-3.0.md
         v3 = untyped StringTools.startsWith(dashjs.Version, "3.");
+        v4 = untyped StringTools.startsWith(dashjs.Version, "4.");
 
         window.help = function(){
             return Argan.help(true);
@@ -50,14 +52,18 @@ class DashJs {
         try{
             //player.setSegmentOverlapToleranceTime(Argan.get("setSegmentOverlapToleranceTime","Segment overlap tolorance threshold", 4));
             var jumpGaps = Argan.get("setJumpGaps","setJumpGaps", true);
-            v3 ?
+            v3?
                 player.updateSettings(cfg("streaming.jumpGaps", jumpGaps)) :
-                player.setJumpGaps(jumpGaps);
+                if (!v4) {
+                    player.setJumpGaps(jumpGaps);
+                }
 
             var lowLatencyEnabled = Argan.get("setLowLatencyEnabled","setLowLatencyEnabled", false);
             v3 ?
                 player.updateSettings(cfg("streaming.lowLatencyEnabled", lowLatencyEnabled)) :
-                player.setLowLatencyEnabled(lowLatencyEnabled);
+                if (!v4) {
+                    player.setLowLatencyEnabled(lowLatencyEnabled);
+                }
             
             if(Argan.has("setLiveDelay")){
                 var liveDelay = Argan.get("setLiveDelay", "setLiveDelay", 10.0);
@@ -76,13 +82,23 @@ class DashJs {
         }
         
         var onStreamInitialized = function (e) {
-            player.setTrackSwitchModeFor('video', 'alwaysReplace');
-            player.setTrackSwitchModeFor('audio', 'alwaysReplace');
+
+            if (v3 && !v4) {
+                player.updateSettings(cfg("streaming.trackSwitchMode.video", "alwaysReplace"));
+                player.updateSettings(cfg("streaming.trackSwitchMode.audio", "alwaysReplace"));
+            }
+            
+            if (v3){
+                player.setTrackSwitchModeFor('video', 'alwaysReplace');
+                player.setTrackSwitchModeFor('audio', 'alwaysReplace');
+            }
 
             var fastSwitch = Argan.get("setFastSwitchEnabled","setFastSwitchEnabled", true);
             v3 ?
                 player.updateSettings({ streaming: {fastSwitchEnabled: fastSwitch}}) :
-                player.setFastSwitchEnabled(fastSwitch);
+                if (!v4){
+                    player.setFastSwitchEnabled(fastSwitch);
+                }
             
             clearMenu();
 

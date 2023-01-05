@@ -19,7 +19,7 @@ class Shaka {
                 player.configure({
                     streaming: {
                         smallGapLimit: Argan.getDefault("smallGapLimit","config.streaming.smallGapLimit", .5),
-                        jumpLargeGaps: Argan.getDefault("jumpLargeGaps","config.streaming.jumpLargeGaps", false)
+                        jumpLargeGaps: Argan.getDefault("jumpLargeGaps","config.streaming.jumpLargeGaps", true)
                     },
                     drm: {
                         servers: {

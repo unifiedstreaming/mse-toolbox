@@ -1,4 +1,5 @@
 {
+    "1.3.4": ["https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.3.4/hls.min.js"],
     "1.1.3": ["https://cdn.jsdelivr.net/npm/hls.js@1.1.3/dist/hls.min.js"],
     "1.0.7": ["https://cdn.jsdelivr.net/npm/hls.js@1.0.7/dist/hls.min.js"],
     "1.0.4": ["https://cdn.jsdelivr.net/npm/hls.js@1.0.4/dist/hls.min.js"],
